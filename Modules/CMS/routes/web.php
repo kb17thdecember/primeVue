@@ -12,4 +12,7 @@ Route::group(['prefix' => 'cms'], function () {
     Route::get('/home', function () {
         return Inertia::render('dashboard/Home');
     });
+    Route::get('/category/index', function () {
+        return Inertia::render('categories/Index');
+    });
 });
