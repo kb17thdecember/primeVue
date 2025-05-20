@@ -1,20 +1,22 @@
-import defaultTheme from 'tailwindcss/defaultTheme';
+import PrimeUI from 'tailwindcss-primeui';
 
 /** @type {import('tailwindcss').Config} */
 export default {
     content: [
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
         './storage/framework/views/*.php',
-        './resources/**/*.blade.php',
-        './resources/**/*.js',
-        './resources/**/*.vue',
+        './Modules/**/resources/**/*.blade.php',
+        './Modules/**/resources/**/*.js',
+        './Modules/**/resources/**/*.vue',
     ],
+    plugins: [PrimeUI],
     theme: {
-        extend: {
-            fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
-            },
-        },
-    },
-    plugins: [],
+        screens: {
+            sm: '576px',
+            md: '768px',
+            lg: '992px',
+            xl: '1200px',
+            '2xl': '1920px'
+        }
+    }
 };

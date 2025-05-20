@@ -10,6 +10,6 @@ use Modules\CMS\Http\Controllers\CMSController;
 
 Route::group(['prefix' => 'cms'], function () {
     Route::get('/home', function () {
-        return Inertia::render('Home');
+        return Inertia::render('dashboard/Home');
     });
 });

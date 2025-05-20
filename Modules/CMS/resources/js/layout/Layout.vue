@@ -4,7 +4,9 @@
         <SideBar></SideBar>
         <div class="layout-main-container">
             <div class="layout-main">
-                <router-view></router-view>
+                <div class="card">
+                   <slot></slot>
+                </div>
             </div>
             <Footer></Footer>
         </div>

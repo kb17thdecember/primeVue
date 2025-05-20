@@ -75,13 +75,6 @@
     import { useLayout } from './composables/layout.js';
     import Configurator from './Configurator.vue';
     import {Link} from "@inertiajs/vue3";
-    import {ref} from "vue";
-    // import {Button} from "primevue";
 
     const { toggleMenu, toggleDarkMode, isDarkTheme } = useLayout();
-    const hidden = ref(false)
-
-    // const toggleHidden = () => {
-    //   hidden.value = !hidden.value
-    // }
 </script>

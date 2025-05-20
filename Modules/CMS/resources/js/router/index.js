@@ -1,4 +1,4 @@
-import AppLayout from '@/layout/AppLayout.vue';
+import AppLayout from '../layout/Layout.vue';
 import { createRouter, createWebHistory } from 'vue-router';
 
 const router = createRouter({
@@ -11,7 +11,7 @@ const router = createRouter({
                 // {
                 //     path: '/',
                 //     name: 'dashboard',
-                //     component: () => import('@/views/Dashboard.vue')
+                //     component: () => import('../Pages/Home.vue')
                 // },
                 // {
                 //     path: '/uikit/formlayout',
@@ -28,11 +28,11 @@ const router = createRouter({
                 //     name: 'button',
                 //     component: () => import('@/views/uikit/ButtonDoc.vue')
                 // },
-                {
-                    path: '/home',
-                    name: 'table',
-                    component: () => import('../component/TableDoc.vue')
-                },
+                // {
+                //     path: '/home',
+                //     name: 'home',
+                //     component: () => import('../Pages/Home.vue')
+                // },
                 // {
                 //     path: '/uikit/list',
                 //     name: 'list',

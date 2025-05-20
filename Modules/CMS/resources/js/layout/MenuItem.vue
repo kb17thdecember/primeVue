@@ -26,8 +26,7 @@
     import { onBeforeMount, ref, watch } from 'vue';
     import { useRoute } from 'vue-router';
     import { Link } from '@inertiajs/vue3'
-
-    const route = useRoute();
+    import { usePage } from '@inertiajs/vue3';
 
     const { layoutState, setActiveMenuItem, toggleMenu } = useLayout();
 
@@ -88,6 +87,7 @@
     }
 
     function checkActiveRoute(item) {
-        // return route.path === item.to;
+      const page = usePage();
+      return page.url === item.to;
     }
 </script>
