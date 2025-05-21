@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Modules\CMS\Http\Controllers\CategoryController;
 use Modules\CMS\Http\Controllers\OrderController;
+use Modules\CMS\Http\Controllers\ProductController;
 
 //Route::middleware(['auth', 'verified'])->group(function () {
 //    Route::resource('cms', CMSController::class)->names('cms');
@@ -16,6 +17,10 @@ Route::group(['prefix' => 'cms'], function () {
 
     Route::group(['prefix' => 'categories'], function () {
         Route::get('/index', [CategoryController::class, 'index'])->name('categories.index');
+    });
+
+    Route::group(['prefix' => 'products'], function () {
+        Route::get('/index', [ProductController::class, 'index'])->name('products.index');
     });
 
     Route::group(['prefix' => 'orders'], function () {

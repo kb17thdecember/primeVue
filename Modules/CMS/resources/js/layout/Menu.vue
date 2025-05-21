@@ -23,7 +23,8 @@ const model = ref([
     label: 'Services',
     items: [
       {label: 'Category', icon: 'pi pi-fw pi-th-large', to: '/cms/categories/index'},
-      {label: 'Product', icon: 'pi pi-fw pi-tag', to: '/uikit/input'},
+      {label: 'Brand', icon: 'pi pi-fw pi-tag', to: '/'},
+      {label: 'Product', icon: 'pi pi-fw pi-shopping-bag', to: '/cms/products/index'},
       {label: 'Customer', icon: 'pi pi-fw pi-users', to: '/uikit/input'},
       {
         label: 'Order',
