@@ -24,7 +24,6 @@
 <script setup>
     import { useLayout } from './composables/layout.js';
     import { onBeforeMount, ref, watch } from 'vue';
-    import { useRoute } from 'vue-router';
     import { Link } from '@inertiajs/vue3'
     import { usePage } from '@inertiajs/vue3';
 

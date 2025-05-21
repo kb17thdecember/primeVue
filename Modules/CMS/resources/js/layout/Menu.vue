@@ -22,8 +22,9 @@
         {
             label: 'Services',
             items: [
-                { label: 'Category', icon: 'pi pi-fw pi-th-large', to: '/cms/category/index' },
+                { label: 'Category', icon: 'pi pi-fw pi-th-large', to: '/cms/categories/index' },
                 { label: 'Product', icon: 'pi pi-fw pi-tag', to: '/uikit/input' },
+                { label: 'Customer', icon: 'pi pi-fw pi-users', to: '/uikit/input' },
                 {
                     label: 'Order',
                     icon: 'pi pi-fw pi-shopping-cart',
@@ -32,10 +33,10 @@
                         {
                             label: 'List Order',
                             icon: 'pi pi-fw pi-wallet',
-                            to: '/pages/crud'
+                            to: '/cms/orders/index'
                         },
                         {
-                            label: 'Statistical',
+                            label: 'Analysis',
                             icon: 'pi pi-fw pi-chart-bar',
                             to: '/pages/crud'
                         },
@@ -51,6 +52,7 @@
                 { label: 'Rate', icon: 'pi pi-fw pi-star', to: '/uikit/button', class: 'rotated-icon' },
                 { label: 'Feedback', icon: 'pi pi-fw pi-thumbs-up', to: '/uikit/button', class: 'rotated-icon' },
                 { label: 'Complaints', icon: 'pi pi-fw pi-envelope', to: '/uikit/button', class: 'rotated-icon' },
+                { label: 'News', icon: 'pi pi-fw pi-globe', to: '/uikit/button', class: 'rotated-icon' },
             ]
         },
         {

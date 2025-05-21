@@ -4,15 +4,17 @@ namespace Modules\CMS\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
-class CMSController extends Controller
+class OrderController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * @return Response
      */
-    public function index()
+    public function index(): Response
     {
-        return view('cms::index');
+        return Inertia::render('orders/Index');
     }
 
     /**

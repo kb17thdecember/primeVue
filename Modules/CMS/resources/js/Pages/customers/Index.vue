@@ -1,5 +1,5 @@
 <template>
-  <div>Dashboard</div>
+    <div>customer index</div>
 </template>
 
 <script setup>
