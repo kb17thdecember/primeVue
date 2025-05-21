@@ -2,10 +2,11 @@
 
 namespace Modules\CMS\Repositories;
 
+use App\Filters\FiltersOperator;
 use App\Models\Product;
-use App\Contracts\Repositories\ProductRepository;
+use App\Repositories\BaseRepositoryImpl;
+use Modules\CMS\Contracts\Repositories\ProductRepository;
 use Spatie\QueryBuilder\AllowedFilter;
-use Spatie\QueryBuilder\Filters\FiltersOperator;
 
 class ProductRepositoryImpl extends BaseRepositoryImpl implements ProductRepository
 {

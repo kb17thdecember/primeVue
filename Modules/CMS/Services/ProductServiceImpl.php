@@ -2,7 +2,17 @@
 
 namespace Modules\CMS\Services;
 
-class ProductServiceImpl
+use Modules\CMS\Contracts\Repositories\ProductRepository;
+use Modules\CMS\Contracts\Services\ProductService;
+
+class ProductServiceImpl implements ProductService
 {
-    public function handle() {}
+    public function __construct(
+        private readonly ProductRepository $productRepository,
+    ) {}
+
+    public function getAllProducts()
+    {
+        return $this->productRepository->get();
+    }
 }

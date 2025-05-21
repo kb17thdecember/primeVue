@@ -6,14 +6,21 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Modules\CMS\Contracts\Services\ProductService;
 
 class ProductController extends Controller
 {
+    public function __construct(
+        private readonly ProductService $productService
+    ){
+    }
     /**
      * @return Response
      */
     public function index(): Response
     {
+        $this->productService->getAllProducts();
+
         return Inertia::render('products/Index');
     }
 
