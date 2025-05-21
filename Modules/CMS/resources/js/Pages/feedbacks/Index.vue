@@ -1,5 +1,5 @@
 <template>
-    <div>feedback index</div>
+  <div>feedback index</div>
 </template>
 
 <script setup>

@@ -1,26 +1,26 @@
 <template>
   <h2 class="text-xl font-bold mb-4">Test Table</h2>
   <DataTable
-      :value="customers1"
-      :paginator="true"
-      :rows="10"
-      dataKey="id"
-      :rowHover="true"
-      v-model:filters="filters1"
-      filterDisplay="menu"
-      :loading="loading1"
-      :filters="filters1"
-      :globalFilterFields="['name', 'country.name', 'representative.name', 'balance', 'status']"
-      showGridlines
+    :value="customers1"
+    :paginator="true"
+    :rows="10"
+    dataKey="id"
+    :rowHover="true"
+    v-model:filters="filters1"
+    filterDisplay="menu"
+    :loading="loading1"
+    :filters="filters1"
+    :globalFilterFields="['name', 'country.name', 'representative.name', 'balance', 'status']"
+    showGridlines
   >
     <template #header>
       <div class="flex justify-between">
-        <Button type="button" icon="pi pi-filter-slash" label="Clear" outlined @click="clearFilter()" />
+        <Button type="button" icon="pi pi-filter-slash" label="Clear" outlined @click="clearFilter()"/>
         <IconField>
           <InputIcon>
-            <i class="pi pi-search" />
+            <i class="pi pi-search"/>
           </InputIcon>
-          <InputText v-model="filters1['global'].value" placeholder="Keyword Search" />
+          <InputText v-model="filters1['global'].value" placeholder="Keyword Search"/>
         </IconField>
       </div>
     </template>
@@ -28,12 +28,13 @@
     <Column header="Country" filterField="country.name" style="min-width: 12rem">
       <template #body="{ data }">
         <div class="flex items-center gap-2">
-          <img alt="flag" src="https://primefaces.org/cdn/primevue/images/flag/flag_placeholder.png" :class="`flag flag-${data.country.code}`" style="width: 24px" />
+          <img alt="flag" src="https://primefaces.org/cdn/primevue/images/flag/flag_placeholder.png"
+               :class="`flag flag-${data.country.code}`" style="width: 24px"/>
           <span>{{ data.country.name }}</span>
         </div>
       </template>
       <template #filter="{ filterModel }">
-        <InputText v-model="filterModel.value" type="text" placeholder="Search by country" />
+        <InputText v-model="filterModel.value" type="text" placeholder="Search by country"/>
       </template>
       <template #filterclear="{ filterCallback }">
         <Button type="button" icon="pi pi-times" @click="filterCallback()" severity="secondary"></Button>
@@ -42,10 +43,13 @@
         <Button type="button" icon="pi pi-check" @click="filterCallback()" severity="success"></Button>
       </template>
     </Column>
-    <Column header="Agent" filterField="representative" :showFilterMatchModes="false" :filterMenuStyle="{ width: '14rem' }" style="min-width: 14rem">
+    <Column header="Agent" filterField="representative" :showFilterMatchModes="false"
+            :filterMenuStyle="{ width: '14rem' }" style="min-width: 14rem">
       <template #body="{ data }">
         <div class="flex items-center gap-2">
-          <img :alt="data.representative.name" :src="`https://primefaces.org/cdn/primevue/images/avatar/${data.representative.image}`" style="width: 32px" />
+          <img :alt="data.representative.name"
+               :src="`https://primefaces.org/cdn/primevue/images/avatar/${data.representative.image}`"
+               style="width: 32px"/>
           <span>{{ data.representative.name }}</span>
         </div>
       </template>
@@ -53,7 +57,9 @@
         <MultiSelect v-model="filterModel.value" :options="representatives" optionLabel="name" placeholder="Any">
           <template #option="slotProps">
             <div class="flex items-center gap-2">
-              <img :alt="slotProps.option.name" :src="`https://primefaces.org/cdn/primevue/images/avatar/${slotProps.option.image}`" style="width: 32px" />
+              <img :alt="slotProps.option.name"
+                   :src="`https://primefaces.org/cdn/primevue/images/avatar/${slotProps.option.image}`"
+                   style="width: 32px"/>
               <span>{{ slotProps.option.name }}</span>
             </div>
           </template>
@@ -63,12 +69,12 @@
     <Column field="name" header="Pay" style="min-width: 12rem"></Column>
     <Column header="Status" field="status" :filterMenuStyle="{ width: '14rem' }" style="min-width: 12rem">
       <template #body="{ data }">
-        <Tag :value="data.status" :severity="getSeverity(data.status)" />
+        <Tag :value="data.status" :severity="getSeverity(data.status)"/>
       </template>
       <template #filter="{ filterModel }">
         <Select v-model="filterModel.value" :options="statuses" placeholder="Select One" showClear>
           <template #option="slotProps">
-            <Tag :value="slotProps.option" :severity="getSeverity(slotProps.option)" />
+            <Tag :value="slotProps.option" :severity="getSeverity(slotProps.option)"/>
           </template>
         </Select>
       </template>
@@ -113,16 +119,16 @@ const products = ref(null);
 const expandedRows = ref([]);
 const statuses = reactive(['unqualified', 'qualified', 'new', 'negotiation', 'renewal', 'proposal']);
 const representatives = reactive([
-  { name: 'Amy Elsner', image: 'amyelsner.png' },
-  { name: 'Anna Fali', image: 'annafali.png' },
-  { name: 'Asiya Javayant', image: 'asiyajavayant.png' },
-  { name: 'Bernardo Dominic', image: 'bernardodominic.png' },
-  { name: 'Elwin Sharvill', image: 'elwinsharvill.png' },
-  { name: 'Ioni Bowcher', image: 'ionibowcher.png' },
-  { name: 'Ivan Magalhaes', image: 'ivanmagalhaes.png' },
-  { name: 'Onyama Limba', image: 'onyamalimba.png' },
-  { name: 'Stephen Shaw', image: 'stephenshaw.png' },
-  { name: 'XuXue Feng', image: 'xuxuefeng.png' }
+  {name: 'Amy Elsner', image: 'amyelsner.png'},
+  {name: 'Anna Fali', image: 'annafali.png'},
+  {name: 'Asiya Javayant', image: 'asiyajavayant.png'},
+  {name: 'Bernardo Dominic', image: 'bernardodominic.png'},
+  {name: 'Elwin Sharvill', image: 'elwinsharvill.png'},
+  {name: 'Ioni Bowcher', image: 'ionibowcher.png'},
+  {name: 'Ivan Magalhaes', image: 'ivanmagalhaes.png'},
+  {name: 'Onyama Limba', image: 'onyamalimba.png'},
+  {name: 'Stephen Shaw', image: 'stephenshaw.png'},
+  {name: 'XuXue Feng', image: 'xuxuefeng.png'}
 ]);
 
 function getOrderSeverity(order) {
@@ -194,15 +200,18 @@ onBeforeMount(() => {
 
 function initFilters1() {
   filters1.value = {
-    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    name: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-    'country.name': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-    representative: { value: null, matchMode: FilterMatchMode.IN },
-    date: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }] },
-    balance: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
-    status: { operator: FilterOperator.OR, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
-    activity: { value: [0, 100], matchMode: FilterMatchMode.BETWEEN },
-    verified: { value: null, matchMode: FilterMatchMode.EQUALS }
+    global: {value: null, matchMode: FilterMatchMode.CONTAINS},
+    name: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.STARTS_WITH}]},
+    'country.name': {
+      operator: FilterOperator.AND,
+      constraints: [{value: null, matchMode: FilterMatchMode.STARTS_WITH}]
+    },
+    representative: {value: null, matchMode: FilterMatchMode.IN},
+    date: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.DATE_IS}]},
+    balance: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.EQUALS}]},
+    status: {operator: FilterOperator.OR, constraints: [{value: null, matchMode: FilterMatchMode.EQUALS}]},
+    activity: {value: [0, 100], matchMode: FilterMatchMode.BETWEEN},
+    verified: {value: null, matchMode: FilterMatchMode.EQUALS}
   };
 }
 
@@ -215,7 +224,7 @@ function collapseAll() {
 }
 
 function formatCurrency(value) {
-  return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+  return value.toLocaleString('en-US', {style: 'currency', currency: 'USD'});
 }
 
 function formatDate(value) {
