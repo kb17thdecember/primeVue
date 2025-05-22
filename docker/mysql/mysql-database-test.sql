@@ -1,0 +1,6 @@
+CREATE DATABASE IF NOT EXISTS `app_db_test`;
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%';
+
+CREATE USER 'readonly_user'@'%%' IDENTIFIED BY '~aNB4*Z{CZdM8pj4';
+GRANT ALL PRIVILEGES ON * . * TO 'readonly_user'@'%%';
+FLUSH PRIVILEGES;

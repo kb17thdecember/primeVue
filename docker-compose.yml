@@ -1,0 +1,42 @@
+services:
+    nginx:
+        build:
+            context: .
+            dockerfile: docker/Dockerfile
+            target: nginx
+        ports:
+            - '${DOCKER_NGINX_EXTERNAL_PORT-8000}:80'
+        depends_on:
+            - app
+        volumes:
+            - .:/var/www/html
+
+    app:
+        build:
+            context: .
+            dockerfile: docker/Dockerfile
+            target: development
+            args:
+                PHP_OPCACHE_VALIDATE_TIMESTAMPS_ARG: 1
+        volumes:
+            - .:/var/www/html
+        depends_on:
+            - mysql
+
+    mysql:
+        image: mysql:8.0.32
+        volumes:
+            - mysql-data:/var/lib/mysql
+            - ./docker/mysql/mysql-database-test.sql:/docker-entrypoint-initdb.d/mysql-database-test.sql
+        environment:
+            MYSQL_DATABASE: ${DB_DATABASE}
+            MYSQL_PASSWORD: ${DB_PASSWORD}
+            MYSQL_USER: ${DB_USERNAME}
+            MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+        ports:
+            - '${DOCKER_MYSQL_EXTERNAL_PORT-3306}:3306'
+        command: [ 'mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci' ]
+
+volumes:
+    mysql-data:
+        driver: local
