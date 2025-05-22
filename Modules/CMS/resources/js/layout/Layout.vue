@@ -4,9 +4,7 @@
     <SideBar></SideBar>
     <div class="layout-main-container">
       <div class="layout-main">
-        <div class="card">
-          <slot></slot>
-        </div>
+        <slot></slot>
       </div>
       <Footer></Footer>
     </div>

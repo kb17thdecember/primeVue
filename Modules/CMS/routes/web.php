@@ -17,6 +17,7 @@ Route::group(['prefix' => 'cms'], function () {
 
     Route::group(['prefix' => 'categories'], function () {
         Route::get('/index', [CategoryController::class, 'index'])->name('categories.index');
+        Route::get('/create', [CategoryController::class, 'create'])->name('categories.create');
     });
 
     Route::group(['prefix' => 'products'], function () {

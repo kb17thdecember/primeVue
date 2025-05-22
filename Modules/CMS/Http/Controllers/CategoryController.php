@@ -19,11 +19,11 @@ class CategoryController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * @return Response
      */
-    public function create()
+    public function create(): Response
     {
-        return view('cms::create');
+        return Inertia::render('categories/Create');
     }
 
     /**
