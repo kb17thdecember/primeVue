@@ -3,19 +3,34 @@
 namespace Modules\CMS\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Category\CategoryCollection;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Modules\CMS\Contracts\Services\CategoryService;
+use Modules\CMS\Http\Requests\Category\StoreRequest;
 
 class CategoryController extends Controller
 {
+    private $rootViewPath = 'categories';
+
+    public function __construct(
+        private readonly CategoryService $categoryService
+    ){
+    }
 
     /**
+     * @param Request $request
      * @return Response
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        return Inertia::render('categories/Index', []);
+        $categories = $this->categoryService->getAllCategories($request);
+
+        return Inertia::render("$this->rootViewPath/Index", [
+            'categories' => CategoryCollection::make($categories)
+        ]);
     }
 
     /**
@@ -23,13 +38,19 @@ class CategoryController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('categories/Create');
+        return Inertia::render("$this->rootViewPath/Create");
     }
 
     /**
-     * Store a newly created resource in storage.
+     * @param StoreRequest $request
+     * @return RedirectResponse
      */
-    public function store(Request $request) {}
+    public function store(StoreRequest $request): RedirectResponse
+    {
+        $this->categoryService->storeCategory($request);
+
+        return to_route('categories.index');
+    }
 
     /**
      * Show the specified resource.

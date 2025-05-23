@@ -20,4 +20,10 @@ interface BaseRepository
      * @return Collection
      */
     public function get(?Request $request = null): Collection;
+
+    /**
+     * @param array $attributes
+     * @return mixed
+     */
+    public function create(array $attributes): mixed;
 }

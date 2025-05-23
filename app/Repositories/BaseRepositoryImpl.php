@@ -47,4 +47,13 @@ abstract class BaseRepositoryImpl implements BaseRepository
     {
         return $this->handle($request)->get();
     }
+
+    /**
+     * @param array $attributes
+     * @return mixed
+     */
+    public function create(array $attributes): mixed
+    {
+        return $this->model::create($attributes);
+    }
 }

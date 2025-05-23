@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->integer('display');
+            $table->integer('status')->default(0);
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->integer('display_order');
             $table->json('image')->nullable();
