@@ -20,6 +20,7 @@ class CategoryResource extends JsonResource
             'parent_id' => $this->parent_id,
             'display_order' => $this->display_order,
             'status' => $this->status,
+            'description' => $this->description
         ];
     }
 }
