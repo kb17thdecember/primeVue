@@ -18,4 +18,9 @@ interface CategoryService
      * @return Category
      */
     public function storeCategory(StoreRequest $request): Category;
+
+    /**
+     * @return Collection
+     */
+    public function getParentId(): Collection;
 }

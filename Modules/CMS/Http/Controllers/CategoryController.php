@@ -38,7 +38,11 @@ class CategoryController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render("$this->rootViewPath/Create");
+        $parents = $this->categoryService->getParentId();
+
+        return Inertia::render("$this->rootViewPath/Create", [
+            'parents' => $parents
+        ]);
     }
 
     /**
@@ -49,7 +53,12 @@ class CategoryController extends Controller
     {
         $this->categoryService->storeCategory($request);
 
-        return to_route('categories.index');
+        return to_route('categories.index')
+            ->with('toast', [
+                'severity' => 'success',
+                'summary' => 'Success',
+                'detail' => 'Create Category Success',
+        ]);
     }
 
     /**

@@ -5,8 +5,10 @@ namespace Modules\CMS\Providers;
 use Illuminate\Support\ServiceProvider;
 use Modules\CMS\Contracts\Services\CategoryService;
 use Modules\CMS\Contracts\Services\ProductService;
+use Modules\CMS\Contracts\Services\StorageService;
 use Modules\CMS\Services\CategoryServiceImpl;
 use Modules\CMS\Services\ProductServiceImpl;
+use Modules\CMS\Services\StorageServiceImpl;
 
 class BootstrapServiceProvider extends ServiceProvider
 {
@@ -16,6 +18,7 @@ class BootstrapServiceProvider extends ServiceProvider
     public array $bindings = [
         ProductService::class => ProductServiceImpl::class,
         CategoryService::class => CategoryServiceImpl::class,
+        StorageService::class => StorageServiceImpl::class,
     ];
 
     /**

@@ -20,6 +20,7 @@ class CategoryRepositoryImpl extends BaseRepositoryImpl implements CategoryRepos
     {
         $this->filters = [
             AllowedFilter::custom('id', new FiltersOperator()),
+            AllowedFilter::custom('parent_id', new FiltersOperator()),
         ];
     }
 }
