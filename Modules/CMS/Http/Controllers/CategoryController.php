@@ -26,6 +26,7 @@ class CategoryController extends Controller
     public function index(): Response
     {
         $categories = $this->categoryService->getAllCategories();
+        dd($categories);
 
         return Inertia::render("$this->rootViewPath/Index", [
             'categories' => CategoryCollection::make($categories)

@@ -13,4 +13,10 @@ interface StorageService
      * @return string|null
      */
     public function uploadFile(UploadedFile $file, string $path, string $name = ''): ?string;
+
+    /**
+     * @param string $path
+     * @return string
+     */
+    public function getImageUrl(string $path): string;
 }

@@ -11,6 +11,20 @@ use RuntimeException;
 
 class StorageServiceImpl implements StorageService
 {
+    public function getImageUrl(string $path): string
+    {
+        return Str::isUrl($path) ? $path : $this->getImageFromPath($path);
+    }
+
+    private function getImageFromPath(string $path): string
+    {
+        if (request()->is('api/*')) {
+            return Storage::disk('public')->url($path);
+        }
+
+        return Storage::url($path);
+    }
+
     /**
      * @param UploadedFile $file
      * @return array

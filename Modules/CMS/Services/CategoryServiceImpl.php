@@ -30,7 +30,7 @@ class CategoryServiceImpl implements CategoryService
      */
     public function getAllCategories(): Collection
     {
-        return $this->categoryRepository->get();
+        return $this->categoryRepository->handle()->get();
     }
 
     /**

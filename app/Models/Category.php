@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Modules\CMS\Contracts\Services\StorageService;
 
 class Category extends Model
 {
@@ -21,4 +23,14 @@ class Category extends Model
         'created_at',
         'updated_at',
     ];
+
+    /**
+     * @return Attribute
+     */
+    public function image(): Attribute
+    {
+        return Attribute::make(
+            get: static fn ($value) => $value ? app(StorageService::class)->getImageUrl($value) : null,
+        );
+    }
 }
