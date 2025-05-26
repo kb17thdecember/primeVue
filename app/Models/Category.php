@@ -15,8 +15,10 @@ class Category extends Model
         'name',
         'parent_id',
         'display_order',
+        'description',
         'status',
         'image',
+        'created_at',
         'updated_at',
     ];
 }

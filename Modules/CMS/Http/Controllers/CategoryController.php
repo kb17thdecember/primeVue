@@ -21,12 +21,11 @@ class CategoryController extends Controller
     }
 
     /**
-     * @param Request $request
      * @return Response
      */
-    public function index(Request $request): Response
+    public function index(): Response
     {
-        $categories = $this->categoryService->getAllCategories($request);
+        $categories = $this->categoryService->getAllCategories();
 
         return Inertia::render("$this->rootViewPath/Index", [
             'categories' => CategoryCollection::make($categories)

@@ -2,7 +2,9 @@
 
 namespace Modules\CMS\Services;
 
+use App\Enums\StoragePrefix;
 use App\Models\Category;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
@@ -38,14 +40,13 @@ class CategoryServiceImpl implements CategoryService
     public function storeCategory(StoreRequest $request): Category
     {
         $data = $request->validated();
+        $data['created_at'] = Carbon::now()->format('Y-m-d H:i:s');
 
         $image = $request->file('image');
-
         if ($image) {
-            $path = 'categories';
-            $name = str_replace('-', '_', Str::slug($data['name']));;
-            $imagePath = $this->uploadImage($image, $path, $name);
-            $data['image_path'] = $imagePath;
+            $path = StoragePrefix::CATEGORY;
+            $name = (string)time();
+            $data['image'] = $this->uploadImage($image, $path, $name);
         }
 
         return $this->categoryRepository->create($data);

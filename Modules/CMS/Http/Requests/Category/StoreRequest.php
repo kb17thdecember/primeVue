@@ -17,6 +17,8 @@ class StoreRequest extends FormRequest
             'parent_id' => 'nullable',
             'display_order' => 'nullable|numeric',
             'image' => 'nullable|mimes:jpg,jpeg,png',
+            'created_at' => 'nullable|date_format:Y-m-d H:i:s',
+            'description' => 'nullable|string',
         ];
     }
 

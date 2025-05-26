@@ -26,6 +26,7 @@
                 optionLabel="name"
                 optionValue="code"
                 size="large"
+                showClear
               />
               <label for="patient-category">Parent Category</label>
             </FloatLabel>
@@ -67,7 +68,7 @@
 </template>
 
 <script setup>
-import {computed, ref} from 'vue';
+import {computed} from 'vue';
 import FloatLabel from 'primevue/floatlabel';
 import InputText from 'primevue/inputtext';
 import Fluid from 'primevue/fluid';
