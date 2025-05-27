@@ -26,7 +26,6 @@ class CategoryController extends Controller
     public function index(): Response
     {
         $categories = $this->categoryService->getAllCategories();
-        dd($categories);
 
         return Inertia::render("$this->rootViewPath/Index", [
             'categories' => CategoryCollection::make($categories)
@@ -51,7 +50,7 @@ class CategoryController extends Controller
      */
     public function store(StoreRequest $request): RedirectResponse
     {
-        $this->categoryService->storeCategory($request);
+        $this->categoryService->store($request);
 
         return to_route('categories.index')
             ->with('toast', [
@@ -70,11 +69,16 @@ class CategoryController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * @param int $category
+     * @return Response
      */
-    public function edit($id)
+    public function edit(int $category): Response
     {
-        return view('cms::edit');
+        $category = $this->categoryService->edit($category);
+
+        return Inertia::render("$this->rootViewPath/Update", [
+            'category' => $category
+        ]);
     }
 
     /**

@@ -19,6 +19,7 @@ Route::group(['prefix' => 'cms'], function () {
         Route::get('/index', [CategoryController::class, 'index'])->name('categories.index');
         Route::get('/create', [CategoryController::class, 'create'])->name('categories.create');
         Route::post('/store', [CategoryController::class, 'store'])->name('categories.store');
+        Route::get('{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
     });
 
     Route::group(['prefix' => 'products'], function () {

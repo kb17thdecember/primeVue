@@ -12,7 +12,6 @@ use Modules\CMS\Contracts\Repositories\CategoryRepository;
 use Modules\CMS\Contracts\Services\CategoryService;
 use Modules\CMS\Contracts\Services\StorageService;
 use Modules\CMS\Http\Requests\Category\StoreRequest;
-use Illuminate\Support\Str;
 
 class CategoryServiceImpl implements CategoryService
 {
@@ -37,7 +36,7 @@ class CategoryServiceImpl implements CategoryService
      * @param StoreRequest $request
      * @return Category
      */
-    public function storeCategory(StoreRequest $request): Category
+    public function store(StoreRequest $request): Category
     {
         $data = $request->validated();
         $data['created_at'] = Carbon::now()->format('Y-m-d H:i:s');
@@ -50,6 +49,15 @@ class CategoryServiceImpl implements CategoryService
         }
 
         return $this->categoryRepository->create($data);
+    }
+
+    /**
+     * @param int $category
+     * @return Category
+     */
+    public function edit(int $category): Category
+    {
+        return $this->categoryRepository->handle(new Request(['id' => $category]))->first();
     }
 
     /**

@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Contracts\Repositories\BaseRepository;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilder;
 

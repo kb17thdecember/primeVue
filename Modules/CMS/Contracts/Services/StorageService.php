@@ -19,4 +19,10 @@ interface StorageService
      * @return string
      */
     public function getImageUrl(string $path): string;
+
+    /**
+     * @param string $url
+     * @return string
+     */
+    public function removeBasePath(string $url): string;
 }

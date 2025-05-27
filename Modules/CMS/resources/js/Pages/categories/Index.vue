@@ -30,7 +30,7 @@
           </IconField>
         </div>
       </template>
-      <Column field="display_order" header="Display Order" style="max-width: 7rem">
+      <Column field="display_order" header="Display Order" style="max-width: 5rem">
         <template #body="{ data }">
           <span>{{ data.display_order || 'N/A' }}</span>
         </template>
@@ -38,12 +38,25 @@
           <InputText v-model="filterModel.value" type="text" placeholder="Search by display order" />
         </template>
       </Column>
-      <Column field="name" header="Name" style="min-width: 12rem">
+
+      <Column field="name" header="Name" style="max-width: 5rem">
         <template #filter="{ filterModel }">
           <InputText v-model="filterModel.value" type="text" placeholder="Search by name" />
         </template>
+        <template #body="{ data }">
+          <div class="flex items-center">
+            <img class="rounded-full"
+                 v-if="data.image"
+                 :src="getImageUrl(data.image)"
+                 alt="Category image"
+                 style="width: 32px; height: 32px; object-fit: cover;"
+            />
+            <span class="ml-2">{{ data.name}}</span>
+          </div>
+        </template>
       </Column>
-      <Column field="description" header="Description" style="max-width: 7rem">
+
+      <Column field="description" header="Description" style="max-width: 25rem">
         <template #body="{ data }">
           <span>{{ data.description || '-' }}</span>
         </template>
@@ -51,26 +64,8 @@
           <InputText v-model="filterModel.value" type="text" placeholder="Search by display order" />
         </template>
       </Column>
-      <Column field="parent_id" header="Parent ID" style="min-width: 10rem">
-        <template #body="{ data }">
-          <span>{{ data.parent_id || '-' }}</span>
-        </template>
-        <template #filter="{ filterModel }">
-          <InputText v-model="filterModel.value" type="text" placeholder="Search by parent ID" />
-        </template>
-      </Column>
-      <Column field="image" header="Image" style="min-width: 12rem">
-        <template #body="{ data }">
-          <img
-            v-if="data.image"
-            :src="getImageUrl(data.image)"
-            alt="Category image"
-            style="width: 50px; height: 50px; object-fit: cover;"
-          />
-          <span v-else>No image</span>
-        </template>
-      </Column>
-      <Column field="status" header="Status" style="min-width: 10rem">
+
+      <Column field="status" header="Status" style="max-width: 5rem">
         <template #body="{ data }">
           <Tag :value="data.status === 1 ? 'active' : 'inactive'" :severity="getStatusSeverity(data.status)" />
         </template>
@@ -80,6 +75,22 @@
               <Tag :value="slotProps.option.label" :severity="getStatusSeverity(slotProps.option.value)" />
             </template>
           </Select>
+        </template>
+      </Column>
+
+      <Column field="" header="" style="max-width: 5rem" class="">
+        <template #body="{ data }">
+          <div class="flex flex-wrap gap-2 justify-center">
+            <Link>
+              <Button icon="pi pi-check" text raised rounded />
+            </Link>
+            <Link :href="`/cms/categories/${data.id}/edit`">
+              <Button icon="pi pi-pencil" severity="info" text raised rounded />
+            </Link>
+            <Link>
+              <Button icon="pi pi-trash" severity="danger" text raised rounded />
+            </Link>
+          </div>
         </template>
       </Column>
     </DataTable>
@@ -99,8 +110,8 @@ import Select from 'primevue/select';
 import {FilterMatchMode, FilterOperator} from '@primevue/core/api';
 import {Link, usePage} from '@inertiajs/vue3';
 
-const {props} = usePage();
-const categories = ref(props.categories?.data ?? []);
+const { props: indexProps } = usePage();
+const categories = ref(indexProps.categories?.data ?? []);
 const filters = ref(null);
 const loading = ref(false);
 const statuses = ref([
@@ -129,7 +140,7 @@ function getStatusSeverity(status) {
 
 function getImageUrl(image) {
   if (typeof image === 'string') {
-    return `/storage/private/${image}`;
+    return `${image}`;
   }
 
   return null;

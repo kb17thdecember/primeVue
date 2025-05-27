@@ -68,15 +68,19 @@
 </template>
 
 <script setup>
-import {computed} from 'vue';
+import {computed, ref} from 'vue';
 import FloatLabel from 'primevue/floatlabel';
 import InputText from 'primevue/inputtext';
 import Fluid from 'primevue/fluid';
 import Select from 'primevue/select';
 import Checkbox from 'primevue/checkbox';
 import Button from 'primevue/button';
-import {Link, useForm} from '@inertiajs/vue3';
+import {Link, useForm, usePage} from '@inertiajs/vue3';
 import Upload from '../../component/UploadFile.vue';
+
+const { props: updateProps } = usePage();
+const category = ref(updateProps.categories?.data ?? []);
+console.log(category)
 
 const form = useForm({
   name: '',
@@ -108,14 +112,14 @@ const handleUpload = (files) => {
   form.image = files.length ? files[0] : null;
 };
 
-const handleSubmit = () => {
-  form.post('/cms/categories/store', {
-    preserveState: true,
-    preserveScroll: true,
-    onSuccess: () => {
-      form.reset();
-    },
-  });
-};
+// const handleSubmit = () => {
+//   form.post('/cms/categories/store', {
+//     preserveState: true,
+//     preserveScroll: true,
+//     onSuccess: () => {
+//       form.reset();
+//     },
+//   });
+// };
 
 </script>

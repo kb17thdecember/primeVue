@@ -17,7 +17,13 @@ interface CategoryService
      * @param StoreRequest $request
      * @return Category
      */
-    public function storeCategory(StoreRequest $request): Category;
+    public function store(StoreRequest $request): Category;
+
+    /**
+     * @param int $category
+     * @return Category
+     */
+    public function edit(int $category): Category;
 
     /**
      * @return Collection

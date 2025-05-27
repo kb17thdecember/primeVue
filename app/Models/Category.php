@@ -31,6 +31,7 @@ class Category extends Model
     {
         return Attribute::make(
             get: static fn ($value) => $value ? app(StorageService::class)->getImageUrl($value) : null,
+            set: static fn ($value) => $value ? app(StorageService::class)->removeBasePath($value) : null
         );
     }
 }
