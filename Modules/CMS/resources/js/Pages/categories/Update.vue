@@ -78,10 +78,6 @@ import Button from 'primevue/button';
 import {Link, useForm, usePage} from '@inertiajs/vue3';
 import Upload from '../../component/UploadFile.vue';
 
-const { props: updateProps } = usePage();
-const category = ref(updateProps.categories?.data ?? []);
-console.log(category)
-
 const form = useForm({
   name: '',
   display_order: '',
@@ -98,8 +94,12 @@ const formFields = [
 ];
 
 const props = defineProps({
-  parents: Array
+  parents: Array,
+  category: Object
 });
+
+const category = ref(props.category ?? {});
+console.log(category)
 
 const dropdownValues = computed(() => {
   return props.parents.map((item) => ({

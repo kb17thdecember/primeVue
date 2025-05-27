@@ -110,8 +110,8 @@ import Select from 'primevue/select';
 import {FilterMatchMode, FilterOperator} from '@primevue/core/api';
 import {Link, usePage} from '@inertiajs/vue3';
 
-const { props: indexProps } = usePage();
-const categories = ref(indexProps.categories?.data ?? []);
+const {props} = usePage();
+const categories = ref(props.categories?.data ?? []);
 const filters = ref(null);
 const loading = ref(false);
 const statuses = ref([
