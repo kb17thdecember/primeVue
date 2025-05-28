@@ -87,13 +87,21 @@
             <Link :href="`/cms/categories/${data.id}/edit`">
               <Button icon="pi pi-pencil" severity="info" text raised rounded />
             </Link>
-            <Link>
-              <Button icon="pi pi-trash" severity="danger" text raised rounded />
-            </Link>
+            <Button icon="pi pi-trash" severity="danger" @click="openConfirmation" text raised rounded />
           </div>
         </template>
       </Column>
     </DataTable>
+    <Dialog header="Confirmation" v-model:visible="displayConfirmation" :style="{ width: '350px' }" :modal="true">
+      <div class="flex items-center justify-center">
+        <i class="pi pi-exclamation-triangle mr-4" style="font-size: 2rem" />
+        <span>Are you sure you want to delete?</span>
+      </div>
+      <template #footer>
+        <Button label="No" icon="pi pi-times" @click="closeConfirmation" text severity="secondary" />
+        <Button label="Yes" icon="pi pi-check" @click="closeConfirmation" severity="danger" outlined autofocus />
+      </template>
+    </Dialog>
   </div>
 </template>
 
@@ -109,8 +117,11 @@ import Tag from 'primevue/tag';
 import Select from 'primevue/select';
 import {FilterMatchMode, FilterOperator} from '@primevue/core/api';
 import {Link, usePage} from '@inertiajs/vue3';
+import Dialog from 'primevue/dialog';
+
 
 const {props} = usePage();
+const displayConfirmation = ref(false);
 const categories = ref(props.categories?.data ?? []);
 const filters = ref(null);
 const loading = ref(false);
@@ -144,6 +155,14 @@ function getImageUrl(image) {
   }
 
   return null;
+}
+
+function openConfirmation() {
+  displayConfirmation.value = true;
+}
+
+function closeConfirmation() {
+  displayConfirmation.value = false;
 }
 
 initFilters();

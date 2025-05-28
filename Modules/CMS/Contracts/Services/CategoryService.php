@@ -4,7 +4,9 @@ namespace Modules\CMS\Contracts\Services;
 
 use App\Models\Category;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Modules\CMS\Http\Requests\Category\StoreRequest;
+use Modules\CMS\Http\Requests\Category\UpdateRequest;
 
 interface CategoryService
 {
@@ -26,7 +28,20 @@ interface CategoryService
     public function edit(int $category): Category;
 
     /**
+     * @param int $category
+     * @param UpdateRequest $request
+     * @return Model
+     */
+    public function update(int $category, UpdateRequest $request): Model;
+
+    /**
+     * @param int $category
+     * @return bool
+     */
+    public function delete(int $category): bool;
+
+    /**
      * @return Collection
      */
-    public function getParentId(): Collection;
+    public function getParent(): Collection;
 }

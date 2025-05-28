@@ -1,7 +1,7 @@
 <template>
   <div class="card">
-    <h2 class="text-xl font-bold">Test Table</h2>
-    <Form @submit.prevent="handleSubmit">
+    <h2 class="text-xl font-bold">Update Category</h2>
+    <Form @submit.prevent="handleUpdate">
       <Fluid class="flex flex-col md:flex-row gap-8">
         <div class="md:w-1/2">
           <div class="card block flex-col gap-4">
@@ -26,7 +26,7 @@
                 optionLabel="name"
                 optionValue="code"
                 size="large"
-                showClear
+                disabled
               />
               <label for="patient-category">Parent Category</label>
             </FloatLabel>
@@ -48,8 +48,8 @@
         <div class="md:w-1/2 mt-6">
           <div class="card flex flex-col gap-4">
             <Upload
-              @upload="handleUpload"
-              :src="form.image ? form.image.objectURL : undefined"
+              v-model="form.image"
+              :src="form.image"
               accept="image/jpeg,image/png"
               :maxFileSize="5 * 1024 * 1024"
               :multiple="false"
@@ -68,7 +68,6 @@
 </template>
 
 <script setup>
-import {computed, ref} from 'vue';
 import FloatLabel from 'primevue/floatlabel';
 import InputText from 'primevue/inputtext';
 import Fluid from 'primevue/fluid';
@@ -77,14 +76,20 @@ import Checkbox from 'primevue/checkbox';
 import Button from 'primevue/button';
 import {Link, useForm, usePage} from '@inertiajs/vue3';
 import Upload from '../../component/UploadFile.vue';
+import {computed} from "vue";
+
+const props = defineProps({
+  parent: Object,
+  category: Object
+});
 
 const form = useForm({
-  name: '',
-  display_order: '',
-  description: '',
-  parent_id: '',
-  status: 0,
-  image: null,
+  name: props.category?.name ?? '',
+  display_order: props.category?.display_order ?? '',
+  description: props.category?.description ?? '',
+  parent_id: props.category.parent?.id ?? null,
+  status: props.category?.status ?? 0,
+  image: props.category?.image ?? null,
 });
 
 const formFields = [
@@ -93,33 +98,35 @@ const formFields = [
   {id: 'description', label: 'Description'},
 ];
 
-const props = defineProps({
-  parents: Array,
-  category: Object
-});
-
-const category = ref(props.category ?? {});
-console.log(category)
-
 const dropdownValues = computed(() => {
-  return props.parents.map((item) => ({
-    name: item.name,
-    code: item.id
-  }));
+  return props.category.parent ? [{ name: props.category.parent.name, code: props.category.parent.id }] : [];
 });
 
 const handleUpload = (files) => {
   form.image = files.length ? files[0] : null;
 };
 
-// const handleSubmit = () => {
-//   form.post('/cms/categories/store', {
-//     preserveState: true,
-//     preserveScroll: true,
-//     onSuccess: () => {
-//       form.reset();
-//     },
-//   });
-// };
+const handleUpdate = () => {
+  form.transform((data) => ({
+    ...data,
+    _method: 'PUT'
+  }))
+  form.post(`/cms/categories/${props.category?.id}`, {
+    preserveState: true,
+    preserveScroll: true,
+    onSuccess: () => {
+      form.reset();
+    },
+  });
+};
 
+// function getImageUrl(imagePath) {
+//   if (imagePath && typeof imagePath === 'string') {
+//     return `${imagePath}`; // Route phục vụ ảnh từ private
+//   }
+//   if (imagePath && imagePath instanceof File) {
+//     return URL.createObjectURL(imagePath); // Hiển thị ảnh tạm khi upload
+//   }
+//   return null;
+// }
 </script>

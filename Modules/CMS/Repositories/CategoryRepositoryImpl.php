@@ -12,7 +12,9 @@ class CategoryRepositoryImpl extends BaseRepositoryImpl implements CategoryRepos
 {
     public string $model = Category::class;
 
-    public array $includes = [];
+    public array $includes = [
+        'parent'
+    ];
 
     public array $sorts = ['id'];
 

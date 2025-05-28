@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Contracts\Repositories\BaseRepository;
+use App\Enums\Status;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -56,5 +57,28 @@ abstract class BaseRepositoryImpl implements BaseRepository
     public function create(array $attributes): mixed
     {
         return $this->model::create($attributes);
+    }
+
+    /**
+     * @param Model $model
+     * @param array $attributes
+     * @return Model
+     */
+    public function updateModel(Model $model, array $attributes): Model
+    {
+        $model->update($attributes);
+
+        return $model;
+    }
+
+    /**
+     * @param Model $model
+     * @return Model
+     */
+    public function deleteModel(Model $model): Model
+    {
+        $model->delete();
+
+        return $model;
     }
 }

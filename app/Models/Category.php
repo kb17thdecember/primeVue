@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\CMS\Contracts\Services\StorageService;
 
 class Category extends Model
@@ -33,5 +34,13 @@ class Category extends Model
             get: static fn ($value) => $value ? app(StorageService::class)->getImageUrl($value) : null,
             set: static fn ($value) => $value ? app(StorageService::class)->removeBasePath($value) : null
         );
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(Category::class, 'parent_id');
     }
 }

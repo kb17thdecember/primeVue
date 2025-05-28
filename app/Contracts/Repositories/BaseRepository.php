@@ -27,4 +27,17 @@ interface BaseRepository
      * @return mixed
      */
     public function create(array $attributes): mixed;
+
+    /**
+     * @param Model $model
+     * @param array $attributes
+     * @return Model
+     */
+    public function updateModel(Model $model, array $attributes): Model;
+
+    /**
+     * @param Model $model
+     * @return Model
+     */
+    public function deleteModel(Model $model): Model;
 }

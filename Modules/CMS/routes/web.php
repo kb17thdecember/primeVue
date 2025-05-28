@@ -20,6 +20,8 @@ Route::group(['prefix' => 'cms'], function () {
         Route::get('/create', [CategoryController::class, 'create'])->name('categories.create');
         Route::post('/store', [CategoryController::class, 'store'])->name('categories.store');
         Route::get('{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
+        Route::put('{category}', [CategoryController::class, 'update'])->name('categories.update');
+        Route::delete('{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
     });
 
     Route::group(['prefix' => 'products'], function () {

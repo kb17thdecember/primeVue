@@ -6,12 +6,14 @@ use App\Enums\StoragePrefix;
 use App\Models\Category;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Modules\CMS\Contracts\Repositories\CategoryRepository;
 use Modules\CMS\Contracts\Services\CategoryService;
 use Modules\CMS\Contracts\Services\StorageService;
 use Modules\CMS\Http\Requests\Category\StoreRequest;
+use Modules\CMS\Http\Requests\Category\UpdateRequest;
 
 class CategoryServiceImpl implements CategoryService
 {
@@ -57,13 +59,44 @@ class CategoryServiceImpl implements CategoryService
      */
     public function edit(int $category): Category
     {
-        return $this->categoryRepository->handle(new Request(['id' => $category]))->first();
+        return $this->categoryRepository->handle(new Request(['id' => $category, 'include' => 'parent']))->firstOrFail();
+    }
+
+    /**
+     * @param int $category
+     * @param UpdateRequest $request
+     * @return Model
+     */
+    public function update(int $category, UpdateRequest $request): Model
+    {
+        $category = $this->categoryRepository->handle(new Request(['id' => $category]))->firstOrFail();
+        $data = $request->validated();
+
+        $image = $request->file('image');
+        if ($image) {
+            $path = StoragePrefix::CATEGORY;
+            $name = (string)time();
+            $data['image'] = $this->uploadImage($image, $path, $name);
+        }
+
+        return $this->categoryRepository->updateModel($category, $data);
+    }
+
+    /**
+     * @param int $category
+     * @return bool
+     */
+    public function delete(int $category): bool
+    {
+        $category = $this->categoryRepository->handle(new Request(['id' => $category]))->firstOrFail();
+
+        return $category->delete();
     }
 
     /**
      * @return Collection
      */
-    public function getParentId(): Collection
+    public function getParent(): Collection
     {
         return $this->categoryRepository->handle(new Request(['parent_id' => ['null' => true]]))->get();
     }

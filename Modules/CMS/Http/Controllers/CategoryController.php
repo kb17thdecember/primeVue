@@ -5,11 +5,11 @@ namespace Modules\CMS\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Category\CategoryCollection;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Modules\CMS\Contracts\Services\CategoryService;
 use Modules\CMS\Http\Requests\Category\StoreRequest;
+use Modules\CMS\Http\Requests\Category\UpdateRequest;
 
 class CategoryController extends Controller
 {
@@ -37,7 +37,7 @@ class CategoryController extends Controller
      */
     public function create(): Response
     {
-        $parents = $this->categoryService->getParentId();
+        $parents = $this->categoryService->getParent();
 
         return Inertia::render("$this->rootViewPath/Create", [
             'parents' => $parents
@@ -74,20 +74,38 @@ class CategoryController extends Controller
      */
     public function edit(int $category): Response
     {
-        $category = $this->categoryService->edit($category);
+        $categoryEdit = $this->categoryService->edit($category);
 
         return Inertia::render("$this->rootViewPath/Update", [
-            'category' => $category
+            'category' => $categoryEdit,
         ]);
     }
 
     /**
-     * Update the specified resource in storage.
+     * @param UpdateRequest $request
+     * @param int $category
+     * @return RedirectResponse
      */
-    public function update(Request $request, $id) {}
+    public function update(UpdateRequest $request, int $category): RedirectResponse
+    {
+        $this->categoryService->update($category, $request);
+
+        return to_route('categories.index')
+            ->with('toast', [
+                'severity' => 'success',
+                'summary' => 'Success',
+                'detail' => 'Update Category Success',
+            ]);
+    }
 
     /**
-     * Remove the specified resource from storage.
+     * @param int $category
+     * @return RedirectResponse
      */
-    public function destroy($id) {}
+    public function destroy(int $category): RedirectResponse
+    {
+        $this->categoryService->delete($category);
+
+        return to_route('cms.categories.index');
+    }
 }
