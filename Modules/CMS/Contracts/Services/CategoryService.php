@@ -36,9 +36,9 @@ interface CategoryService
 
     /**
      * @param int $category
-     * @return bool
+     * @return Model
      */
-    public function delete(int $category): bool;
+    public function delete(int $category): Model;
 
     /**
      * @return Collection

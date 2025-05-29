@@ -87,21 +87,16 @@
             <Link :href="`/cms/categories/${data.id}/edit`">
               <Button icon="pi pi-pencil" severity="info" text raised rounded />
             </Link>
-            <Button icon="pi pi-trash" severity="danger" @click="openConfirmation" text raised rounded />
+            <Button icon="pi pi-trash" @click="showConfirmation(data.id)" severity="danger" text raised rounded />
           </div>
         </template>
       </Column>
     </DataTable>
-    <Dialog header="Confirmation" v-model:visible="displayConfirmation" :style="{ width: '350px' }" :modal="true">
-      <div class="flex items-center justify-center">
-        <i class="pi pi-exclamation-triangle mr-4" style="font-size: 2rem" />
-        <span>Are you sure you want to delete?</span>
-      </div>
-      <template #footer>
-        <Button label="No" icon="pi pi-times" @click="closeConfirmation" text severity="secondary" />
-        <Button label="Yes" icon="pi pi-check" @click="closeConfirmation" severity="danger" outlined autofocus />
-      </template>
-    </Dialog>
+    <ConfirmDialog
+      v-model:visible="displayConfirmation"
+      message="Are you sure you want to delete this category?"
+      @confirm="handleDelete"
+    />
   </div>
 </template>
 
@@ -116,8 +111,8 @@ import Button from 'primevue/button';
 import Tag from 'primevue/tag';
 import Select from 'primevue/select';
 import {FilterMatchMode, FilterOperator} from '@primevue/core/api';
-import {Link, usePage} from '@inertiajs/vue3';
-import Dialog from 'primevue/dialog';
+import {Link, useForm, usePage} from '@inertiajs/vue3';
+import ConfirmDialog from '../../component/ConfirmDialog.vue';
 
 
 const {props} = usePage();
@@ -157,13 +152,41 @@ function getImageUrl(image) {
   return null;
 }
 
-function openConfirmation() {
+const selectedCategoryId = ref(null);
+const showConfirmation = (id) => {
+  selectedCategoryId.value = id;
   displayConfirmation.value = true;
-}
+};
 
 function closeConfirmation() {
   displayConfirmation.value = false;
 }
+
+const form = useForm({});
+const handleDelete = () => {
+  if (!selectedCategoryId.value) {
+    console.error('Category ID is missing');
+    return;
+  }
+
+  form.transform((data) => {
+    return {
+      ...data,
+      '_method': 'DELETE'
+    }
+  })
+
+  form.post(`/cms/categories/${selectedCategoryId.value}`, {
+    onSuccess: () => {
+      categories.value = categories.value.filter(category => category.id !== selectedCategoryId.value);
+      closeConfirmation();
+    },
+    onError: (errors) => {
+      console.error('Delete failed:', errors);
+      closeConfirmation();
+    },
+  });
+};
 
 initFilters();
 </script>

@@ -31,7 +31,7 @@ class CategoryServiceImpl implements CategoryService
      */
     public function getAllCategories(): Collection
     {
-        return $this->categoryRepository->handle()->get();
+        return $this->categoryRepository->handle(new Request(['sort' => 'display_order']))->get();
     }
 
     /**
@@ -84,13 +84,13 @@ class CategoryServiceImpl implements CategoryService
 
     /**
      * @param int $category
-     * @return bool
+     * @return Model
      */
-    public function delete(int $category): bool
+    public function delete(int $category): Model
     {
-        $category = $this->categoryRepository->handle(new Request(['id' => $category]))->firstOrFail();
+        $categories = $this->categoryRepository->handle(new Request(['id' => $category]))->firstOrFail();
 
-        return $category->delete();
+        return $this->categoryRepository->deleteModel($categories);
     }
 
     /**

@@ -16,7 +16,10 @@ class CategoryRepositoryImpl extends BaseRepositoryImpl implements CategoryRepos
         'parent'
     ];
 
-    public array $sorts = ['id'];
+    public array $sorts = [
+        'id',
+        'display_order'
+    ];
 
     protected function setAllowedFilters(): void
     {

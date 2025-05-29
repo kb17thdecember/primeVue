@@ -49,10 +49,11 @@
           <div class="card flex flex-col gap-4">
             <Upload
               v-model="form.image"
-              :src="form.image"
+              :src="props.category?.image"
               accept="image/jpeg,image/png"
               :maxFileSize="5 * 1024 * 1024"
               :multiple="false"
+              @upload="handleUpload"
             ></Upload>
           </div>
         </div>
@@ -74,59 +75,68 @@ import Fluid from 'primevue/fluid';
 import Select from 'primevue/select';
 import Checkbox from 'primevue/checkbox';
 import Button from 'primevue/button';
-import {Link, useForm, usePage} from '@inertiajs/vue3';
+import { Link, useForm } from '@inertiajs/vue3';
 import Upload from '../../component/UploadFile.vue';
-import {computed} from "vue";
+import { computed } from 'vue';
 
 const props = defineProps({
   parent: Object,
-  category: Object
+  category: Object,
 });
 
 const form = useForm({
   name: props.category?.name ?? '',
   display_order: props.category?.display_order ?? '',
   description: props.category?.description ?? '',
-  parent_id: props.category.parent?.id ?? null,
+  parent_id: props.category?.parent?.id ?? null,
   status: props.category?.status ?? 0,
   image: props.category?.image ?? null,
 });
 
 const formFields = [
-  {id: 'name', label: 'Category Name'},
-  {id: 'display_order', label: 'Display Order'},
-  {id: 'description', label: 'Description'},
+  { id: 'name', label: 'Category Name' },
+  { id: 'display_order', label: 'Display Order' },
+  { id: 'description', label: 'Description' },
 ];
 
 const dropdownValues = computed(() => {
-  return props.category.parent ? [{ name: props.category.parent.name, code: props.category.parent.id }] : [];
+  return props.category?.parent ? [{ name: props.category.parent.name, code: props.category.parent.id }] : [];
 });
 
 const handleUpload = (files) => {
-  form.image = files.length ? files[0] : null;
+  form.image = files.length ? files[0] : props.category?.image ?? null;
 };
 
 const handleUpdate = () => {
-  form.transform((data) => ({
-    ...data,
-    _method: 'PUT'
-  }))
-  form.post(`/cms/categories/${props.category?.id}`, {
+  if (!props.category?.id) {
+    console.error('Category ID is missing');
+    return;
+  }
+
+  form.transform((data) => {
+    const formData = new FormData();
+    formData.append('_method', 'PUT');
+    formData.append('name', data.name || '');
+    formData.append('display_order', data.display_order || '');
+    formData.append('description', data.description || '');
+    formData.append('parent_id', data.parent_id || '');
+    formData.append('status', data.status.toString());
+    if (data.image instanceof File) {
+      formData.append('image', data.image);
+    } else if (typeof data.image === 'string' && data.image) {
+      formData.append('image_url', data.image);
+    }
+    return formData;
+  }).post(`/cms/categories/${props.category.id}`, {
     preserveState: true,
     preserveScroll: true,
+    forceFormData: true,
     onSuccess: () => {
-      form.reset();
+      form.reset('name', 'display_order', 'description', 'parent_id', 'status');
+    },
+    onError: (errors) => {
+      console.error('Update failed:', errors);
     },
   });
 };
-
-// function getImageUrl(imagePath) {
-//   if (imagePath && typeof imagePath === 'string') {
-//     return `${imagePath}`; // Route phục vụ ảnh từ private
-//   }
-//   if (imagePath && imagePath instanceof File) {
-//     return URL.createObjectURL(imagePath); // Hiển thị ảnh tạm khi upload
-//   }
-//   return null;
-// }
 </script>

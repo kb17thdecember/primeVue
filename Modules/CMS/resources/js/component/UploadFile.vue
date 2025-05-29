@@ -88,7 +88,7 @@
 
 <script setup>
 import FileUpload from 'primevue/fileupload';
-import { ref, watch, computed } from 'vue';
+import {ref, computed, watch} from 'vue';
 
 const props = defineProps({
   modelValue: {
@@ -134,7 +134,7 @@ const previewFile = computed(() => {
     const fileName = props.src.split('/').pop() || 'image.jpg';
     return {
       name: fileName,
-      url: `${props.src}`,
+      url: props.src,
       size: 0,
       sizeFormatted: '0 KB',
     };
@@ -143,23 +143,37 @@ const previewFile = computed(() => {
 });
 
 watch(
-  () => props.src,
-  (newSrc) => {
-    if (newSrc && typeof newSrc === 'string') {
+  () => props.modelValue,
+  (newValue) => {
+    if (newValue && typeof newValue === 'string') {
       files.value = [];
-    } else if (newSrc instanceof File) {
-      files.value = [newSrc];
+    } else if (newValue instanceof File) {
+      files.value = [newValue];
     } else {
       files.value = [];
     }
   },
-  { immediate: true }
+  {immediate: true}
 );
 
 const handleSelectFile = (event) => {
-  files.value = event.files;
-  if (files.value.length > 0) {
-    emits('update:modelValue', files.value[0]);
+  const selectedFiles = event.files;
+  if (selectedFiles.length > 0) {
+    const file = selectedFiles[0];
+    if (file.size > props.maxFileSize) {
+      files.value = [];
+      emits('update:modelValue', null);
+      emits('upload', []);
+      return;
+    }
+    if (!props.accept.split(',').some(type => file.type.includes(type.replace('image/', '')))) {
+      files.value = [];
+      emits('update:modelValue', null);
+      emits('upload', []);
+      return;
+    }
+    files.value = selectedFiles;
+    emits('update:modelValue', file);
     emits('upload', files.value);
   }
 };

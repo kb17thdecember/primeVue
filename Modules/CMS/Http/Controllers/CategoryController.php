@@ -106,6 +106,6 @@ class CategoryController extends Controller
     {
         $this->categoryService->delete($category);
 
-        return to_route('cms.categories.index');
+        return to_route('categories.index');
     }
 }
