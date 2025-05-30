@@ -79,6 +79,17 @@ class BrandServiceImpl implements BrandService
     }
 
     /**
+     * @param int $brand
+     * @return Model
+     */
+    public function delete(int $brand): Model
+    {
+        $brands = $this->brandRepository->handle(new Request(['id' => $brand]))->firstOrFail();
+
+        return $this->brandRepository->deleteModel($brands);
+    }
+
+    /**
      * @param UploadedFile $image
      * @param string $path
      * @param string $name

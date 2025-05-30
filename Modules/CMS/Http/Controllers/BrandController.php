@@ -76,7 +76,13 @@ class BrandController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * @param int $brand
+     * @return RedirectResponse
      */
-    public function destroy($id) {}
+    public function destroy(int $brand): RedirectResponse
+    {
+        $this->brandService->delete($brand);
+
+        return to_route('brands.index');
+    }
 }

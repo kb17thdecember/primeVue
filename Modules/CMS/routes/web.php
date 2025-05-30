@@ -35,7 +35,7 @@ Route::group(['prefix' => 'cms'], function () {
         Route::post('/store', [BrandController::class, 'store'])->name('brands.store');
         Route::get('{brand}/edit', [BrandController::class, 'edit'])->name('brands.edit');
         Route::put('{brand}', [BrandController::class, 'update'])->name('brands.update');
-
+        Route::delete('{brand}', [BrandController::class, 'destroy'])->name('brands.destroy');
     });
 
     Route::group(['prefix' => 'orders'], function () {

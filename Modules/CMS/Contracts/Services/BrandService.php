@@ -34,4 +34,10 @@ interface BrandService
      * @return Model
      */
     public function update(int $brand, UpdateRequest $request): Model;
+
+    /**
+     * @param int $brand
+     * @return Model
+     */
+    public function delete(int $brand): Model;
 }

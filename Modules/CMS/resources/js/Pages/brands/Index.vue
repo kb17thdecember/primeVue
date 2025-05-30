@@ -98,7 +98,7 @@
     </DataTable>
     <ConfirmDialog
       v-model:visible="displayConfirmation"
-      message="Are you sure you want to delete this category?"
+      message="Are you sure you want to delete this brand?"
       @confirm="handleDelete"
     />
   </div>
@@ -156,9 +156,9 @@ function getImageUrl(logo) {
   return null;
 }
 
-const selectedCategoryId = ref(null);
+const selectedBrandId = ref(null);
 const showConfirmation = (id) => {
-  selectedCategoryId.value = id;
+  selectedBrandId.value = id;
   displayConfirmation.value = true;
 };
 
@@ -168,7 +168,7 @@ function closeConfirmation() {
 
 const form = useForm({});
 const handleDelete = () => {
-  if (!selectedCategoryId.value) {
+  if (!selectedBrandId.value) {
     console.error('Brand ID is missing');
     return;
   }
@@ -180,9 +180,9 @@ const handleDelete = () => {
     }
   })
 
-  form.post(`/cms/brands/${selectedCategoryId.value}`, {
+  form.post(`/cms/brands/${selectedBrandId.value}`, {
     onSuccess: () => {
-      brands.value = brands.value.filter(category => category.id !== selectedCategoryId.value);
+      brands.value = brands.value.filter(brand => brand.id !== selectedBrandId.value);
       closeConfirmation();
     },
     onError: (errors) => {
