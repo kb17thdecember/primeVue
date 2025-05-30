@@ -3,30 +3,51 @@
 namespace Modules\CMS\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Brand\BrandCollection;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
+use Modules\CMS\Contracts\Services\BrandService;
+use Modules\CMS\Http\Requests\Brand\StoreRequest;
 
 class BrandController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        return view('cms::index');
+    public function __construct(
+        private readonly BrandService $brandService
+    ){
     }
 
     /**
-     * Show the form for creating a new resource.
+     * @return Response
      */
-    public function create()
+    public function index(): Response
     {
-        return view('cms::create');
+        $brands = $this->brandService->getAllBrands();
+
+        return Inertia::render('brands/Index', [
+            'brands' => BrandCollection::make($brands)
+        ]);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * @return Response
      */
-    public function store(Request $request) {}
+    public function create(): Response
+    {
+        return Inertia::render('brands/Create');
+    }
+
+    /**
+     * @param StoreRequest $request
+     * @return RedirectResponse
+     */
+    public function store(StoreRequest $request): RedirectResponse
+    {
+        $this->brandService->store($request);
+
+        return to_route('brands.index');
+    }
 
     /**
      * Show the specified resource.

@@ -1,17 +1,17 @@
 <template>
   <Breadcrumb :items="[
-    { label: 'Category' },
-    { label: 'List Categories' },
+    { label: 'Brand' },
+    { label: 'List Brands' },
   ]"/>
   <div class="card">
     <div class="flex justify-between">
-      <h2 class="text-xl font-bold mb-4">List Categories</h2>
-      <Link href="/cms/categories/create" class="mb-4">
+      <h2 class="text-xl font-bold mb-4">List Brands</h2>
+      <Link href="/cms/brands/create" class="mb-4">
         <Button label="Primary" outlined>Create</Button>
       </Link>
     </div>
     <DataTable
-      :value="categories"
+      :value="brands"
       :paginator="true"
       :rows="10"
       dataKey="id"
@@ -20,7 +20,7 @@
       filterDisplay="menu"
       :loading="loading"
       :filters="filters"
-      :globalFilterFields="['name', 'description','parent_id', 'display_order', 'status']"
+      :globalFilterFields="['name', 'description', 'display_order', 'status']"
       showGridlines
     >
       <template #header>
@@ -50,9 +50,9 @@
         <template #body="{ data }">
           <div class="flex items-center">
             <img class="rounded-full"
-                 v-if="data.image"
-                 :src="getImageUrl(data.image)"
-                 alt="Category image"
+                 v-if="data.logo"
+                 :src="getImageUrl(data.logo)"
+                 alt="Brand image"
                  style="width: 32px; height: 32px; object-fit: cover;"
             />
             <span class="ml-2">{{ data.name}}</span>
@@ -122,7 +122,7 @@ import Breadcrumb from "../../component/Breadcrumb.vue";
 
 const {props} = usePage();
 const displayConfirmation = ref(false);
-const categories = ref(props.categories?.data ?? []);
+const brands = ref(props.brands?.data ?? []);
 const filters = ref(null);
 const loading = ref(false);
 const statuses = ref([
@@ -134,7 +134,6 @@ function initFilters() {
   filters.value = {
     global: {value: null, matchMode: FilterMatchMode.CONTAINS},
     name: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.STARTS_WITH}]},
-    parent_id: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.EQUALS}]},
     display_order: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.STARTS_WITH}]},
     status: {operator: FilterOperator.OR, constraints: [{value: null, matchMode: FilterMatchMode.EQUALS}]},
     description: {operator: FilterOperator.OR, constraints: [{value: null, matchMode: FilterMatchMode.EQUALS}]},
@@ -149,9 +148,9 @@ function getStatusSeverity(status) {
   return status === 1 ? 'success' : 'danger';
 }
 
-function getImageUrl(image) {
-  if (typeof image === 'string') {
-    return `${image}`;
+function getImageUrl(logo) {
+  if (typeof logo === 'string') {
+    return `${logo}`;
   }
 
   return null;
@@ -181,9 +180,9 @@ const handleDelete = () => {
     }
   })
 
-  form.post(`/cms/categories/${selectedCategoryId.value}`, {
+  form.post(`/cms/brands/${selectedCategoryId.value}`, {
     onSuccess: () => {
-      categories.value = categories.value.filter(category => category.id !== selectedCategoryId.value);
+      brands.value = brands.value.filter(category => category.id !== selectedCategoryId.value);
       closeConfirmation();
     },
     onError: (errors) => {

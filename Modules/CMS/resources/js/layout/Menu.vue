@@ -22,7 +22,7 @@ const model = ref([
     label: 'Services',
     items: [
       {label: 'Category', icon: 'pi pi-fw pi-th-large', to: '/cms/categories/index' ,activeRoutes: ['/cms/categories/index', '/cms/categories/create', '/cms/categories/edit']},
-      {label: 'Brand', icon: 'pi pi-fw pi-tag', to: '/'},
+      {label: 'Brand', icon: 'pi pi-fw pi-tag', to: '/cms/brands/index'},
       {label: 'Product', icon: 'pi pi-fw pi-shopping-bag', to: '/cms/products/index'},
       {label: 'Customer', icon: 'pi pi-fw pi-users', to: '/uikit/input'},
       {

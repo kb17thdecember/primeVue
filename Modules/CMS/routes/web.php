@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Modules\CMS\Http\Controllers\BrandController;
 use Modules\CMS\Http\Controllers\CategoryController;
 use Modules\CMS\Http\Controllers\OrderController;
 use Modules\CMS\Http\Controllers\ProductController;
@@ -26,6 +27,12 @@ Route::group(['prefix' => 'cms'], function () {
 
     Route::group(['prefix' => 'products'], function () {
         Route::get('/index', [ProductController::class, 'index'])->name('products.index');
+    });
+
+    Route::group(['prefix' => 'brands'], function () {
+        Route::get('/index', [BrandController::class, 'index'])->name('brands.index');
+        Route::get('/create', [BrandController::class, 'create'])->name('brands.create');
+        Route::post('/store', [BrandController::class, 'store'])->name('brands.store');
     });
 
     Route::group(['prefix' => 'orders'], function () {
