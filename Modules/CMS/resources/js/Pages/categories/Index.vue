@@ -1,4 +1,8 @@
 <template>
+  <Breadcrumb :items="[
+    { label: 'Category' },
+    { label: 'List Category' },
+  ]"/>
   <div class="card">
     <div class="flex justify-between">
       <h2 class="text-xl font-bold mb-4">List Categories</h2>
@@ -113,6 +117,7 @@ import Select from 'primevue/select';
 import {FilterMatchMode, FilterOperator} from '@primevue/core/api';
 import {Link, useForm, usePage} from '@inertiajs/vue3';
 import ConfirmDialog from '../../component/ConfirmDialog.vue';
+import Breadcrumb from "../../component/Breadcrumb.vue";
 
 
 const {props} = usePage();

@@ -13,7 +13,7 @@ use Modules\CMS\Http\Controllers\ProductController;
 Route::group(['prefix' => 'cms'], function () {
     Route::get('/home', function () {
         return Inertia::render('dashboard/Home');
-    });
+    })->name('dashboard');
 
     Route::group(['prefix' => 'categories'], function () {
         Route::get('/index', [CategoryController::class, 'index'])->name('categories.index');

@@ -11,7 +11,6 @@
 
 <script setup>
 import {ref} from 'vue';
-
 import MenuItem from './MenuItem.vue';
 
 const model = ref([
@@ -22,7 +21,7 @@ const model = ref([
   {
     label: 'Services',
     items: [
-      {label: 'Category', icon: 'pi pi-fw pi-th-large', to: '/cms/categories/index'},
+      {label: 'Category', icon: 'pi pi-fw pi-th-large', to: '/cms/categories/index' ,activeRoutes: ['/cms/categories/index', '/cms/categories/create', '/cms/categories/edit']},
       {label: 'Brand', icon: 'pi pi-fw pi-tag', to: '/'},
       {label: 'Product', icon: 'pi pi-fw pi-shopping-bag', to: '/cms/products/index'},
       {label: 'Customer', icon: 'pi pi-fw pi-users', to: '/uikit/input'},
@@ -30,6 +29,7 @@ const model = ref([
         label: 'Order',
         icon: 'pi pi-fw pi-shopping-cart',
         class: 'rotated-icon',
+        activeRoutes: ['/cms/orders/index'],
         items: [
           {
             label: 'List Order',

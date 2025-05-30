@@ -1,4 +1,8 @@
 <template>
+  <Breadcrumb :items="[
+    { label: 'Category' },
+    { label: 'Create' },
+  ]"/>
   <div class="card">
     <h2 class="text-xl font-bold">Test Table</h2>
     <Form @submit.prevent="handleSubmit">
@@ -77,6 +81,7 @@ import Checkbox from 'primevue/checkbox';
 import Button from 'primevue/button';
 import {Link, useForm} from '@inertiajs/vue3';
 import Upload from '../../component/UploadFile.vue';
+import Breadcrumb from "../../component/Breadcrumb.vue";
 
 const form = useForm({
   name: '',

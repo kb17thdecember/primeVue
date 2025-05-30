@@ -57,10 +57,22 @@ const itemKey = ref(null);
 onBeforeMount(() => {
   itemKey.value = props.parentItemKey ? props.parentItemKey + '-' + props.index : String(props.index);
 
-  const activeItem = layoutState.activeMenuItem;
+  const current = usePage().url;
 
-  isActiveMenu.value = activeItem === itemKey.value || activeItem ? activeItem.startsWith(itemKey.value + '-') : false;
+  const selfActive = props.item.to === current ||
+    (props.item.activeRoutes && props.item.activeRoutes.includes(current));
+
+  const hasActiveChild = props.item.items?.some(child =>
+    child.to === current ||
+    (child.activeRoutes && child.activeRoutes.includes(current))
+  );
+
+  if (selfActive || hasActiveChild) {
+    setActiveMenuItem(itemKey.value);
+    isActiveMenu.value = true;
+  }
 });
+
 
 watch(
   () => layoutState.activeMenuItem,
@@ -90,6 +102,14 @@ function itemClick(event, item) {
 
 function checkActiveRoute(item) {
   const page = usePage();
-  return page.url === item.to;
+  const current = page.url;
+
+  if (item.to && current === item.to) return true;
+  if (item.activeRoutes && Array.isArray(item.activeRoutes)) {
+    return item.activeRoutes.includes(current);
+  }
+
+  return false;
 }
+
 </script>

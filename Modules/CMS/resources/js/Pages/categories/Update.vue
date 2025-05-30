@@ -1,4 +1,8 @@
 <template>
+  <Breadcrumb :items="[
+    { label: 'Category' },
+    { label: 'Update' },
+  ]"/>
   <div class="card">
     <h2 class="text-xl font-bold">Update Category</h2>
     <Form @submit.prevent="handleUpdate">
@@ -78,6 +82,7 @@ import Button from 'primevue/button';
 import { Link, useForm } from '@inertiajs/vue3';
 import Upload from '../../component/UploadFile.vue';
 import { computed } from 'vue';
+import Breadcrumb from "../../component/Breadcrumb.vue";
 
 const props = defineProps({
   parent: Object,
