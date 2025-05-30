@@ -10,6 +10,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Modules\CMS\Contracts\Services\BrandService;
 use Modules\CMS\Http\Requests\Brand\StoreRequest;
+use Modules\CMS\Http\Requests\Brand\UpdateRequest;
 
 class BrandController extends Controller
 {
@@ -50,25 +51,29 @@ class BrandController extends Controller
     }
 
     /**
-     * Show the specified resource.
+     * @param int $brand
+     * @return Response
      */
-    public function show($id)
+    public function edit(int $brand): Response
     {
-        return view('cms::show');
+        $brandEdit = $this->brandService->edit($brand);
+
+        return Inertia::render("brands/Update", [
+            'brand' => $brandEdit,
+        ]);
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * @param UpdateRequest $request
+     * @param int $brand
+     * @return RedirectResponse
      */
-    public function edit($id)
+    public function update(UpdateRequest $request, int $brand): RedirectResponse
     {
-        return view('cms::edit');
-    }
+        $this->brandService->update($brand, $request);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id) {}
+        return to_route('brands.index');
+    }
 
     /**
      * Remove the specified resource from storage.

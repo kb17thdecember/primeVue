@@ -61,14 +61,6 @@ class CategoryController extends Controller
     }
 
     /**
-     * Show the specified resource.
-     */
-    public function show($id)
-    {
-        return view('cms::show');
-    }
-
-    /**
      * @param int $category
      * @return Response
      */

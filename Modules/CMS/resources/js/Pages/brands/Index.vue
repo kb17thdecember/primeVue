@@ -88,7 +88,7 @@
             <Link>
               <Button icon="pi pi-check" text raised rounded />
             </Link>
-            <Link :href="`/cms/categories/${data.id}/edit`">
+            <Link :href="`/cms/brands/${data.id}/edit`">
               <Button icon="pi pi-pencil" severity="info" text raised rounded />
             </Link>
             <Button icon="pi pi-trash" @click="showConfirmation(data.id)" severity="danger" text raised rounded />
@@ -169,7 +169,7 @@ function closeConfirmation() {
 const form = useForm({});
 const handleDelete = () => {
   if (!selectedCategoryId.value) {
-    console.error('Category ID is missing');
+    console.error('Brand ID is missing');
     return;
   }
 

@@ -22,18 +22,6 @@
                 <label :for="field.id">{{ field.label }}</label>
               </FloatLabel>
             </div>
-<!--            <FloatLabel variant="on" class="mt-6">-->
-<!--              <Select-->
-<!--                v-model="form.parent_id"-->
-<!--                id="patient-category"-->
-<!--                :options="dropdownValues"-->
-<!--                optionLabel="name"-->
-<!--                optionValue="code"-->
-<!--                size="large"-->
-<!--                showClear-->
-<!--              />-->
-<!--              <label for="patient-category">Parent Category</label>-->
-<!--            </FloatLabel>-->
 
             <div class="mt-6">
               <Checkbox

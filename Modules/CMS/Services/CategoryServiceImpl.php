@@ -69,7 +69,7 @@ class CategoryServiceImpl implements CategoryService
      */
     public function update(int $category, UpdateRequest $request): Model
     {
-        $category = $this->categoryRepository->handle(new Request(['id' => $category]))->firstOrFail();
+        $categoryData = $this->categoryRepository->handle(new Request(['id' => $category]))->firstOrFail();
         $data = $request->validated();
 
         $image = $request->file('image');
@@ -79,7 +79,7 @@ class CategoryServiceImpl implements CategoryService
             $data['image'] = $this->uploadImage($image, $path, $name);
         }
 
-        return $this->categoryRepository->updateModel($category, $data);
+        return $this->categoryRepository->updateModel($categoryData, $data);
     }
 
     /**
