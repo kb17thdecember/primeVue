@@ -18,10 +18,15 @@ class Product extends Model
         'price',
         'discount',
         'image',
-        'hot_product',
+        'tag',
         'status',
         'quantity',
         'release_date',
         'updated_at',
+        'created_at',
+    ];
+
+    protected $casts = [
+        'image' => 'array',
     ];
 }

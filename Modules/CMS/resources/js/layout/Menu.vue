@@ -22,8 +22,8 @@ const model = ref([
     label: 'Services',
     items: [
       {label: 'Category', icon: 'pi pi-fw pi-th-large', to: '/cms/categories/index' ,activeRoutes: ['/cms/categories/index', '/cms/categories/create', '/cms/categories/edit']},
-      {label: 'Brand', icon: 'pi pi-fw pi-tag', to: '/cms/brands/index'},
-      {label: 'Product', icon: 'pi pi-fw pi-shopping-bag', to: '/cms/products/index'},
+      {label: 'Brand', icon: 'pi pi-fw pi-tag', to: '/cms/brands/index', activeRoutes: ['/cms/brands/index', '/cms/brands/create']},
+      {label: 'Product', icon: 'pi pi-fw pi-shopping-bag', to: '/cms/products/index', activeRoutes: ['/cms/products/index', '/cms/products/create']},
       {label: 'Customer', icon: 'pi pi-fw pi-users', to: '/uikit/input'},
       {
         label: 'Order',

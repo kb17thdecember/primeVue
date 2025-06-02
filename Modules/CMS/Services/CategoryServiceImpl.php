@@ -98,7 +98,13 @@ class CategoryServiceImpl implements CategoryService
      */
     public function getParent(): Collection
     {
-        return $this->categoryRepository->handle(new Request(['parent_id' => ['null' => true]]))->get();
+        $condition = new Request([
+            'status' => ['ne' => 0],
+            'parent_id' => ['null' => true],
+            'include' => 'children',
+        ]);
+
+        return $this->categoryRepository->handle($condition)->get();
     }
 
     /**

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->integer('status')->default(0);
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->string('description')->nullable();
-            $table->integer('display_order');
+            $table->integer('display_order')->nullable();
             $table->string('image')->nullable();
             $table->timestamps();
         });

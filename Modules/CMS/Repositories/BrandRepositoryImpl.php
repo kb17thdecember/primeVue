@@ -24,6 +24,7 @@ class BrandRepositoryImpl extends BaseRepositoryImpl implements BrandRepository
     {
         $this->filters = [
             AllowedFilter::custom('id', new FiltersOperator()),
+            AllowedFilter::custom('status', new FiltersOperator()),
         ];
     }
 }

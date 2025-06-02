@@ -18,12 +18,12 @@ return new class extends Migration
             $table->unsignedBigInteger('brand_id');
             $table->string('description');
             $table->integer('price');
-            $table->integer('discount');
-            $table->json('image');
-            $table->integer('hot_product');
-            $table->integer('status');
+            $table->integer('discount')->nullable();
+            $table->json('image')->nullable();
+            $table->integer('tag')->nullable();
+            $table->integer('status')->default(0);
             $table->integer('quantity');
-            $table->date('release_date');
+            $table->date('release_date')->nullable();
             $table->timestamps();
         });
     }

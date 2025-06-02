@@ -40,4 +40,9 @@ interface BrandService
      * @return Model
      */
     public function delete(int $brand): Model;
+
+    /**
+     * @return Collection
+     */
+    public function getProductBrand(): Collection;
 }

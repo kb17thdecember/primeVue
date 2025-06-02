@@ -4,7 +4,7 @@
     { label: 'Create' },
   ]"/>
   <div class="card">
-    <h2 class="text-xl font-bold">Test Table</h2>
+    <h2 class="text-xl font-bold">Add Brand</h2>
     <Form @submit.prevent="handleSubmit">
       <Fluid class="flex flex-col md:flex-row gap-8">
         <div class="md:w-1/2">
@@ -37,16 +37,14 @@
           </div>
         </div>
 
-        <div class="md:w-1/2 mt-6">
-          <div class="card flex flex-col gap-4">
-            <Upload
-              @upload="handleUpload"
-              :src="form.logo ? form.logo.objectURL : undefined"
-              accept="image/jpeg,image/png"
-              :maxFileSize="5 * 1024 * 1024"
-              :multiple="false"
-            ></Upload>
-          </div>
+        <div class="md:w-1/2 mt-6 card flex flex-col gap-4">
+          <Upload
+            @upload="handleUpload"
+            :src="form.logo ? form.logo.objectURL : undefined"
+            accept="image/jpeg,image/png"
+            :maxFileSize="5 * 1024 * 1024"
+            :multiple="false"
+          ></Upload>
         </div>
       </Fluid>
       <div class="flex justify-center mt-6">
@@ -87,13 +85,6 @@ const formFields = [
 
 const props = defineProps({
   parents: Array
-});
-
-const dropdownValues = computed(() => {
-  return props.parents.map((item) => ({
-    name: item.name,
-    code: item.id
-  }));
 });
 
 const handleUpload = (files) => {

@@ -13,7 +13,8 @@ class CategoryRepositoryImpl extends BaseRepositoryImpl implements CategoryRepos
     public string $model = Category::class;
 
     public array $includes = [
-        'parent'
+        'parent',
+        'children'
     ];
 
     public array $sorts = [
@@ -26,6 +27,7 @@ class CategoryRepositoryImpl extends BaseRepositoryImpl implements CategoryRepos
         $this->filters = [
             AllowedFilter::custom('id', new FiltersOperator()),
             AllowedFilter::custom('parent_id', new FiltersOperator()),
+            AllowedFilter::custom('status', new FiltersOperator()),
         ];
     }
 }

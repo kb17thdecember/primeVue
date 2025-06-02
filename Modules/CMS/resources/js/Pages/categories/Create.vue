@@ -4,7 +4,7 @@
     { label: 'Create' },
   ]"/>
   <div class="card">
-    <h2 class="text-xl font-bold">Test Table</h2>
+    <h2 class="text-xl font-bold">Add Category</h2>
     <Form @submit.prevent="handleSubmit">
       <Fluid class="flex flex-col md:flex-row gap-8">
         <div class="md:w-1/2">

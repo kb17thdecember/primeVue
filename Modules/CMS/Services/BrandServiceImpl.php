@@ -90,6 +90,14 @@ class BrandServiceImpl implements BrandService
     }
 
     /**
+     * @return Collection
+     */
+    public function getProductBrand(): Collection
+    {
+        return $this->brandRepository->handle(new Request(['status' => ['ne' => 0]]))->get();
+    }
+
+    /**
      * @param UploadedFile $image
      * @param string $path
      * @param string $name
