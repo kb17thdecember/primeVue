@@ -23,7 +23,7 @@ class StoreRequest extends FormRequest
             'price' => 'required|numeric',
             'discount' => 'nullable|numeric',
             'quantity' => 'required|numeric',
-            'release_date' => 'nullable|date_format:Y-m-d',
+            'release_date' => 'nullable',
             'tag' => 'nullable',
         ];
     }

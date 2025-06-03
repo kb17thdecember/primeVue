@@ -128,6 +128,18 @@
               <label for="quantity">Quantity</label>
             </FloatLabel>
 
+            <FloatLabel variant="on" class="mt-6 w-6/12">
+              <DatePicker
+                v-model="form.release_date"
+                dateFormat="dd-mm-yy"
+                :minDate="today"
+                id="release-date"
+                showIcon
+                iconDisplay="input"
+              />
+              <label for="release-date">Release Date</label>
+            </FloatLabel>
+
             <div class="mt-6">
               <Checkbox
                 inputId="status"
@@ -175,6 +187,7 @@ import Upload from "../../component/UploadFile.vue";
 import Checkbox from "primevue/checkbox";
 import {computed, ref, watch} from "vue";
 import Button from "primevue/button";
+import DatePicker from 'primevue/datepicker';
 
 const form = useForm({
   name: '',
@@ -188,13 +201,15 @@ const form = useForm({
   price: '',
   discount: '',
   quantity: '',
-  release_date: '',
+  release_date: null,
 });
 
 const formFields = [
   {id: 'name', label: 'Product Name'},
   {id: 'display_order', label: 'Display Order'},
 ];
+
+const today = ref(new Date());
 
 const productTag = ref([
   { name: 'Hot Product', code: 1 },
@@ -255,15 +270,23 @@ const handleUpload = (files) => {
   form.image = files.length ? [...files] : [];
 };
 
+import dayjs from 'dayjs';
+
 const handleSubmit = () => {
-  form.post('/cms/products/store', {
+  const formData = {
+    ...form.data(),
+    release_date: dayjs(form.release_date).format('YYYY-MM-DD'),
+  };
+
+  form.transform(() => formData).post('/cms/products/store', {
     preserveState: true,
     preserveScroll: true,
     forceFormData: true,
     onSuccess: () => {
-      console.log(1)
+      console.log(1);
       form.reset();
     },
   });
 };
+
 </script>
