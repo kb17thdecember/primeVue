@@ -7,6 +7,8 @@ use App\Models\Product;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Modules\CMS\Contracts\Repositories\ProductRepository;
 use Modules\CMS\Contracts\Services\ProductService;
 use Modules\CMS\Contracts\Services\StorageService;
@@ -39,8 +41,10 @@ class ProductServiceImpl implements ProductService
         $images = $request->file('image');
         if ($images) {
             $path = StoragePrefix::PRODUCT;
-            $name = (string)time();
+            $name = (string)time() . '_' . Str::random(8);
             $data['image'] = $this->uploadMultipleImages($images, $path, $name);
+        } else {
+            $data['image'] = [];
         }
 
         return $this->productRepository->create($data);
@@ -57,15 +61,17 @@ class ProductServiceImpl implements ProductService
         $result = [];
         foreach ($images as $index => $image) {
             if (!$image instanceof UploadedFile) {
+                Log::warning("Invalid file at index {$index} in uploadMultipleImages");
                 continue;
             }
-            $name = $prefix . '_' . $index;
+            $name = $prefix . '_' . $index . '_' . Str::random(4);
             $uploadedPath = $this->storageService->uploadFile($image, $path, $name);
             if ($uploadedPath) {
                 $result[] = $uploadedPath;
+            } else {
+                Log::error("Failed to upload file at index {$index}: {$image->getClientOriginalName()}");
             }
         }
         return $result;
     }
-
 }

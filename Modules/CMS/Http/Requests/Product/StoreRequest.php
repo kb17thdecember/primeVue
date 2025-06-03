@@ -17,14 +17,14 @@ class StoreRequest extends FormRequest
             'category_id' => 'nullable',
             'brand_id' => 'nullable',
             'display_order' => 'nullable|numeric',
-            'image' => 'nullable|mimes:jpg,jpeg,png',
+            'image' => 'nullable|array',
+            'image.*' => 'file|mimes:jpg,jpeg,png',
             'description' => 'nullable|string',
             'price' => 'required|numeric',
             'discount' => 'nullable|numeric',
             'quantity' => 'required|numeric',
             'release_date' => 'nullable|date_format:Y-m-d',
             'tag' => 'nullable',
-            'created_at' => 'nullable|date_format:Y-m-d H:i:s',
         ];
     }
 

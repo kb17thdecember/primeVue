@@ -181,7 +181,7 @@ const form = useForm({
   display_order: '',
   description: '',
   status: 0,
-  image: null,
+  image: [],
   category_id: null,
   brand_id: null,
   tag: '',
@@ -252,15 +252,16 @@ watch(selectedChildCategory, (newVal) => {
 });
 
 const handleUpload = (files) => {
-  form.image = files.length ? files[0] : null;
+  form.image = files.length ? [...files] : [];
 };
 
 const handleSubmit = () => {
   form.post('/cms/products/store', {
     preserveState: true,
     preserveScroll: true,
-    // forceFormData: true,
+    forceFormData: true,
     onSuccess: () => {
+      console.log(1)
       form.reset();
     },
   });
