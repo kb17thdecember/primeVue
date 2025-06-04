@@ -29,6 +29,7 @@ Route::group(['prefix' => 'cms'], function () {
         Route::get('/index', [ProductController::class, 'index'])->name('products.index');
         Route::get('/create', [ProductController::class, 'create'])->name('products.create');
         Route::post('store', [ProductController::class, 'store'])->name('products.store');
+        Route::delete('{product}', [ProductController::class, 'destroy'])->name('products.destroy');
     });
 
     Route::group(['prefix' => 'brands'], function () {

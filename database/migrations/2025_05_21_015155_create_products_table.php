@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('brand_id');
             $table->integer('display_order')->nullable();
             $table->string('description');
+            $table->string('discount_code')->nullable();
             $table->integer('price');
             $table->integer('discount')->nullable();
             $table->json('image')->nullable();

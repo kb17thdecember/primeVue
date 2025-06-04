@@ -6,6 +6,8 @@ use App\Enums\StoragePrefix;
 use App\Models\Product;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -26,7 +28,10 @@ class ProductServiceImpl implements ProductService
      */
     public function getAllProducts(): Collection
     {
-        return $this->productRepository->handle()->get();
+        $condition = new Request([
+            'include' => 'category,brand'
+        ]);
+        return $this->productRepository->handle($condition)->get();
     }
 
     /**
@@ -48,6 +53,17 @@ class ProductServiceImpl implements ProductService
         }
 
         return $this->productRepository->create($data);
+    }
+
+    /**
+     * @param int $product
+     * @return Model
+     */
+    public function delete(int $product): Model
+    {
+        $products = $this->productRepository->handle(new Request(['id' => $product]))->firstOrFail();
+
+        return $this->productRepository->deleteModel($products);
     }
 
     /**

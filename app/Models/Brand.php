@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\CMS\Contracts\Services\StorageService;
 
 class Brand extends Model
@@ -29,5 +30,13 @@ class Brand extends Model
             get: static fn ($value) => $value ? app(StorageService::class)->getImageUrl($value) : null,
             set: static fn ($value) => $value ? app(StorageService::class)->removeBasePath($value) : null
         );
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function product(): HasMany
+    {
+        return $this->hasMany(Product::class, 'brand_id', 'id');
     }
 }

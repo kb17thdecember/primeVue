@@ -4,7 +4,7 @@
       <button class="layout-menu-button layout-topbar-action" @click="toggleMenu">
         <i class="pi pi-bars"></i>
       </button>
-      <Link to="/" class="layout-topbar-logo">
+      <Link href="/" class="layout-topbar-logo">
         <svg viewBox="0 0 54 40" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
             fill-rule="evenodd"

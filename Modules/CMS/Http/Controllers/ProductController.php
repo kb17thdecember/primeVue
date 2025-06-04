@@ -80,7 +80,13 @@ class ProductController extends Controller
     public function update(Request $request, $id) {}
 
     /**
-     * Remove the specified resource from storage.
+     * @param $product
+     * @return RedirectResponse
      */
-    public function destroy($id) {}
+    public function destroy($product): RedirectResponse
+    {
+        $this->productService->delete($product);
+
+        return to_route('products.index');
+    }
 }

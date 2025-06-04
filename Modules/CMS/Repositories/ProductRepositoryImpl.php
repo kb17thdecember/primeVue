@@ -12,7 +12,10 @@ class ProductRepositoryImpl extends BaseRepositoryImpl implements ProductReposit
 {
     public string $model = Product::class;
 
-    public array $includes = [];
+    public array $includes = [
+        'brand',
+        'category'
+    ];
 
     public array $sorts = ['id'];
 

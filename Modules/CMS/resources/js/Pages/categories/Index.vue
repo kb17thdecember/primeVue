@@ -85,7 +85,7 @@
       <Column field="" header="" style="max-width: 5rem" class="">
         <template #body="{ data }">
           <div class="flex flex-wrap gap-2 justify-center">
-            <Link>
+            <Link href="#">
               <Button icon="pi pi-check" text raised rounded />
             </Link>
             <Link :href="`/cms/categories/${data.id}/edit`">
