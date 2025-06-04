@@ -2,6 +2,7 @@
 
 namespace Modules\CMS\Services;
 
+use App\Enums\StatusPrefix;
 use App\Enums\StoragePrefix;
 use App\Models\Brand;
 use Carbon\Carbon;
@@ -94,7 +95,7 @@ class BrandServiceImpl implements BrandService
      */
     public function getProductBrand(): Collection
     {
-        return $this->brandRepository->handle(new Request(['status' => ['ne' => 0]]))->get();
+        return $this->brandRepository->handle(new Request(['status' => ['ne' => StatusPrefix::INACTIVE->value]]))->get();
     }
 
     /**
