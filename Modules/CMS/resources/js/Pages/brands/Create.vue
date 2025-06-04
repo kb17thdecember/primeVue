@@ -58,16 +58,17 @@
 </template>
 
 <script setup>
-import {computed} from 'vue';
 import FloatLabel from 'primevue/floatlabel';
 import InputText from 'primevue/inputtext';
 import Fluid from 'primevue/fluid';
-import Select from 'primevue/select';
 import Checkbox from 'primevue/checkbox';
 import Button from 'primevue/button';
 import {Link, useForm} from '@inertiajs/vue3';
 import Upload from '../../component/UploadFile.vue';
 import Breadcrumb from "../../component/Breadcrumb.vue";
+import { useToast } from 'primevue/usetoast';
+
+const toast = useToast();
 
 const form = useForm({
   name: '',
@@ -96,6 +97,12 @@ const handleSubmit = () => {
     preserveState: true,
     preserveScroll: true,
     onSuccess: () => {
+      toast.add({
+        severity: 'success',
+        summary: 'Success',
+        detail: 'Create Brand Success!',
+        life: 3000
+      });
       form.reset();
     },
   });

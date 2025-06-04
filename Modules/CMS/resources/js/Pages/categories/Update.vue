@@ -83,6 +83,9 @@ import { Link, useForm } from '@inertiajs/vue3';
 import Upload from '../../component/UploadFile.vue';
 import { computed } from 'vue';
 import Breadcrumb from "../../component/Breadcrumb.vue";
+import { useToast } from 'primevue/usetoast';
+
+const toast = useToast();
 
 const props = defineProps({
   parent: Object,
@@ -137,7 +140,13 @@ const handleUpdate = () => {
     preserveScroll: true,
     forceFormData: true,
     onSuccess: () => {
-      form.reset('name', 'display_order', 'description', 'parent_id', 'status');
+      toast.add({
+        severity: 'success',
+        summary: 'Success',
+        detail: 'Update Category Success!',
+        life: 3000
+      });
+      form.reset();
     },
     onError: (errors) => {
       console.error('Update failed:', errors);

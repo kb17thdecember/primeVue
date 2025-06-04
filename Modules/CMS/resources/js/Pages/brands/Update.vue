@@ -69,6 +69,9 @@ import Button from 'primevue/button';
 import { Link, useForm } from '@inertiajs/vue3';
 import Upload from '../../component/UploadFile.vue';
 import Breadcrumb from "../../component/Breadcrumb.vue";
+import { useToast } from 'primevue/usetoast';
+
+const toast = useToast();
 
 const props = defineProps({
   brand: Object,
@@ -116,7 +119,13 @@ const handleUpdate = () => {
     preserveScroll: true,
     forceFormData: true,
     onSuccess: () => {
-      form.reset('name', 'display_order', 'description', 'status');
+      toast.add({
+        severity: 'success',
+        summary: 'Success',
+        detail: 'Update Brand Success!',
+        life: 3000
+      });
+      form.reset();
     },
     onError: (errors) => {
       console.error('Update failed:', errors);
