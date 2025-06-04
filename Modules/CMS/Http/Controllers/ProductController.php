@@ -59,19 +59,20 @@ class ProductController extends Controller
     }
 
     /**
-     * Show the specified resource.
+     * @param $product
+     * @return Response
      */
-    public function show($id)
+    public function edit($product): Response
     {
-        return view('cms::show');
-    }
+        $productEdit = $this->productService->edit($product);
+        $categories = $this->categoryService->getParent();
+        $brands = $this->brandService->getProductBrand();
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
-    {
-        return view('cms::edit');
+        return Inertia::render('products/Update', [
+            'product' => $productEdit,
+            'categories' => $categories,
+            'brands' => $brands
+        ]);
     }
 
     /**

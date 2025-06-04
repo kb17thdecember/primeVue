@@ -71,6 +71,7 @@ class CategoryServiceImpl implements CategoryService
     {
         $categoryData = $this->categoryRepository->handle(new Request(['id' => $category]))->firstOrFail();
         $data = $request->validated();
+        $data['updated_at'] = Carbon::now()->format('Y-m-d H:i:s');
 
         $image = $request->file('image');
         if ($image) {

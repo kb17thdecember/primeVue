@@ -1,11 +1,11 @@
 <template>
   <Breadcrumb :items="[
     { label: 'Product' },
-    { label: 'Create' },
+    { label: 'Update' },
   ]"/>
   <div class="card">
-    <h2 class="text-xl font-bold">Add Product</h2>
-    <Form @submit.prevent="handleSubmit">
+    <h2 class="text-xl font-bold">Update Product</h2>
+    <Form @submit.prevent="handleUpdate">
       <Fluid class="flex flex-col md:flex-row gap-8">
         <div class="md:w-1/2">
           <div class="card block flex-col gap-4">
@@ -174,7 +174,7 @@
         <div class="md:w-1/2 mt-6 card flex flex-col gap-4">
           <Upload
             @upload="handleUpload"
-            src=""
+            :src="props.product?.image"
             accept="image/jpeg,image/png"
             :maxFileSize="5 * 1024 * 1024"
             :multiple="true"
@@ -193,55 +193,55 @@
 </template>
 
 <script setup>
-import Breadcrumb from "../../component/Breadcrumb.vue";
-import {Link, useForm} from "@inertiajs/vue3";
-import Fluid from "primevue/fluid";
-import FloatLabel from 'primevue/floatlabel';
-import InputText from 'primevue/inputtext';
 import Select from "primevue/select";
-import Editor from 'primevue/editor';
-import Upload from "../../component/UploadFile.vue";
-import Checkbox from "primevue/checkbox";
-import {computed, ref, watch} from "vue";
+import DatePicker from "primevue/datepicker";
+import Editor from "primevue/editor";
+import InputText from "primevue/inputtext";
 import Button from "primevue/button";
-import DatePicker from 'primevue/datepicker';
+import FloatLabel from "primevue/floatlabel";
+import Breadcrumb from "../../component/Breadcrumb.vue";
+import Checkbox from "primevue/checkbox";
+import Upload from "../../component/UploadFile.vue";
+import Fluid from "primevue/fluid";
+import {Link, useForm} from "@inertiajs/vue3";
+import {computed, ref, watch} from "vue";
 import { useToast } from 'primevue/usetoast';
 
 const toast = useToast();
 
+const props = defineProps({
+  product: Object,
+  categories: Array,
+  brands: Array
+})
+
+console.log(props.product.category)
 const form = useForm({
-  name: '',
-  display_order: '',
-  description: '',
-  status: 0,
-  image: [],
-  category_id: null,
-  brand_id: null,
-  tag: '',
-  price: '',
-  discount: '',
-  discount_code: '',
-  quantity: '',
-  release_date: null,
-});
+  name: props.product?.name ?? '',
+  display_order: props.product?.display_order ?? '',
+  description: props.product?.description ?? '',
+  brand_id: props.product?.brand?.id ?? null,
+  category_id: props.product?.category?.id ?? null,
+  price: props.product?.price ?? '',
+  discount: props.product?.discount ?? 0,
+  discount_code: props.product?.discount_code ?? '',
+  release_date: props.product?.release_date ?? '',
+  tag: props.product?.tag ?? '',
+  quantity: props.product?.quantity ?? '',
+  status: props.product?.status ?? 0,
+  image: props.product?.image ?? [],
+})
 
 const formFields = [
   {id: 'name', label: 'Product Name'},
   {id: 'display_order', label: 'Display Order'},
 ];
 
-const today = ref(new Date());
-
 const productTag = ref([
   { name: 'Hot Product', code: 1 },
   { name: 'Sale Product', code: 2 },
   { name: 'Normal Product', code: 3 },
 ]);
-
-const props = defineProps({
-  categories: Array,
-  brands: Array
-})
 
 const brandsDropdown = computed(() => {
   return props.brands.map((item) => ({
@@ -252,6 +252,16 @@ const brandsDropdown = computed(() => {
 
 const selectedParentCategory = ref(null);
 const selectedChildCategory = ref(null);
+
+if (props.product?.category) {
+  if (props.product.category.parent) {
+    selectedParentCategory.value = props.product.category.parent.id;
+    selectedChildCategory.value = props.product.category.id;
+  } else {
+    selectedParentCategory.value = props.product.category.id;
+    selectedChildCategory.value = null;
+  }
+}
 
 const parentCategoriesDropdown = computed(() =>
   props.categories.map(item => ({
@@ -291,15 +301,51 @@ const handleUpload = (files) => {
   form.image = files.length ? [...files] : [];
 };
 
-import dayjs from 'dayjs';
+const handleUpdate = () => {
+  if (!props.product?.id) {
+    console.error('Product ID is missing');
+    return;
+  }
 
-const handleSubmit = () => {
-  const formData = {
-    ...form.data(),
-    release_date: dayjs(form.release_date).format('YYYY-MM-DD'),
-  };
+  form.transform((data) => {
+    console.log(data.image)
+    const formData = new FormData();
+    formData.append('_method', 'PUT');
+    formData.append('name', data.name || '');
+    formData.append('display_order', data.display_order || '');
+    formData.append('description', data.description || '');
+    formData.append('brand_id', data.brand_id || '');
+    formData.append('category_id', data.category_id || '');
+    formData.append('price', data.price || '');
+    formData.append('discount', data.discount || '');
+    formData.append('discount_code', data.discount_code || '');
+    formData.append('release_date', data.release_date || '');
+    formData.append('tag', data.tag || '');
+    formData.append('quantity', data.quantity || '');
+    formData.append('status', data.status || '');
+    formData.append('discount_code', data.discount_code || '');
+    formData.append('status', data.status.toString());
+    const images = [];
+    if (Array.isArray(data.image)) {
+      data.image.forEach((item) => {
+        if (item instanceof File) {
+          images.push(item);
+        } else if (typeof item === 'string' && item) {
+          images.push(item);
+        }
+      });
+    } else if (data.image instanceof File) {
+      images.push(data.image);
+    } else if (typeof data.image === 'string' && data.image) {
+      images.push(data.image);
+    }
 
-  form.transform(() => formData).post('/cms/products/store', {
+    images.forEach((item, index) => {
+      formData.append('image[]', item);
+    });
+    return formData;
+  })
+    .post(`/cms/products/${props.product.id}`, {
     preserveState: true,
     preserveScroll: true,
     forceFormData: true,
@@ -307,12 +353,14 @@ const handleSubmit = () => {
       toast.add({
         severity: 'success',
         summary: 'Success',
-        detail: 'Create Product Success!',
+        detail: 'Update Product Success!',
         life: 3000
       });
       form.reset();
     },
+    onError: (errors) => {
+      console.error('Update failed:', errors);
+    },
   });
 };
-
 </script>

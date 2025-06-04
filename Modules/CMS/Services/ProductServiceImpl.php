@@ -15,6 +15,7 @@ use Modules\CMS\Contracts\Repositories\ProductRepository;
 use Modules\CMS\Contracts\Services\ProductService;
 use Modules\CMS\Contracts\Services\StorageService;
 use Modules\CMS\Http\Requests\Product\StoreRequest;
+use Modules\CMS\Http\Requests\Product\UpdateRequest;
 
 class ProductServiceImpl implements ProductService
 {
@@ -53,6 +54,42 @@ class ProductServiceImpl implements ProductService
         }
 
         return $this->productRepository->create($data);
+    }
+
+    /**
+     * @param int $product
+     * @return Model
+     */
+    public function edit(int $product): Model
+    {
+        $condition = new Request([
+            'id' => $product,
+            'include' => 'category,brand,category.parent,category.children'
+        ]);
+        return $this->productRepository->handle($condition)->firstOrFail();
+    }
+
+    /**
+     * @param int $product
+     * @param UpdateRequest $request
+     * @return Model
+     */
+    public function update(int $product, UpdateRequest $request): Model
+    {
+        $productData = $this->productRepository->handle(new Request(['id' => $product]))->firstOrFail();
+        $data = $request->validated();
+        $data['updated_at'] = Carbon::now()->format('Y-m-d H:i:s');
+
+        $images = $request->file('image');
+        if ($images) {
+            $path = StoragePrefix::PRODUCT;
+            $name = (string)time() . '_' . Str::random(8);
+            $data['image'] = $this->uploadMultipleImages($images, $path, $name);
+        } else {
+            $data['image'] = [];
+        }
+
+        return $this->productRepository->updateModel($productData, $data);
     }
 
     /**

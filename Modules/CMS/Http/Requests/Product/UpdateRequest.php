@@ -4,7 +4,7 @@ namespace Modules\CMS\Http\Requests\Product;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreRequest extends FormRequest
+class UpdateRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -26,6 +26,7 @@ class StoreRequest extends FormRequest
             'quantity' => 'required|numeric',
             'release_date' => 'nullable',
             'tag' => 'nullable',
+            'updated_at' => 'nullable|date_format:Y-m-d H:i:s',
         ];
     }
 

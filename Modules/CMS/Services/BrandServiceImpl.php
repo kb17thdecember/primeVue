@@ -68,6 +68,7 @@ class BrandServiceImpl implements BrandService
     {
         $brandData = $this->brandRepository->handle(new Request(['id' => $brand]))->firstOrFail();
         $data = $request->validated();
+        $data['updated_at'] = Carbon::now()->format('Y-m-d H:i:s');
 
         $logo = $request->file('logo');
         if ($logo) {

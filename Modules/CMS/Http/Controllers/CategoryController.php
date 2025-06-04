@@ -13,8 +13,6 @@ use Modules\CMS\Http\Requests\Category\UpdateRequest;
 
 class CategoryController extends Controller
 {
-    private $rootViewPath = 'categories';
-
     public function __construct(
         private readonly CategoryService $categoryService
     ){
@@ -27,7 +25,7 @@ class CategoryController extends Controller
     {
         $categories = $this->categoryService->getAllCategories();
 
-        return Inertia::render("$this->rootViewPath/Index", [
+        return Inertia::render('categories/Index', [
             'categories' => CategoryCollection::make($categories)
         ]);
     }
@@ -39,7 +37,7 @@ class CategoryController extends Controller
     {
         $parents = $this->categoryService->getParent();
 
-        return Inertia::render("$this->rootViewPath/Create", [
+        return Inertia::render('categories/Create', [
             'parents' => $parents
         ]);
     }
@@ -63,7 +61,7 @@ class CategoryController extends Controller
     {
         $categoryEdit = $this->categoryService->edit($category);
 
-        return Inertia::render("$this->rootViewPath/Update", [
+        return Inertia::render('categories/Update', [
             'category' => $categoryEdit,
         ]);
     }

@@ -20,7 +20,7 @@
       filterDisplay="menu"
       :loading="loading"
       :filters="filters"
-      :globalFilterFields="['name', 'description','parent_id', 'display_order', 'status']"
+      :globalFilterFields="['name','price', 'discount', 'status', 'release_date']"
       showGridlines
     >
       <template #header>
@@ -34,9 +34,9 @@
           </IconField>
         </div>
       </template>
-      <Column field="display_order" header="Display Order" style="max-width: 3.5rem">
+      <Column field="display_order" header="Display" style="max-width: 3.5rem">
         <template #body="{ data }">
-          <span>{{ data.display_order || 'N/A' }}</span>
+          <span>{{ data.display_order || '-' }}</span>
         </template>
       </Column>
 
@@ -59,10 +59,7 @@
 
       <Column field="description" header="Description" style="max-width: 7rem">
         <template #body="{ data }">
-          <span>{{ data.description || '-' }}</span>
-        </template>
-        <template #filter="{ filterModel }">
-          <InputText v-model="filterModel.value" type="text" placeholder="Search by display order" />
+          <span>{{ data.description ? (data.description.length > 20 ? data.description.slice(0, 20) + '...' : data.description) : '-' }}</span>
         </template>
       </Column>
 
@@ -71,7 +68,7 @@
           <span>{{ data.price || '-' }}</span>
         </template>
         <template #filter="{ filterModel }">
-          <InputText v-model="filterModel.value" type="text" placeholder="Search by display order" />
+          <InputText v-model="filterModel.value" type="text" placeholder="Search by price" />
         </template>
       </Column>
 
@@ -80,7 +77,7 @@
           <span>{{ data.discount || '-' }}</span>
         </template>
         <template #filter="{ filterModel }">
-          <InputText v-model="filterModel.value" type="text" placeholder="Search by display order" />
+          <InputText v-model="filterModel.value" type="text" placeholder="Search by discount" />
         </template>
       </Column>
 
@@ -89,7 +86,7 @@
           <span>{{ data.release_date || '-' }}</span>
         </template>
         <template #filter="{ filterModel }">
-          <InputText v-model="filterModel.value" type="text" placeholder="Search by display order" />
+          <InputText v-model="filterModel.value" type="text" placeholder="Search by release date" />
         </template>
       </Column>
 
@@ -112,7 +109,7 @@
             <Link href="#">
               <Button icon="pi pi-check" text raised rounded />
             </Link>
-            <Link :href="`/cms/product/${data.id}/edit`">
+            <Link :href="`/cms/products/${data.id}/edit`">
               <Button icon="pi pi-pencil" severity="info" text raised rounded />
             </Link>
             <Button icon="pi pi-trash" @click="showConfirmation(data.id)" severity="danger" text raised rounded />
@@ -147,7 +144,6 @@ import Breadcrumb from "../../component/Breadcrumb.vue";
 const {props} = usePage();
 const displayConfirmation = ref(false);
 const products = ref(props.products?.data ?? []);
-console.log(products.value)
 const filters = ref(null);
 const loading = ref(false);
 const statuses = ref([
@@ -157,12 +153,12 @@ const statuses = ref([
 
 function initFilters() {
   filters.value = {
-    global: {value: null, matchMode: FilterMatchMode.CONTAINS},
-    name: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.STARTS_WITH}]},
-    parent_id: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.EQUALS}]},
-    display_order: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.STARTS_WITH}]},
-    status: {operator: FilterOperator.OR, constraints: [{value: null, matchMode: FilterMatchMode.EQUALS}]},
-    description: {operator: FilterOperator.OR, constraints: [{value: null, matchMode: FilterMatchMode.EQUALS}]},
+    global: {value: null},
+    name: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    price: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.EQUALS}]},
+    discount: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.STARTS_WITH}]},
+    status: {value: null, matchMode: FilterMatchMode.EQUALS},
+    release_date: {value: null, matchMode: FilterMatchMode.DATE_IS},
   };
 }
 

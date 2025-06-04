@@ -132,6 +132,16 @@ const previewFiles = computed(() => {
       size: file.size || 0,
       sizeFormatted: formatFileSize(file.size || 0),
     }));
+  } else if (Array.isArray(props.src)) {
+    return props.src.map((url) => {
+      const fileName = url.split('/').pop() || 'image.jpg';
+      return {
+        name: fileName,
+        url: url,
+        size: 0,
+        sizeFormatted: '0 KB',
+      };
+    });
   } else if (props.src && typeof props.src === 'string') {
     const fileName = props.src.split('/').pop() || 'image.jpg';
     return [{
@@ -141,6 +151,7 @@ const previewFiles = computed(() => {
       sizeFormatted: '0 KB',
     }];
   }
+
   return [];
 });
 

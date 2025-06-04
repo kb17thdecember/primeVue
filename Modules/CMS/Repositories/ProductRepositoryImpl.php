@@ -14,7 +14,9 @@ class ProductRepositoryImpl extends BaseRepositoryImpl implements ProductReposit
 
     public array $includes = [
         'brand',
-        'category'
+        'category',
+        'category.parent',
+        'category.children'
     ];
 
     public array $sorts = ['id'];
