@@ -2,6 +2,7 @@
 
 namespace Modules\CMS\Services;
 
+use App\Enums\StatusPrefix;
 use App\Enums\StoragePrefix;
 use App\Models\Category;
 use Carbon\Carbon;
@@ -9,6 +10,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Modules\CMS\Contracts\Repositories\CategoryRepository;
 use Modules\CMS\Contracts\Services\CategoryService;
 use Modules\CMS\Contracts\Services\StorageService;
@@ -74,7 +76,7 @@ class CategoryServiceImpl implements CategoryService
 
         $image = $request->file('image');
         if ($image) {
-            $path = StoragePrefix::CATEGORY;
+            $path = StatusPrefix::CATEGORY;
             $name = (string)time();
             $data['image'] = $this->uploadImage($image, $path, $name);
         }

@@ -52,12 +52,7 @@ class CategoryController extends Controller
     {
         $this->categoryService->store($request);
 
-        return to_route('categories.index')
-            ->with('toast', [
-                'severity' => 'success',
-                'summary' => 'Success',
-                'detail' => 'Create Category Success',
-        ]);
+        return to_route('categories.index');
     }
 
     /**
@@ -82,12 +77,7 @@ class CategoryController extends Controller
     {
         $this->categoryService->update($category, $request);
 
-        return to_route('categories.index')
-            ->with('toast', [
-                'severity' => 'success',
-                'summary' => 'Success',
-                'detail' => 'Update Category Success',
-            ]);
+        return to_route('categories.index');
     }
 
     /**

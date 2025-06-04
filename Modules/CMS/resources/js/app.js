@@ -5,8 +5,9 @@ import Aura from '@primeuix/themes/aura';
 import Layout from "./layout/Layout.vue";
 import '../js/assets/styles.scss';
 import 'primeicons/primeicons.css';
-import {ConfirmationService, ToastService} from "primevue";
+import {ConfirmationService} from "primevue";
 import StyleClass from 'primevue/styleclass';
+import ToastService from 'primevue/toastservice'
 
 createInertiaApp({
     resolve: name => {

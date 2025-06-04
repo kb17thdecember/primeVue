@@ -82,6 +82,9 @@ import Button from 'primevue/button';
 import {Link, useForm} from '@inertiajs/vue3';
 import Upload from '../../component/UploadFile.vue';
 import Breadcrumb from "../../component/Breadcrumb.vue";
+import { useToast } from 'primevue/usetoast';
+
+const toast = useToast();
 
 const form = useForm({
   name: '',
@@ -118,6 +121,12 @@ const handleSubmit = () => {
     preserveState: true,
     preserveScroll: true,
     onSuccess: () => {
+      toast.add({
+        severity: 'success',
+        summary: 'Success',
+        detail: 'Create Category Success!',
+        life: 3000
+      });
       form.reset();
     },
   });

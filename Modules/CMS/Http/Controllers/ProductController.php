@@ -3,6 +3,7 @@
 namespace Modules\CMS\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Product\ProductCollection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -25,9 +26,11 @@ class ProductController extends Controller
      */
     public function index(): Response
     {
-        $this->productService->getAllProducts();
+        $products = $this->productService->getAllProducts();
 
-        return Inertia::render('products/Index');
+        return Inertia::render('products/Index', [
+            'products' => ProductCollection::make($products)
+        ]);
     }
 
     /**

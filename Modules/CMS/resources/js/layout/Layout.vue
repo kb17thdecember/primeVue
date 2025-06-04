@@ -19,6 +19,7 @@ import {computed, ref, watch} from 'vue';
 import Footer from "./Footer.vue";
 import SideBar from "./SideBar.vue";
 import TopBar from "./TopBar.vue";
+import Toast from 'primevue/toast';
 
 const {layoutConfig, layoutState, isSidebarActive} = useLayout();
 

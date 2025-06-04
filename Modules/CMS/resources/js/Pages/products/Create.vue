@@ -188,6 +188,9 @@ import Checkbox from "primevue/checkbox";
 import {computed, ref, watch} from "vue";
 import Button from "primevue/button";
 import DatePicker from 'primevue/datepicker';
+import { useToast } from 'primevue/usetoast';
+
+const toast = useToast();
 
 const form = useForm({
   name: '',
@@ -283,7 +286,12 @@ const handleSubmit = () => {
     preserveScroll: true,
     forceFormData: true,
     onSuccess: () => {
-      console.log(1);
+      toast.add({
+        severity: 'success',
+        summary: 'Success',
+        detail: 'Create Product Success!',
+        life: 3000
+      });
       form.reset();
     },
   });

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\StatusPrefix;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -50,6 +51,6 @@ class Category extends Model
      */
     public function children(): HasMany
     {
-        return $this->hasMany(Category::class, 'parent_id');
+        return $this->hasMany(Category::class, 'parent_id')->where('status', StatusPrefix::ACTIVE->value);
     }
 }
