@@ -28,7 +28,7 @@ Route::group(['prefix' => 'cms'], function () {
     Route::group(['prefix' => 'products'], function () {
         Route::get('/index', [ProductController::class, 'index'])->name('products.index');
         Route::get('/create', [ProductController::class, 'create'])->name('products.create');
-        Route::post('store', [ProductController::class, 'store'])->name('products.store');
+        Route::post('/store', [ProductController::class, 'store'])->name('products.store');
         Route::get('{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
         Route::put('{product}', [ProductController::class, 'update'])->name('products.update');
         Route::delete('{product}', [ProductController::class, 'destroy'])->name('products.destroy');
@@ -45,5 +45,6 @@ Route::group(['prefix' => 'cms'], function () {
 
     Route::group(['prefix' => 'orders'], function () {
         Route::get('/index', [OrderController::class, 'index'])->name('orders.index');
+        Route::get('/analysis', [OrderController::class, 'analysis'])->name('orders.analysis');
     });
 });

@@ -16,30 +16,45 @@ import MenuItem from './MenuItem.vue';
 const model = ref([
   {
     label: 'Home',
-    items: [{label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/cms/home'}]
+    items: [{label: 'Dashboard', icon: 'pi pi-fw pi-home', routeName: 'dashboard'}]
   },
   {
     label: 'Services',
     items: [
-      {label: 'Category', icon: 'pi pi-fw pi-th-large', to: '/cms/categories/index' ,activeRoutes: ['/cms/categories/index', '/cms/categories/create', '/cms/categories/edit']},
-      {label: 'Brand', icon: 'pi pi-fw pi-tag', to: '/cms/brands/index', activeRoutes: ['/cms/brands/index', '/cms/brands/create']},
-      {label: 'Product', icon: 'pi pi-fw pi-shopping-bag', to: '/cms/products/index', activeRoutes: ['/cms/products/index', '/cms/products/create']},
-      {label: 'Customer', icon: 'pi pi-fw pi-users', to: '/uikit/input'},
+      {
+        label: 'Category', 
+        icon: 'pi pi-fw pi-th-large', 
+        routeName: 'categories.index',
+        activeRouteNames: ['categories.index', 'categories.create', 'categories.edit']
+      },
+      {
+        label: 'Brand', 
+        icon: 'pi pi-fw pi-tag', 
+        routeName: 'brands.index',
+        activeRouteNames: ['brands.index', 'brands.create', 'brands.edit']
+      },
+      {
+        label: 'Product', 
+        icon: 'pi pi-fw pi-shopping-bag', 
+        routeName: 'products.index',
+        activeRouteNames: ['products.index', 'products.create', 'products.edit']
+      },
+      {label: 'Customer', icon: 'pi pi-fw pi-users', routeName: 'customers.index'},
       {
         label: 'Order',
         icon: 'pi pi-fw pi-shopping-cart',
         class: 'rotated-icon',
-        activeRoutes: ['/cms/orders/index'],
+        activeRouteNames: ['orders.index', 'orders.analysis'],
         items: [
           {
             label: 'List Order',
             icon: 'pi pi-fw pi-wallet',
-            to: '/cms/orders/index'
+            routeName: 'orders.index'
           },
           {
             label: 'Analysis',
             icon: 'pi pi-fw pi-chart-bar',
-            to: '/pages/crud'
+            routeName: 'orders.analysis'
           },
         ]
       },
@@ -48,35 +63,34 @@ const model = ref([
   {
     label: 'Notice',
     items: [
-      {label: 'Notification', icon: 'pi pi-fw pi-bell', to: '/uikit/formlayout'},
-      {label: 'Message', icon: 'pi pi-fw pi-comment', to: '/uikit/input'},
-      {label: 'Rate', icon: 'pi pi-fw pi-star', to: '/uikit/button', class: 'rotated-icon'},
-      {label: 'Feedback', icon: 'pi pi-fw pi-thumbs-up', to: '/uikit/button', class: 'rotated-icon'},
-      {label: 'Complaints', icon: 'pi pi-fw pi-envelope', to: '/uikit/button', class: 'rotated-icon'},
-      {label: 'News', icon: 'pi pi-fw pi-globe', to: '/uikit/button', class: 'rotated-icon'},
+      {label: 'Notification', icon: 'pi pi-fw pi-bell', routeName: 'notifications.index'},
+      {label: 'Message', icon: 'pi pi-fw pi-comment', routeName: 'messages.index'},
+      {label: 'Rate', icon: 'pi pi-fw pi-star', routeName: 'rates.index', class: 'rotated-icon'},
+      {label: 'Feedback', icon: 'pi pi-fw pi-thumbs-up', routeName: 'feedbacks.index', class: 'rotated-icon'},
+      {label: 'Complaints', icon: 'pi pi-fw pi-envelope', routeName: 'complaints.index', class: 'rotated-icon'},
+      {label: 'News', icon: 'pi pi-fw pi-globe', routeName: 'news.index', class: 'rotated-icon'},
     ]
   },
   {
     label: 'Shop',
     items: [
-      {label: 'List Shop', icon: 'pi pi-fw pi-shop', to: '/uikit/formlayout'},
-      {label: 'Add Shop', icon: 'pi pi-fw pi-plus', to: '/uikit/input'},
+      {label: 'List Shop', icon: 'pi pi-fw pi-shop', routeName: 'shops.index'},
+      {label: 'Add Shop', icon: 'pi pi-fw pi-plus', routeName: 'shops.create'},
     ]
   },
   {
     label: 'Manage',
     icon: 'pi pi-fw pi-briefcase',
-    to: '/pages',
     items: [
       {
         label: 'Account',
         icon: 'pi pi-fw pi-user',
-        to: '/pages/crud'
+        routeName: 'accounts.index'
       },
       {
         label: 'Crud',
         icon: 'pi pi-fw pi-pencil',
-        to: '/pages/crud'
+        routeName: 'crud.index'
       }
     ]
   }

@@ -1,18 +1,21 @@
 <template>
   <li :class="{ 'layout-root-menuitem': root, 'active-menuitem': isActiveMenu }">
     <div v-if="root && item.visible !== false" class="layout-menuitem-root-text">{{ item.label }}</div>
-    <a v-if="(!item.to || item.items) && item.visible !== false" :href="item.url"
+    <a v-if="(!item.routeName || item.items) && item.visible !== false" :href="item.url"
        @click="itemClick($event, item, index)" :class="item.class" :target="item.target" tabindex="0">
       <i :class="item.icon" class="layout-menuitem-icon"></i>
       <span class="layout-menuitem-text">{{ item.label }}</span>
       <i class="pi pi-fw pi-angle-down layout-submenu-toggler" v-if="item.items"></i>
     </a>
-    <Link v-if="item.to && !item.items && item.visible !== false" @click="itemClick($event, item, index)"
-          :class="[item.class, { 'active-route': checkActiveRoute(item) }]" tabindex="0" :href="item.to">
+    <a v-if="item.routeName && !item.items && item.visible !== false" 
+       @click.prevent="itemClick($event, item, index); generateUrl(item.routeName)"
+       :class="[item.class, { 'active-route': checkActiveRoute(item) }]" 
+       href="#"
+       tabindex="0">
       <i :class="item.icon" class="layout-menuitem-icon"></i>
       <span class="layout-menuitem-text">{{ item.label }}</span>
       <i class="pi pi-fw pi-angle-down layout-submenu-toggler" v-if="item.items"></i>
-    </Link>
+    </a>
     <Transition v-if="item.items && item.visible !== false" name="layout-submenu">
       <ul v-show="root ? true : isActiveMenu" class="layout-submenu">
         <menu-item v-for="(child, i) in item.items" :key="child" :index="i" :item="child" :parentItemKey="itemKey"
@@ -27,8 +30,8 @@
 <script setup>
 import {useLayout} from './composables/layout.js';
 import {onBeforeMount, ref, watch} from 'vue';
-import {Link} from '@inertiajs/vue3'
-import {usePage} from '@inertiajs/vue3';
+import {Link, usePage} from '@inertiajs/vue3';
+import { router } from '@inertiajs/vue3'
 
 const {layoutState, setActiveMenuItem, toggleMenu} = useLayout();
 
@@ -51,28 +54,40 @@ const props = defineProps({
   }
 });
 
+// Helper function to generate route URL
+function generateUrl(routeName) {
+  const routeMap = {
+    'dashboard': '/cms/home',
+    'categories.index': '/cms/categories/index',
+    'categories.create': '/cms/categories/create',
+    'brands.index': '/cms/brands/index',
+    'brands.create': '/cms/brands/create',
+    'products.index': '/cms/products/index',
+    'products.create': '/cms/products/create',
+    'orders.index': '/cms/orders/index',
+    'orders.analysis': '/cms/orders/analysis'
+  };
+
+  const url = routeMap[routeName];
+  if (url) {
+    router.get(url);
+  }
+}
+
 const isActiveMenu = ref(false);
 const itemKey = ref(null);
 
 onBeforeMount(() => {
   itemKey.value = props.parentItemKey ? props.parentItemKey + '-' + props.index : String(props.index);
 
-  const current = usePage().url;
-
-  const selfActive = props.item.to === current ||
-    (props.item.activeRoutes && props.item.activeRoutes.includes(current));
-
-  const hasActiveChild = props.item.items?.some(child =>
-    child.to === current ||
-    (child.activeRoutes && child.activeRoutes.includes(current))
-  );
+  const selfActive = checkActiveRoute(props.item);
+  const hasActiveChild = props.item.items?.some(child => checkActiveRoute(child));
 
   if (selfActive || hasActiveChild) {
     setActiveMenuItem(itemKey.value);
     isActiveMenu.value = true;
   }
 });
-
 
 watch(
   () => layoutState.activeMenuItem,
@@ -87,7 +102,7 @@ function itemClick(event, item) {
     return;
   }
 
-  if ((item.to || item.url) && (layoutState.staticMenuMobileActive || layoutState.overlayMenuActive)) {
+  if ((item.routeName || item.url) && (layoutState.staticMenuMobileActive || layoutState.overlayMenuActive)) {
     toggleMenu();
   }
 
@@ -102,14 +117,50 @@ function itemClick(event, item) {
 
 function checkActiveRoute(item) {
   const page = usePage();
-  const current = page.url;
+  const currentUrl = page.url;
+  
+  // Map base URLs to route names
+  const baseUrlMap = {
+    '/cms/home': 'dashboard',
+    '/cms/categories': 'categories',
+    '/cms/brands': 'brands',
+    '/cms/products': 'products',
+    '/cms/orders': 'orders'
+  };
 
-  if (item.to && current === item.to) return true;
-  if (item.activeRoutes && Array.isArray(item.activeRoutes)) {
-    return item.activeRoutes.includes(current);
+  // Get the base URL (e.g., /cms/categories from /cms/categories/1/edit)
+  const urlParts = currentUrl.split('/');
+  const baseUrl = ['', 'cms', urlParts[2]].join('/');
+  const baseRoute = baseUrlMap[baseUrl];
+  
+  // Get the action (index, create, edit, etc)
+  const lastPart = urlParts[urlParts.length - 1];
+  const isEdit = lastPart === 'edit';
+  const isCreate = lastPart === 'create';
+  const isIndex = lastPart === 'index';
+  
+  // Construct current route name
+  let currentRouteName;
+  if (baseUrl === '/cms/home') {
+    currentRouteName = 'dashboard';
+  } else if (isEdit) {
+    currentRouteName = `${baseRoute}.edit`;
+  } else if (isCreate) {
+    currentRouteName = `${baseRoute}.create`;
+  } else if (isIndex) {
+    currentRouteName = `${baseRoute}.index`;
+  }
+
+  // Direct match
+  if (item.routeName === currentRouteName) {
+    return true;
+  }
+
+  // Check activeRouteNames
+  if (item.activeRouteNames && Array.isArray(item.activeRouteNames)) {
+    return item.activeRouteNames.includes(currentRouteName);
   }
 
   return false;
 }
-
 </script>
