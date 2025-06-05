@@ -5,13 +5,13 @@ namespace Modules\CMS\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Product\ProductCollection;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Modules\CMS\Contracts\Services\BrandService;
 use Modules\CMS\Contracts\Services\CategoryService;
 use Modules\CMS\Contracts\Services\ProductService;
 use Modules\CMS\Http\Requests\Product\StoreRequest;
+use Modules\CMS\Http\Requests\Product\UpdateRequest;
 
 class ProductController extends Controller
 {
@@ -76,9 +76,16 @@ class ProductController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * @param UpdateRequest $request
+     * @param int $product
+     * @return RedirectResponse
      */
-    public function update(Request $request, $id) {}
+    public function update(UpdateRequest $request, int $product): RedirectResponse
+    {
+        $this->productService->update($product, $request);
+
+        return to_route('products.index');
+    }
 
     /**
      * @param $product

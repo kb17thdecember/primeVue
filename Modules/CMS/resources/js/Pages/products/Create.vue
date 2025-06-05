@@ -298,6 +298,7 @@ const handleSubmit = () => {
     ...form.data(),
     release_date: dayjs(form.release_date).format('YYYY-MM-DD'),
   };
+  console.log(formData)
 
   form.transform(() => formData).post('/cms/products/store', {
     preserveState: true,

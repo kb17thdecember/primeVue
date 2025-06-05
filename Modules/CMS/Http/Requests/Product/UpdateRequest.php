@@ -18,7 +18,9 @@ class UpdateRequest extends FormRequest
             'brand_id' => 'nullable',
             'display_order' => 'nullable|numeric',
             'image' => 'nullable|array',
-            'image.*' => 'file|mimes:jpg,jpeg,png',
+            'image.*' => [
+                ...($this->hasFile('image') ? ['file', 'mimes:jpeg,png', 'max:5120'] : ['string', 'url']),
+            ],
             'description' => 'nullable|string',
             'price' => 'required|numeric',
             'discount' => 'nullable|numeric',
@@ -41,8 +43,8 @@ class UpdateRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'Category name is required.',
-            'status.required' => 'Category status is required.',
+            'name.required' => 'Product name is required.',
+            'status.required' => 'Product status is required.',
         ];
     }
 }

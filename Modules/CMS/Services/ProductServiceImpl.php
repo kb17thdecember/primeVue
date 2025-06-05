@@ -86,7 +86,7 @@ class ProductServiceImpl implements ProductService
             $name = (string)time() . '_' . Str::random(8);
             $data['image'] = $this->uploadMultipleImages($images, $path, $name);
         } else {
-            $data['image'] = [];
+            $data['image'] = $productData->image ?? [];
         }
 
         return $this->productRepository->updateModel($productData, $data);

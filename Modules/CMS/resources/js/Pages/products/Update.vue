@@ -120,8 +120,8 @@
               <InputText
                 v-model="form.quantity"
                 class="text-sm"
-                name="discount"
-                id="discount"
+                name="quantity"
+                id="quantity"
                 type="text"
                 size="large"
               />
@@ -215,7 +215,6 @@ const props = defineProps({
   brands: Array
 })
 
-console.log(props.product.category)
 const form = useForm({
   name: props.product?.name ?? '',
   display_order: props.product?.display_order ?? '',
@@ -308,7 +307,6 @@ const handleUpdate = () => {
   }
 
   form.transform((data) => {
-    console.log(data.image)
     const formData = new FormData();
     formData.append('_method', 'PUT');
     formData.append('name', data.name || '');
@@ -322,27 +320,16 @@ const handleUpdate = () => {
     formData.append('release_date', data.release_date || '');
     formData.append('tag', data.tag || '');
     formData.append('quantity', data.quantity || '');
-    formData.append('status', data.status || '');
-    formData.append('discount_code', data.discount_code || '');
     formData.append('status', data.status.toString());
-    const images = [];
-    if (Array.isArray(data.image)) {
-      data.image.forEach((item) => {
-        if (item instanceof File) {
-          images.push(item);
-        } else if (typeof item === 'string' && item) {
-          images.push(item);
-        }
+    if (Array.isArray(data.image) && data.image.length) {
+      data.image.forEach((item, index) => {
+        formData.append('image[]', item instanceof File ? item : item);
       });
-    } else if (data.image instanceof File) {
-      images.push(data.image);
-    } else if (typeof data.image === 'string' && data.image) {
-      images.push(data.image);
+    } else if (props.product?.image) {
+      props.product.image.forEach((item, index) => {
+        formData.append('image[]', item);
+      });
     }
-
-    images.forEach((item, index) => {
-      formData.append('image[]', item);
-    });
     return formData;
   })
     .post(`/cms/products/${props.product.id}`, {
