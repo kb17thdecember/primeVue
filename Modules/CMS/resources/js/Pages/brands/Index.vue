@@ -118,7 +118,9 @@ import {FilterMatchMode, FilterOperator} from '@primevue/core/api';
 import {Link, useForm, usePage} from '@inertiajs/vue3';
 import ConfirmDialog from '../../component/ConfirmDialog.vue';
 import Breadcrumb from "../../component/Breadcrumb.vue";
+import { useToast } from 'primevue/usetoast';
 
+const toast = useToast();
 
 const {props} = usePage();
 const displayConfirmation = ref(false);
@@ -184,6 +186,12 @@ const handleDelete = () => {
     onSuccess: () => {
       brands.value = brands.value.filter(brand => brand.id !== selectedBrandId.value);
       closeConfirmation();
+      toast.add({
+        severity: 'success',
+        summary: 'Success',
+        detail: 'Delete Brand Success!',
+        life: 3000
+      });
     },
     onError: (errors) => {
       console.error('Delete failed:', errors);
