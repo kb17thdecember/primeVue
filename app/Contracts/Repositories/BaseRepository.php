@@ -40,4 +40,10 @@ interface BaseRepository
      * @return Model
      */
     public function deleteModel(Model $model): Model;
+
+    /**
+     * @param Request|null $request
+     * @return Collection
+     */
+    public function limit(?Request $request = null): Collection;
 }

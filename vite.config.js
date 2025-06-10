@@ -9,7 +9,8 @@ export default defineConfig({
             input: [
                 'resources/css/app.css',
                 'resources/js/app.js',
-                'Modules/CMS/resources/js/app.js'
+                'Modules/CMS/resources/js/app.js',
+                'Modules/Ecommerce/resources/js/app.js',
             ],
             refresh: true,
         }),

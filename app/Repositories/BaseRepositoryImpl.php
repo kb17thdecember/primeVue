@@ -81,4 +81,13 @@ abstract class BaseRepositoryImpl implements BaseRepository
 
         return $model;
     }
+
+    /**
+     * @param Request|null $request
+     * @return Collection
+     */
+    public function limit(?Request $request = null): Collection
+    {
+        return $this->handle($request)->limit($request?->get('limit', 10) ?? 10)->get();
+    }
 }
