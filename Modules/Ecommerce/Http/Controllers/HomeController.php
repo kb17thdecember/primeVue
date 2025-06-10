@@ -24,7 +24,9 @@ class HomeController extends Controller
     {
         $products = $this->productService->getLimitProducts();
 
-        return Inertia::render('home/Index');
+        return Inertia::render('home/Index', [
+            'products' => $products,
+        ]);
     }
 
     /**
