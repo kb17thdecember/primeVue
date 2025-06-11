@@ -74,8 +74,9 @@ const model = ref([
   {
     label: 'Shop',
     items: [
-      {label: 'List Shop', icon: 'pi pi-fw pi-shop', routeName: 'shops.index'},
-      {label: 'Add Shop', icon: 'pi pi-fw pi-plus', routeName: 'shops.create'},
+      {label: 'List Shop', icon: 'pi pi-fw pi-shop', routeName: 'shops.index', activeRouteNames: ['shops.index']},
+      {label: 'Add Shop', icon: 'pi pi-fw pi-plus', routeName: 'shops.create', activeRouteNames: ['shops.create']},
+      {label: 'API Key', icon: 'pi pi-fw pi-key', routeName: '', activeRouteNames: ['']},
     ]
   },
   {

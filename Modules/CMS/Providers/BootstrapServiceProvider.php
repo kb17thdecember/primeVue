@@ -8,11 +8,13 @@ use Modules\CMS\Contracts\Services\BrandService;
 use Modules\CMS\Contracts\Services\CategoryService;
 use Modules\CMS\Contracts\Services\ProductService;
 use Modules\CMS\Contracts\Services\StorageService;
+use Modules\CMS\Contracts\Services\ShopService;
 use Modules\CMS\Services\AuthServiceImpl;
 use Modules\CMS\Services\BrandServiceImpl;
 use Modules\CMS\Services\CategoryServiceImpl;
 use Modules\CMS\Services\ProductServiceImpl;
 use Modules\CMS\Services\StorageServiceImpl;
+use Modules\CMS\Services\ShopServiceImpl;
 
 class BootstrapServiceProvider extends ServiceProvider
 {
@@ -25,6 +27,7 @@ class BootstrapServiceProvider extends ServiceProvider
         CategoryService::class => CategoryServiceImpl::class,
         StorageService::class => StorageServiceImpl::class,
         AuthService::class => AuthServiceImpl::class,
+        ShopService::class => ShopServiceImpl::class,
     ];
 
     /**

@@ -21,17 +21,6 @@ Route::group(['prefix' => 'cms', 'middleware' => ['admin.auth']], function () {
         return Inertia::render('dashboard/Home');
     })->name('dashboard');
 
-    // Shop Management - Chỉ System Admin mới có thể truy cập
-    Route::group(['prefix' => 'shops', 'middleware' => ['role:SYSTEM_ADMIN']], function () {
-        Route::get('/index', [ShopController::class, 'index'])->name('shops.index');
-        Route::get('/create', [ShopController::class, 'create'])->name('shops.create');
-        Route::post('/store', [ShopController::class, 'store'])->name('shops.store');
-        Route::get('{shop}/edit', [ShopController::class, 'edit'])->name('shops.edit');
-        Route::put('{shop}', [ShopController::class, 'update'])->name('shops.update');
-        Route::delete('{shop}', [ShopController::class, 'destroy'])->name('shops.destroy');
-    });
-
-    // Categories - Admin và System Admin có thể truy cập
     Route::group(['prefix' => 'categories'], function () {
         Route::get('/index', [CategoryController::class, 'index'])->name('categories.index');
         Route::get('/create', [CategoryController::class, 'create'])->name('categories.create');
@@ -41,7 +30,6 @@ Route::group(['prefix' => 'cms', 'middleware' => ['admin.auth']], function () {
         Route::delete('{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
     });
 
-    // Products - Admin và System Admin có thể truy cập
     Route::group(['prefix' => 'products'], function () {
         Route::get('/index', [ProductController::class, 'index'])->name('products.index');
         Route::get('/create', [ProductController::class, 'create'])->name('products.create');
@@ -51,7 +39,6 @@ Route::group(['prefix' => 'cms', 'middleware' => ['admin.auth']], function () {
         Route::delete('{product}', [ProductController::class, 'destroy'])->name('products.destroy');
     });
 
-    // Brands - Admin và System Admin có thể truy cập
     Route::group(['prefix' => 'brands'], function () {
         Route::get('/index', [BrandController::class, 'index'])->name('brands.index');
         Route::get('/create', [BrandController::class, 'create'])->name('brands.create');
@@ -61,9 +48,14 @@ Route::group(['prefix' => 'cms', 'middleware' => ['admin.auth']], function () {
         Route::delete('{brand}', [BrandController::class, 'destroy'])->name('brands.destroy');
     });
 
-    // Orders - Admin và System Admin có thể truy cập
     Route::group(['prefix' => 'orders'], function () {
         Route::get('/index', [OrderController::class, 'index'])->name('orders.index');
         Route::get('/analysis', [OrderController::class, 'analysis'])->name('orders.analysis');
+    });
+
+    Route::group(['prefix' => 'shops'], function () {
+        Route::get('/index', [ShopController::class, 'index'])->name('shops.index');
+        Route::get('/create', [ShopController::class, 'create'])->name('shops.create');
+        Route::post('/store', [ShopController::class, 'store'])->name('shops.store');
     });
 });

@@ -16,8 +16,11 @@ class AdminAuthenticate extends Middleware
             
             // Share admin info with all views
             Inertia::share('auth.user', fn () => [
+                'id' => Auth::guard('admin')->user()->id,
                 'name' => Auth::guard('admin')->user()->name,
                 'email' => Auth::guard('admin')->user()->email,
+                'role' => Auth::guard('admin')->user()->role,
+                'status' => Auth::guard('admin')->user()->status,
             ]);
             
             return $next($request);

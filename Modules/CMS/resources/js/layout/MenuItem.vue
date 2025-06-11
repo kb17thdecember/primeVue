@@ -65,7 +65,9 @@ function generateUrl(routeName) {
     'products.index': '/cms/products/index',
     'products.create': '/cms/products/create',
     'orders.index': '/cms/orders/index',
-    'orders.analysis': '/cms/orders/analysis'
+    'orders.analysis': '/cms/orders/analysis',
+    'shops.index': '/cms/shops/index',
+    'shops.create': '/cms/shops/create',
   };
 
   const url = routeMap[routeName];
@@ -125,7 +127,8 @@ function checkActiveRoute(item) {
     '/cms/categories': 'categories',
     '/cms/brands': 'brands',
     '/cms/products': 'products',
-    '/cms/orders': 'orders'
+    '/cms/orders': 'orders',
+    '/cms/shops': 'shops'
   };
 
   // Get the base URL (e.g., /cms/categories from /cms/categories/1/edit)
