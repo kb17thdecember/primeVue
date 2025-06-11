@@ -3,10 +3,12 @@
 namespace Modules\CMS\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\CMS\Contracts\Services\AuthService;
 use Modules\CMS\Contracts\Services\BrandService;
 use Modules\CMS\Contracts\Services\CategoryService;
 use Modules\CMS\Contracts\Services\ProductService;
 use Modules\CMS\Contracts\Services\StorageService;
+use Modules\CMS\Services\AuthServiceImpl;
 use Modules\CMS\Services\BrandServiceImpl;
 use Modules\CMS\Services\CategoryServiceImpl;
 use Modules\CMS\Services\ProductServiceImpl;
@@ -22,6 +24,7 @@ class BootstrapServiceProvider extends ServiceProvider
         BrandService::class => BrandServiceImpl::class,
         CategoryService::class => CategoryServiceImpl::class,
         StorageService::class => StorageServiceImpl::class,
+        AuthService::class => AuthServiceImpl::class,
     ];
 
     /**

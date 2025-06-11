@@ -64,10 +64,15 @@
             <i class="pi pi-inbox"></i>
             <span>Messages</span>
           </button>
-          <button type="button" class="layout-topbar-action">
+          <button
+            v-styleclass="{ selector: '@next', enterFromClass: 'hidden', enterActiveClass: 'animate-scalein', leaveToClass: 'hidden', leaveActiveClass: 'animate-fadeout', hideOnOutsideClick: true }"
+            type="button"
+            class="layout-topbar-action"
+          >
             <i class="pi pi-user"></i>
             <span>Profile</span>
           </button>
+          <ProfileOption/>
         </div>
       </div>
     </div>
@@ -78,6 +83,7 @@
 import {useLayout} from './composables/layout.js';
 import Configurator from './Configurator.vue';
 import {Link} from "@inertiajs/vue3";
+import ProfileOption from "../component/ProfileOption.vue";
 
 const {toggleMenu, toggleDarkMode, isDarkTheme} = useLayout();
 </script>

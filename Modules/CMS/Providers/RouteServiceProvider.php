@@ -4,10 +4,16 @@ namespace Modules\CMS\Providers;
 
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
+use Modules\CMS\Http\Middleware\AdminAuthenticate;
 
 class RouteServiceProvider extends ServiceProvider
 {
     protected string $name = 'CMS';
+
+    /**
+     * The module namespace to assume when generating URLs to actions.
+     */
+    protected string $moduleNamespace = 'Modules\CMS\Http\Controllers';
 
     /**
      * Called before routes are registered.
@@ -17,6 +23,8 @@ class RouteServiceProvider extends ServiceProvider
     public function boot(): void
     {
         parent::boot();
+        
+        $this->app['router']->aliasMiddleware('admin.auth', AdminAuthenticate::class);
     }
 
     /**
@@ -35,7 +43,9 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapWebRoutes(): void
     {
-        Route::middleware('web')->group(module_path($this->name, '/routes/web.php'));
+        Route::middleware('web')
+            ->namespace($this->moduleNamespace)
+            ->group(module_path($this->name, '/routes/web.php'));
     }
 
     /**
@@ -45,6 +55,9 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapApiRoutes(): void
     {
-        Route::middleware('api')->prefix('api')->name('api.')->group(module_path($this->name, '/routes/api.php'));
+        Route::prefix('api')
+            ->middleware('api')
+            ->namespace($this->moduleNamespace)
+            ->group(module_path($this->name, '/routes/api.php'));
     }
 }
