@@ -13,7 +13,6 @@ class Shop extends Model
     protected $fillable = [
         'name',
         'admin_id',
-        'subdomain',
         'province',
         'prefecture',
         'town',
@@ -21,8 +20,6 @@ class Shop extends Model
         'phone_number',
         'status',
         'api_key',
-        'channel_access_token',
-        'channel_secret',
         'updated_at',
         'created_at',
     ];

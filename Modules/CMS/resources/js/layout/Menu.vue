@@ -1,6 +1,6 @@
 <template>
   <ul class="layout-menu">
-    <template v-for="(item, i) in model" :key="item">
+    <template v-for="(item, i) in filteredMenu" :key="item">
       <menu-item v-if="!item.separator" :item="item" :index="i"></menu-item>
       <li v-if="item.separator" class="menu-separator"></li>
     </template>
@@ -10,13 +10,17 @@
 <style lang="scss" scoped></style>
 
 <script setup>
-import {ref} from 'vue';
+import {ref, computed} from 'vue';
 import MenuItem from './MenuItem.vue';
+import { useAuth } from './composables/useAuth';
 
-const model = ref([
+const { isAdmin } = useAuth();
+
+const menuItems = ref([
   {
     label: 'Home',
-    items: [{label: 'Dashboard', icon: 'pi pi-fw pi-home', routeName: 'dashboard'}]
+    items: [{label: 'Dashboard', icon: 'pi pi-fw pi-home', routeName: 'dashboard'}],
+    roles: [0, 1]
   },
   {
     label: 'Services',
@@ -25,19 +29,22 @@ const model = ref([
         label: 'Category',
         icon: 'pi pi-fw pi-th-large',
         routeName: 'categories.index',
-        activeRouteNames: ['categories.index', 'categories.create', 'categories.edit']
+        activeRouteNames: ['categories.index', 'categories.create', 'categories.edit'],
+        roles: [1]
       },
       {
         label: 'Brand',
         icon: 'pi pi-fw pi-tag',
         routeName: 'brands.index',
-        activeRouteNames: ['brands.index', 'brands.create', 'brands.edit']
+        activeRouteNames: ['brands.index', 'brands.create', 'brands.edit'],
+        roles: [1]
       },
       {
         label: 'Product',
         icon: 'pi pi-fw pi-shopping-bag',
         routeName: 'products.index',
-        activeRouteNames: ['products.index', 'products.create', 'products.edit']
+        activeRouteNames: ['products.index', 'products.create', 'products.edit'],
+        roles: [1]
       },
       // {label: 'Customer', icon: 'pi pi-fw pi-users', routeName: 'customers.index'},
       // {
@@ -58,31 +65,47 @@ const model = ref([
       //     },
       //   ]
       // },
-    ]
+    ],
+    roles: [0, 1] // Cả admin và staff đều thấy
   },
   {
     label: 'Notice',
     items: [
-      {label: 'Notification', icon: 'pi pi-fw pi-bell', routeName: 'notifications.index'},
+      {label: 'Notification', icon: 'pi pi-fw pi-bell', routeName: 'notifications.index', roles: [0, 1]},
       // {label: 'Message', icon: 'pi pi-fw pi-comment', routeName: 'messages.index'},
       // {label: 'Rate', icon: 'pi pi-fw pi-star', routeName: 'rates.index', class: 'rotated-icon'},
       // {label: 'Feedback', icon: 'pi pi-fw pi-thumbs-up', routeName: 'feedbacks.index', class: 'rotated-icon'},
       // {label: 'Complaints', icon: 'pi pi-fw pi-envelope', routeName: 'complaints.index', class: 'rotated-icon'},
       // {label: 'News', icon: 'pi pi-fw pi-globe', routeName: 'news.index', class: 'rotated-icon'},
-    ]
+    ],
+    roles: [0, 1]
   },
   {
     label: 'Shop',
     items: [
-      {label: 'List Shop', icon: 'pi pi-fw pi-shop', routeName: 'shops.index', activeRouteNames: ['shops.index']},
-      {label: 'Add Shop', icon: 'pi pi-fw pi-plus', routeName: 'shops.create', activeRouteNames: ['shops.create']},
       {
-        label: 'API Key', 
-        icon: 'pi pi-fw pi-key', 
-        routeName: 'shops.key.edit',
-        activeRouteNames: ['shops.key.edit']
+        label: 'List Shop', 
+        icon: 'pi pi-fw pi-shop', 
+        routeName: 'shops.index', 
+        activeRouteNames: ['shops.index'],
+        roles: [0]
+      },
+      {
+        label: 'Add Shop', 
+        icon: 'pi pi-fw pi-plus', 
+        routeName: 'shops.create', 
+        activeRouteNames: ['shops.create'],
+        roles: [0]
+      },
+      {
+        label: 'Shop Detail',
+        icon: 'pi pi-fw pi-shop',
+        routeName: 'shops.show',
+        activeRouteNames: ['shops.show'],
+        roles: [1]
       }
-    ]
+    ],
+    roles: [0, 1]
   },
   {
     label: 'Manage',
@@ -91,14 +114,39 @@ const model = ref([
       {
         label: 'Account',
         icon: 'pi pi-fw pi-user',
-        routeName: 'accounts.index'
+        routeName: 'accounts.index',
+        roles: [0, 1]
       },
       {
         label: 'Crud',
         icon: 'pi pi-fw pi-pencil',
-        routeName: 'crud.index'
+        routeName: 'crud.index',
+        roles: [0, 1]
       }
-    ]
+    ],
+    roles: [0, 1]
   }
 ]);
+
+const filteredMenu = computed(() => {
+  return menuItems.value.map(section => {
+    if (!section.roles?.includes(isAdmin.value ? 0 : 1)) {
+      return null;
+    }
+
+    const filteredSection = { ...section };
+    
+    if (filteredSection.items) {
+      filteredSection.items = filteredSection.items.filter(item => 
+        item.roles?.includes(isAdmin.value ? 0 : 1)
+      );
+    }
+
+    if (filteredSection.items?.length === 0) {
+      return null;
+    }
+
+    return filteredSection;
+  }).filter(Boolean);
+});
 </script>

@@ -7,13 +7,15 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
+use Modules\CMS\Contracts\Services\AdminService;
 use Modules\CMS\Contracts\Services\ShopService;
 use Modules\CMS\Http\Requests\Shop\StoreRequest;
 
 class ShopController extends Controller
 {
     public function __construct(
-        private readonly ShopService $shopService
+        private readonly ShopService $shopService,
+        private readonly AdminService $adminService
     ){}
 
     /**
@@ -22,11 +24,9 @@ class ShopController extends Controller
     public function index(): Response
     {
         $shops = $this->shopService->getAllShops();
+
         return Inertia::render('shops/Index', [
             'shops' => $shops,
-            'auth' => [
-                'user' => Auth::guard('admin')->user()
-            ]
         ]);
     }
 
@@ -42,11 +42,14 @@ class ShopController extends Controller
 
     /**
      * @param StoreRequest $request
+     * @param \Modules\CMS\Http\Requests\Admin\StoreRequest $adminRequest
      * @return RedirectResponse
      */
-    public function store(StoreRequest $request): RedirectResponse
+    public function store(StoreRequest $request, \Modules\CMS\Http\Requests\Admin\StoreRequest $adminRequest): RedirectResponse
     {
-        $this->shopService->create($request);
+        $shopStore = $this->shopService->create($request);
+        $shopId = $shopStore->id;
+        $this->adminService->store($adminRequest, $shopId);
 
         return to_route('shops.index');
     }
@@ -64,25 +67,26 @@ class ShopController extends Controller
     }
 
     /**
-     * Show the specified resource.
+     * @return Response
      */
-    public function show($id)
+    public function show(): Response
     {
-        return view('cms::show');
+        $shop = $this->shopService->show();
+
+        return Inertia::render('shops/Update', [
+            'shop' => $shop
+        ]);
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * @return RedirectResponse
      */
-    public function edit($id)
+    public function updateStatus(): RedirectResponse
     {
-        return view('cms::edit');
-    }
+        $this->shopService->updateStatus();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id) {}
+        return to_route('shops.show');
+    }
 
     /**
      * Remove the specified resource from storage.

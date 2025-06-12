@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('password');
             $table->integer('status')->default(0);
             $table->tinyInteger('role')->default(Role::ADMIN->value)->comment('0:admin 1:staff');
+            $table->string('shop_id')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
