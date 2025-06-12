@@ -34,11 +34,6 @@
           </IconField>
         </div>
       </template>
-      <Column field="display_order" header="Display" style="max-width: 3.5rem">
-        <template #body="{ data }">
-          <span>{{ data.display_order || '-' }}</span>
-        </template>
-      </Column>
 
       <Column field="name" header="Name" style="max-width: 5rem">
         <template #filter="{ filterModel }">
@@ -57,27 +52,12 @@
         </template>
       </Column>
 
-      <Column field="description" header="Description" style="max-width: 7rem">
-        <template #body="{ data }">
-          <span>{{ data.description ? (data.description.length > 20 ? data.description.slice(0, 20) + '...' : data.description) : '-' }}</span>
-        </template>
-      </Column>
-
-      <Column field="price" header="Price" style="max-width: 5rem">
+      <Column field="price" header="Price ($)" style="max-width: 5rem">
         <template #body="{ data }">
           <span>{{ data.price || '-' }}</span>
         </template>
         <template #filter="{ filterModel }">
           <InputText v-model="filterModel.value" type="text" placeholder="Search by price" />
-        </template>
-      </Column>
-
-      <Column field="discount" header="Discount" style="max-width: 5rem">
-        <template #body="{ data }">
-          <span>{{ data.discount || '-' }}</span>
-        </template>
-        <template #filter="{ filterModel }">
-          <InputText v-model="filterModel.value" type="text" placeholder="Search by discount" />
         </template>
       </Column>
 
@@ -90,20 +70,13 @@
         </template>
       </Column>
 
-      <Column field="status" header="Status" style="max-width: 5rem">
+      <Column field="status" header="Type" style="max-width: 5rem">
         <template #body="{ data }">
-          <Tag :value="data.status === 1 ? 'active' : 'inactive'" :severity="getStatusSeverity(data.status)" />
-        </template>
-        <template #filter="{ filterModel }">
-          <Select v-model="filterModel.value" :options="statuses" placeholder="Select status" showClear>
-            <template #option="slotProps">
-              <Tag :value="slotProps.option.label" :severity="getStatusSeverity(slotProps.option.value)" />
-            </template>
-          </Select>
+            <span>{{ data.type }}</span>
         </template>
       </Column>
 
-      <Column field="" header="" style="max-width: 5rem" class="">
+      <Column field="" header="Action" style="max-width: 5rem" class="">
         <template #body="{ data }">
           <div class="flex flex-wrap gap-2 justify-center">
             <Link href="#">
@@ -112,7 +85,7 @@
             <Link :href="`/cms/products/${data.id}/edit`">
               <Button icon="pi pi-pencil" severity="info" text raised rounded />
             </Link>
-            <Button icon="pi pi-trash" @click="showConfirmation(data.id)" severity="danger" text raised rounded />
+<!--            <Button icon="pi pi-trash" @click="showConfirmation(data.id)" severity="danger" text raised rounded />-->
           </div>
         </template>
       </Column>
@@ -162,6 +135,10 @@ function initFilters() {
     status: {value: null, matchMode: FilterMatchMode.EQUALS},
     release_date: {value: null, matchMode: FilterMatchMode.DATE_IS},
   };
+}
+
+function getDescription(product) {
+    return data.description ? (data.description.length > 20 ? data.description.slice(0, 20) + '...' : data.description) : '-'
 }
 
 function clearFilter() {

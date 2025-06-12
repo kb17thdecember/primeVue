@@ -7,9 +7,9 @@
       <span class="layout-menuitem-text">{{ item.label }}</span>
       <i class="pi pi-fw pi-angle-down layout-submenu-toggler" v-if="item.items"></i>
     </a>
-    <a v-if="item.routeName && !item.items && item.visible !== false" 
+    <a v-if="item.routeName && !item.items && item.visible !== false"
        @click.prevent="itemClick($event, item, index); generateUrl(item.routeName, item.params)"
-       :class="[item.class, { 'active-route': checkActiveRoute(item) }]" 
+       :class="[item.class, { 'active-route': checkActiveRoute(item) }]"
        href="#"
        tabindex="0">
       <i :class="item.icon" class="layout-menuitem-icon"></i>
@@ -107,26 +107,26 @@ function itemClick(event, item) {
 
 function checkActiveRoute(item) {
   if (!item.routeName) return false;
-  
+
   const page = usePage();
   const currentUrl = page.url;
-  
+
   // Extract the main section from URL (e.g. 'categories' from '/cms/categories/index')
   const urlParts = currentUrl.split('/');
   const currentSection = urlParts[2]; // 'categories', 'brands', etc.
-  
+
   // Extract the main section from routeName (e.g. 'categories' from 'categories.index')
   const routeSection = item.routeName.split('.')[0];
-  
+
   // Check if current section matches route section
   const sectionMatches = currentSection === routeSection;
-  
+
   // Check exact route match
   const exactMatch = item.routeName === `${routeSection}.${urlParts[urlParts.length - 1]}`;
-  
+
   // Check if route is in activeRouteNames array
   const activeMatch = item.activeRouteNames?.includes(`${routeSection}.${urlParts[urlParts.length - 1]}`);
-  
+
   return sectionMatches && (exactMatch || activeMatch);
 }
 </script>

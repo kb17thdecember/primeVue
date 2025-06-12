@@ -10,6 +10,7 @@ use Modules\CMS\Contracts\Services\CategoryService;
 use Modules\CMS\Contracts\Services\ProductService;
 use Modules\CMS\Contracts\Services\StorageService;
 use Modules\CMS\Contracts\Services\ShopService;
+use Modules\CMS\Contracts\Services\SubscriberHistoryService;
 use Modules\CMS\Services\AdminServiceImpl;
 use Modules\CMS\Services\AuthServiceImpl;
 use Modules\CMS\Services\BrandServiceImpl;
@@ -17,6 +18,7 @@ use Modules\CMS\Services\CategoryServiceImpl;
 use Modules\CMS\Services\ProductServiceImpl;
 use Modules\CMS\Services\StorageServiceImpl;
 use Modules\CMS\Services\ShopServiceImpl;
+use Modules\CMS\Services\SubscriberHistoryServiceImpl;
 
 class BootstrapServiceProvider extends ServiceProvider
 {
@@ -25,6 +27,7 @@ class BootstrapServiceProvider extends ServiceProvider
      */
     public array $bindings = [
         ProductService::class => ProductServiceImpl::class,
+        SubscriberHistoryService::class => SubscriberHistoryServiceImpl::class,
         BrandService::class => BrandServiceImpl::class,
         CategoryService::class => CategoryServiceImpl::class,
         StorageService::class => StorageServiceImpl::class,

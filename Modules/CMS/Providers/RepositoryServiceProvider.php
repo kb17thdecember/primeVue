@@ -9,10 +9,12 @@ use Modules\CMS\Contracts\Repositories\CategoryRepository;
 use Modules\CMS\Contracts\Repositories\ProductRepository;
 use Modules\CMS\Contracts\Repositories\ShopRepository;
 use Modules\CMS\Repositories\AdminRepositoryImpl;
+use Modules\CMS\Contracts\Repositories\SubscriberHistoryRepository;
 use Modules\CMS\Repositories\BrandRepositoryImpl;
 use Modules\CMS\Repositories\CategoryRepositoryImpl;
 use Modules\CMS\Repositories\ProductRepositoryImpl;
 use Modules\CMS\Repositories\ShopRepositoryImpl;
+use Modules\CMS\Repositories\SubscriberHistoryRepositoryImpl;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -22,6 +24,7 @@ class RepositoryServiceProvider extends ServiceProvider
         BrandRepository::class => BrandRepositoryImpl::class,
         ProductRepository::class => ProductRepositoryImpl::class,
         AdminRepository::class => AdminRepositoryImpl::class,
+        SubscriberHistoryRepository::class => SubscriberHistoryRepositoryImpl::class
     ];
     /**
      * Register the service provider.

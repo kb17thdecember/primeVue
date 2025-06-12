@@ -12,6 +12,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Modules\CMS\Contracts\Repositories\ProductRepository;
+use Modules\CMS\Contracts\Repositories\ShopRepository;
 use Modules\CMS\Contracts\Services\ProductService;
 use Modules\CMS\Contracts\Services\StorageService;
 use Modules\CMS\Http\Requests\Product\StoreRequest;
@@ -29,9 +30,8 @@ class ProductServiceImpl implements ProductService
      */
     public function getAllProducts(): Collection
     {
-        $condition = new Request([
-            'include' => 'category,brand'
-        ]);
+        $condition = new Request();
+
         return $this->productRepository->handle($condition)->get();
     }
 
@@ -42,9 +42,9 @@ class ProductServiceImpl implements ProductService
     public function store(StoreRequest $request): Product
     {
         $data = $request->validated();
-        $data['created_at'] = Carbon::now()->format('Y-m-d H:i:s');
 
         $images = $request->file('image');
+
         if ($images) {
             $path = StoragePrefix::PRODUCT;
             $name = (string)time() . '_' . Str::random(8);
@@ -63,8 +63,7 @@ class ProductServiceImpl implements ProductService
     public function edit(int $product): Model
     {
         $condition = new Request([
-            'id' => $product,
-            'include' => 'category,brand,category.parent,category.children'
+            'id' => $product
         ]);
         return $this->productRepository->handle($condition)->firstOrFail();
     }
@@ -78,9 +77,11 @@ class ProductServiceImpl implements ProductService
     {
         $productData = $this->productRepository->handle(new Request(['id' => $product]))->firstOrFail();
         $data = $request->validated();
-        $data['updated_at'] = Carbon::now()->format('Y-m-d H:i:s');
+
+        $data['release_date'] = Carbon::parse($data['release_date'])->format('Y-m-d');
 
         $images = $request->file('image');
+
         if ($images) {
             $path = StoragePrefix::PRODUCT;
             $name = (string)time() . '_' . Str::random(8);

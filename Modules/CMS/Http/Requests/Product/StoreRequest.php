@@ -13,19 +13,11 @@ class StoreRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'status' => 'required',
-            'category_id' => 'nullable',
-            'brand_id' => 'nullable',
-            'display_order' => 'nullable|numeric',
             'image' => 'nullable|array',
             'image.*' => 'file|mimes:jpg,jpeg,png',
             'description' => 'nullable|string',
             'price' => 'required|numeric',
-            'discount' => 'nullable|numeric',
-            'discount_code' => 'nullable|string',
-            'quantity' => 'required|numeric',
             'release_date' => 'nullable',
-            'tag' => 'nullable',
         ];
     }
 

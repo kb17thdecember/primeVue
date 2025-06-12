@@ -53,12 +53,4 @@ class Category extends Model
     {
         return $this->hasMany(Category::class, 'parent_id')->where('status', StatusPrefix::ACTIVE->value);
     }
-
-    /**
-     * @return HasMany
-     */
-    public function product(): HasMany
-    {
-        return $this->hasMany(Product::class, 'category_id', 'id');
-    }
 }

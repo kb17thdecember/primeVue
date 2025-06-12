@@ -29,51 +29,6 @@
               </div>
             </FloatLabel>
 
-            <FloatLabel variant="on" class="mt-6">
-              <Select
-                v-model="form.brand_id"
-                id="brands"
-                :options="brandsDropdown"
-                optionLabel="name"
-                optionValue="code"
-                size="large"
-                showClear
-              />
-              <label for="brands">Brands</label>
-            </FloatLabel>
-
-            <div class="flex mt-6">
-              <div class="w-1/2">
-                <FloatLabel variant="on" class="w-11/12">
-                  <Select
-                    v-model="selectedParentCategory"
-                    id="patient-category"
-                    :options="parentCategoriesDropdown"
-                    optionLabel="name"
-                    optionValue="code"
-                    size="large"
-                    showClear
-                  />
-                  <label for="patient-category">Parent Category</label>
-                </FloatLabel>
-              </div>
-              <div class="w-1/2 flex justify-end">
-                <FloatLabel variant="on" class="w-11/12">
-                  <Select
-                    v-model="selectedChildCategory"
-                    id="child-category"
-                    :options="childCategories.map(child => ({ name: child.name, code: child.id }))"
-                    :disabled="isChildSelectDisabled"
-                    optionLabel="name"
-                    optionValue="code"
-                    size="large"
-                    showClear
-                  />
-                  <label for="child-category">Child Category</label>
-                </FloatLabel>
-              </div>
-            </div>
-
             <div class="flex mt-6">
               <div class="w-1/2">
                 <FloatLabel variant="on" class="w-11/12">
@@ -81,7 +36,7 @@
                     class="text-sm"
                     name="price"
                     id="price"
-                    type="text"
+                    type="number"
                     size="large"
                     v-model="form.price"
                   />
@@ -105,69 +60,16 @@
 
             <FloatLabel variant="on" class="mt-6">
               <Select
-                v-model="form.tag"
+                v-model="form.type"
                 id="product-tag"
-                :options="productTag"
+                :options="productTypes"
                 optionLabel="name"
-                optionValue="code"
+                optionValue="value"
                 size="large"
                 showClear
               />
-              <label for="product-tag">Product Tag</label>
+              <label for="product-tag">Product Type</label>
             </FloatLabel>
-
-            <FloatLabel variant="on" class="mt-6">
-              <InputText
-                v-model="form.quantity"
-                class="text-sm"
-                name="discount"
-                id="discount"
-                type="text"
-                size="large"
-              />
-              <label for="quantity">Quantity</label>
-            </FloatLabel>
-
-            <div class="flex mt-6">
-              <div class="w-1/2">
-                <FloatLabel variant="on" class="w-11/12">
-                  <InputText
-                    class="text-sm"
-                    name="discount"
-                    id="discount"
-                    type="text"
-                    size="large"
-                    v-model="form.discount"
-                  />
-                  <label for="discount">Discount</label>
-                </FloatLabel>
-              </div>
-              <div class="w-1/2 flex justify-end">
-                <FloatLabel variant="on" class="w-11/12">
-                  <InputText
-                    class="text-sm"
-                    name="discount_code"
-                    id="discount_code"
-                    type="text"
-                    size="large"
-                    v-model="form.discount_code"
-                  />
-                  <label for="discount_code">Discount Code</label>
-                </FloatLabel>
-              </div>
-            </div>
-
-            <div class="mt-6">
-              <Checkbox
-                inputId="status"
-                name="status"
-                v-model="form.status"
-                :binary="true"
-                :trueValue="1"
-                :falseValue="0"
-              />
-              <label for="status"> Show on display </label>
-            </div>
           </div>
         </div>
 
@@ -208,84 +110,25 @@ import DatePicker from 'primevue/datepicker';
 import { useToast } from 'primevue/usetoast';
 
 const toast = useToast();
+const today = ref(new Date());
 
 const form = useForm({
-  name: '',
-  display_order: '',
-  description: '',
-  status: 0,
-  image: [],
-  category_id: null,
-  brand_id: null,
-  tag: '',
-  price: '',
-  discount: '',
-  discount_code: '',
-  quantity: '',
-  release_date: null,
+    name: '',
+    description: '',
+    status: 0,
+    image: [],
+    type: 1,
+    price: '',
+    release_date: today,
 });
 
 const formFields = [
-  {id: 'name', label: 'Product Name'},
-  {id: 'display_order', label: 'Display Order'},
+  {id: 'name', label: 'Product Name'}
 ];
 
-const today = ref(new Date());
-
-const productTag = ref([
-  { name: 'Hot Product', code: 1 },
-  { name: 'Sale Product', code: 2 },
-  { name: 'Normal Product', code: 3 },
-]);
-
 const props = defineProps({
-  categories: Array,
-  brands: Array
+  productTypes: Array
 })
-
-const brandsDropdown = computed(() => {
-  return props.brands.map((item) => ({
-    name: item.name,
-    code: item.id
-  }));
-});
-
-const selectedParentCategory = ref(null);
-const selectedChildCategory = ref(null);
-
-const parentCategoriesDropdown = computed(() =>
-  props.categories.map(item => ({
-    name: item.name,
-    code: item.id
-  }))
-);
-
-const childCategories = computed(() => {
-  const parent = props.categories.find(child => child.id === selectedParentCategory.value);
-  return parent?.children ?? [];
-});
-
-const hasChildren = computed(() => childCategories.value.length > 0);
-
-const isChildSelectDisabled = computed(() =>
-  !selectedParentCategory.value || !hasChildren.value
-);
-
-watch(selectedParentCategory, (newVal) => {
-  selectedChildCategory.value = null;
-  const parent = props.categories.find(c => c.id === newVal);
-  if (!parent?.children?.length) {
-    form.category_id = newVal;
-  } else {
-    form.category_id = null;
-  }
-});
-
-watch(selectedChildCategory, (newVal) => {
-  if (newVal) {
-    form.category_id = newVal;
-  }
-});
 
 const handleUpload = (files) => {
   form.image = files.length ? [...files] : [];
@@ -298,7 +141,6 @@ const handleSubmit = () => {
     ...form.data(),
     release_date: dayjs(form.release_date).format('YYYY-MM-DD'),
   };
-  console.log(formData)
 
   form.transform(() => formData).post('/cms/products/store', {
     preserveState: true,
@@ -311,6 +153,7 @@ const handleSubmit = () => {
         detail: 'Create Product Success!',
         life: 3000
       });
+
       form.reset();
     },
   });

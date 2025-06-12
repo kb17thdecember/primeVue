@@ -8,6 +8,7 @@ use Modules\CMS\Http\Controllers\CategoryController;
 use Modules\CMS\Http\Controllers\OrderController;
 use Modules\CMS\Http\Controllers\ProductController;
 use Modules\CMS\Http\Controllers\ShopController;
+use Modules\CMS\Http\Controllers\SubscriberHistoryController;
 
 Route::get('/cms/login', [AuthController::class, 'formLogin'])->name('login.form')->middleware('guest:admin');
 Route::post('/cms/login', [AuthController::class, 'login'])->name('cms.login');
@@ -35,6 +36,10 @@ Route::group(['prefix' => 'cms', 'middleware' => ['admin.auth']], function () {
         Route::get('{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
         Route::put('{product}', [ProductController::class, 'update'])->name('products.update');
         Route::delete('{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+    });
+
+    Route::group(['prefix' => 'subscriber-histories'], function () {
+        Route::get('/index', [SubscriberHistoryController::class, 'index'])->name('subscriber-histories.index');
     });
 
     Route::group(['prefix' => 'brands'], function () {

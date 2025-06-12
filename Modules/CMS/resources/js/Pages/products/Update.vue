@@ -29,51 +29,6 @@
               </div>
             </FloatLabel>
 
-            <FloatLabel variant="on" class="mt-6">
-              <Select
-                v-model="form.brand_id"
-                id="brands"
-                :options="brandsDropdown"
-                optionLabel="name"
-                optionValue="code"
-                size="large"
-                showClear
-              />
-              <label for="brands">Brands</label>
-            </FloatLabel>
-
-            <div class="flex mt-6">
-              <div class="w-1/2">
-                <FloatLabel variant="on" class="w-11/12">
-                  <Select
-                    v-model="selectedParentCategory"
-                    id="patient-category"
-                    :options="parentCategoriesDropdown"
-                    optionLabel="name"
-                    optionValue="code"
-                    size="large"
-                    showClear
-                  />
-                  <label for="patient-category">Parent Category</label>
-                </FloatLabel>
-              </div>
-              <div class="w-1/2 flex justify-end">
-                <FloatLabel variant="on" class="w-11/12">
-                  <Select
-                    v-model="selectedChildCategory"
-                    id="child-category"
-                    :options="childCategories.map(child => ({ name: child.name, code: child.id }))"
-                    :disabled="isChildSelectDisabled"
-                    optionLabel="name"
-                    optionValue="code"
-                    size="large"
-                    showClear
-                  />
-                  <label for="child-category">Child Category</label>
-                </FloatLabel>
-              </div>
-            </div>
-
             <div class="flex mt-6">
               <div class="w-1/2">
                 <FloatLabel variant="on" class="w-11/12">
@@ -92,7 +47,7 @@
                 <FloatLabel variant="on" class="w-11/12">
                   <DatePicker
                     v-model="form.release_date"
-                    dateFormat="dd-mm-yy"
+                    dateFormat="yy-mm-dd"
                     :minDate="today"
                     id="release-date"
                     showIcon
@@ -105,69 +60,16 @@
 
             <FloatLabel variant="on" class="mt-6">
               <Select
-                v-model="form.tag"
-                id="product-tag"
-                :options="productTag"
+                v-model="form.type"
+                id="product-type"
+                :options="productTypes"
                 optionLabel="name"
-                optionValue="code"
+                optionValue="value"
                 size="large"
                 showClear
               />
-              <label for="product-tag">Product Tag</label>
+              <label for="product-type">Product Type</label>
             </FloatLabel>
-
-            <FloatLabel variant="on" class="mt-6">
-              <InputText
-                v-model="form.quantity"
-                class="text-sm"
-                name="quantity"
-                id="quantity"
-                type="text"
-                size="large"
-              />
-              <label for="quantity">Quantity</label>
-            </FloatLabel>
-
-            <div class="flex mt-6">
-              <div class="w-1/2">
-                <FloatLabel variant="on" class="w-11/12">
-                  <InputText
-                    class="text-sm"
-                    name="discount"
-                    id="discount"
-                    type="text"
-                    size="large"
-                    v-model="form.discount"
-                  />
-                  <label for="discount">Discount</label>
-                </FloatLabel>
-              </div>
-              <div class="w-1/2 flex justify-end">
-                <FloatLabel variant="on" class="w-11/12">
-                  <InputText
-                    class="text-sm"
-                    name="discount_code"
-                    id="discount_code"
-                    type="text"
-                    size="large"
-                    v-model="form.discount_code"
-                  />
-                  <label for="discount_code">Discount Code</label>
-                </FloatLabel>
-              </div>
-            </div>
-
-            <div class="mt-6">
-              <Checkbox
-                inputId="status"
-                name="status"
-                v-model="form.status"
-                :binary="true"
-                :trueValue="1"
-                :falseValue="0"
-              />
-              <label for="status"> Show on display </label>
-            </div>
           </div>
         </div>
 
@@ -206,95 +108,28 @@ import Fluid from "primevue/fluid";
 import {Link, useForm} from "@inertiajs/vue3";
 import {computed, ref, watch} from "vue";
 import { useToast } from 'primevue/usetoast';
+import dayjs from "dayjs";
 
 const toast = useToast();
+const today = ref(new Date());
 
 const props = defineProps({
   product: Object,
-  categories: Array,
-  brands: Array
+  productTypes: Array
 })
 
 const form = useForm({
-  name: props.product?.name ?? '',
-  display_order: props.product?.display_order ?? '',
-  description: props.product?.description ?? '',
-  brand_id: props.product?.brand?.id ?? null,
-  category_id: props.product?.category?.id ?? null,
-  price: props.product?.price ?? '',
-  discount: props.product?.discount ?? 0,
-  discount_code: props.product?.discount_code ?? '',
-  release_date: props.product?.release_date ?? '',
-  tag: props.product?.tag ?? '',
-  quantity: props.product?.quantity ?? '',
-  status: props.product?.status ?? 0,
-  image: props.product?.image ?? [],
+    name: props.product?.name ?? '',
+    description: props.product?.description ?? '',
+    price: props.product?.price ?? '',
+    release_date: props.product?.release_date ?? '',
+    type: props.product?.type ?? 1,
+    image: props.product?.image ?? [],
 })
 
 const formFields = [
-  {id: 'name', label: 'Product Name'},
-  {id: 'display_order', label: 'Display Order'},
+  {id: 'name', label: 'Product Name'}
 ];
-
-const productTag = ref([
-  { name: 'Hot Product', code: 1 },
-  { name: 'Sale Product', code: 2 },
-  { name: 'Normal Product', code: 3 },
-]);
-
-const brandsDropdown = computed(() => {
-  return props.brands.map((item) => ({
-    name: item.name,
-    code: item.id
-  }));
-});
-
-const selectedParentCategory = ref(null);
-const selectedChildCategory = ref(null);
-
-if (props.product?.category) {
-  if (props.product.category.parent) {
-    selectedParentCategory.value = props.product.category.parent.id;
-    selectedChildCategory.value = props.product.category.id;
-  } else {
-    selectedParentCategory.value = props.product.category.id;
-    selectedChildCategory.value = null;
-  }
-}
-
-const parentCategoriesDropdown = computed(() =>
-  props.categories.map(item => ({
-    name: item.name,
-    code: item.id
-  }))
-);
-
-const childCategories = computed(() => {
-  const parent = props.categories.find(child => child.id === selectedParentCategory.value);
-  return parent?.children ?? [];
-});
-
-const hasChildren = computed(() => childCategories.value.length > 0);
-
-const isChildSelectDisabled = computed(() =>
-  !selectedParentCategory.value || !hasChildren.value
-);
-
-watch(selectedParentCategory, (newVal) => {
-  selectedChildCategory.value = null;
-  const parent = props.categories.find(c => c.id === newVal);
-  if (!parent?.children?.length) {
-    form.category_id = newVal;
-  } else {
-    form.category_id = null;
-  }
-});
-
-watch(selectedChildCategory, (newVal) => {
-  if (newVal) {
-    form.category_id = newVal;
-  }
-});
 
 const handleUpload = (files) => {
   form.image = files.length ? [...files] : [];
@@ -306,48 +141,41 @@ const handleUpdate = () => {
     return;
   }
 
-  form.transform((data) => {
-    const formData = new FormData();
-    formData.append('_method', 'PUT');
-    formData.append('name', data.name || '');
-    formData.append('display_order', data.display_order || '');
-    formData.append('description', data.description || '');
-    formData.append('brand_id', data.brand_id || '');
-    formData.append('category_id', data.category_id || '');
-    formData.append('price', data.price || '');
-    formData.append('discount', data.discount || '');
-    formData.append('discount_code', data.discount_code || '');
-    formData.append('release_date', data.release_date || '');
-    formData.append('tag', data.tag || '');
-    formData.append('quantity', data.quantity || '');
-    formData.append('status', data.status.toString());
-    if (Array.isArray(data.image) && data.image.length) {
-      data.image.forEach((item, index) => {
-        formData.append('image[]', item instanceof File ? item : item);
-      });
+    const formData = {
+        name: form.name,
+        description: form.description,
+        price: form.price,
+        release_date: dayjs(form.release_date).format('YYYY-MM-DD'),
+        type: form.type,
+        _method: 'PUT'
+    };
+
+    if (Array.isArray(form.image) && form.image.length) {
+        form.image.forEach((item) => {
+          formData['image[]'] = item instanceof File ? item : item;
+        });
     } else if (props.product?.image) {
-      props.product.image.forEach((item, index) => {
-        formData.append('image[]', item);
-      });
+        props.product.image.forEach((item, index) => {
+          formData['image[]'] = item;
+        });
     }
-    return formData;
-  })
-    .post(`/cms/products/${props.product.id}`, {
-    preserveState: true,
-    preserveScroll: true,
-    forceFormData: true,
-    onSuccess: () => {
-      toast.add({
-        severity: 'success',
-        summary: 'Success',
-        detail: 'Update Product Success!',
-        life: 3000
-      });
-      form.reset();
-    },
-    onError: (errors) => {
-      console.error('Update failed:', errors);
-    },
-  });
+
+    form.transform(() => formData).post(`/cms/products/${props.product.id}`, {
+        preserveState: true,
+        preserveScroll: true,
+        forceFormData: true,
+        onSuccess: () => {
+            toast.add({
+                severity: 'success',
+                summary: 'Success',
+                detail: 'Update Product Success!',
+                life: 3000
+            });
+            form.reset();
+        },
+        onError: (errors) => {
+            console.error('Update failed:', errors);
+        },
+    });
 };
 </script>

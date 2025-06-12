@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Shop extends Model
 {
@@ -25,4 +26,12 @@ class Shop extends Model
     ];
 
     protected $casts = [];
+
+    /**
+     * @return HasMany
+     */
+    public function subscriberHistories(): HasMany
+    {
+        return $this->hasMany(SubscriberHistory::class);
+    }
 }
