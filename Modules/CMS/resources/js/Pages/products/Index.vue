@@ -146,6 +146,7 @@ const toast = useToast();
 const {props} = usePage();
 const displayConfirmation = ref(false);
 const products = ref(props.products?.data ?? []);
+console.log(products)
 const filters = ref(null);
 const loading = ref(false);
 const statuses = ref([

@@ -12,7 +12,6 @@
 <script setup>
 import {ref} from 'vue';
 import MenuItem from './MenuItem.vue';
-import { usePage } from '@inertiajs/vue3';
 
 const model = ref([
   {
@@ -40,36 +39,36 @@ const model = ref([
         routeName: 'products.index',
         activeRouteNames: ['products.index', 'products.create', 'products.edit']
       },
-      {label: 'Customer', icon: 'pi pi-fw pi-users', routeName: 'customers.index'},
-      {
-        label: 'Order',
-        icon: 'pi pi-fw pi-shopping-cart',
-        class: 'rotated-icon',
-        activeRouteNames: ['orders.index', 'orders.analysis'],
-        items: [
-          {
-            label: 'List Order',
-            icon: 'pi pi-fw pi-wallet',
-            routeName: 'orders.index'
-          },
-          {
-            label: 'Analysis',
-            icon: 'pi pi-fw pi-chart-bar',
-            routeName: 'orders.analysis'
-          },
-        ]
-      },
+      // {label: 'Customer', icon: 'pi pi-fw pi-users', routeName: 'customers.index'},
+      // {
+      //   label: 'Order',
+      //   icon: 'pi pi-fw pi-shopping-cart',
+      //   class: 'rotated-icon',
+      //   activeRouteNames: ['orders.index', 'orders.analysis'],
+      //   items: [
+      //     {
+      //       label: 'List Order',
+      //       icon: 'pi pi-fw pi-wallet',
+      //       routeName: 'orders.index'
+      //     },
+      //     {
+      //       label: 'Analysis',
+      //       icon: 'pi pi-fw pi-chart-bar',
+      //       routeName: 'orders.analysis'
+      //     },
+      //   ]
+      // },
     ]
   },
   {
     label: 'Notice',
     items: [
       {label: 'Notification', icon: 'pi pi-fw pi-bell', routeName: 'notifications.index'},
-      {label: 'Message', icon: 'pi pi-fw pi-comment', routeName: 'messages.index'},
-      {label: 'Rate', icon: 'pi pi-fw pi-star', routeName: 'rates.index', class: 'rotated-icon'},
-      {label: 'Feedback', icon: 'pi pi-fw pi-thumbs-up', routeName: 'feedbacks.index', class: 'rotated-icon'},
-      {label: 'Complaints', icon: 'pi pi-fw pi-envelope', routeName: 'complaints.index', class: 'rotated-icon'},
-      {label: 'News', icon: 'pi pi-fw pi-globe', routeName: 'news.index', class: 'rotated-icon'},
+      // {label: 'Message', icon: 'pi pi-fw pi-comment', routeName: 'messages.index'},
+      // {label: 'Rate', icon: 'pi pi-fw pi-star', routeName: 'rates.index', class: 'rotated-icon'},
+      // {label: 'Feedback', icon: 'pi pi-fw pi-thumbs-up', routeName: 'feedbacks.index', class: 'rotated-icon'},
+      // {label: 'Complaints', icon: 'pi pi-fw pi-envelope', routeName: 'complaints.index', class: 'rotated-icon'},
+      // {label: 'News', icon: 'pi pi-fw pi-globe', routeName: 'news.index', class: 'rotated-icon'},
     ]
   },
   {
