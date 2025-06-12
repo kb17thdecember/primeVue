@@ -18,4 +18,9 @@ interface ShopService
      * @return Model
      */
     public function create(StoreRequest $request): Model;
+
+    /**
+     * @return Model
+     */
+    public function show(): Model;
 }

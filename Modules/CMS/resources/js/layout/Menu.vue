@@ -12,6 +12,7 @@
 <script setup>
 import {ref} from 'vue';
 import MenuItem from './MenuItem.vue';
+import { usePage } from '@inertiajs/vue3';
 
 const model = ref([
   {
@@ -22,20 +23,20 @@ const model = ref([
     label: 'Services',
     items: [
       {
-        label: 'Category', 
-        icon: 'pi pi-fw pi-th-large', 
+        label: 'Category',
+        icon: 'pi pi-fw pi-th-large',
         routeName: 'categories.index',
         activeRouteNames: ['categories.index', 'categories.create', 'categories.edit']
       },
       {
-        label: 'Brand', 
-        icon: 'pi pi-fw pi-tag', 
+        label: 'Brand',
+        icon: 'pi pi-fw pi-tag',
         routeName: 'brands.index',
         activeRouteNames: ['brands.index', 'brands.create', 'brands.edit']
       },
       {
-        label: 'Product', 
-        icon: 'pi pi-fw pi-shopping-bag', 
+        label: 'Product',
+        icon: 'pi pi-fw pi-shopping-bag',
         routeName: 'products.index',
         activeRouteNames: ['products.index', 'products.create', 'products.edit']
       },
@@ -76,7 +77,12 @@ const model = ref([
     items: [
       {label: 'List Shop', icon: 'pi pi-fw pi-shop', routeName: 'shops.index', activeRouteNames: ['shops.index']},
       {label: 'Add Shop', icon: 'pi pi-fw pi-plus', routeName: 'shops.create', activeRouteNames: ['shops.create']},
-      {label: 'API Key', icon: 'pi pi-fw pi-key', routeName: '', activeRouteNames: ['']},
+      {
+        label: 'API Key', 
+        icon: 'pi pi-fw pi-key', 
+        routeName: 'shops.key.edit',
+        activeRouteNames: ['shops.key.edit']
+      }
     ]
   },
   {

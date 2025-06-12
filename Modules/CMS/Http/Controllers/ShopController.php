@@ -52,6 +52,18 @@ class ShopController extends Controller
     }
 
     /**
+     * @return Response
+     */
+    public function showKey(): Response
+    {
+        $shop = $this->shopService->show();
+
+        return Inertia::render('shops/UpdateKey',[
+            'shop' => $shop,
+        ]);
+    }
+
+    /**
      * Show the specified resource.
      */
     public function show($id)

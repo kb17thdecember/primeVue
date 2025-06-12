@@ -5,6 +5,7 @@ namespace Modules\CMS\Services;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Modules\CMS\Contracts\Repositories\ShopRepository;
 use Modules\CMS\Contracts\Services\ShopService;
@@ -35,5 +36,17 @@ class ShopServiceImpl implements ShopService
         $data['create_at'] = Carbon::now()->format('Y-m-d H:i:s');
 
         return $this->shopRepository->handle()->create($data);
+    }
+
+    /**
+     * @return Model
+     */
+    public function show(): Model
+    {
+        $condition = new Request([
+            'admin_id' => Auth::user()->id
+        ]);
+
+        return $this->shopRepository->handle($condition)->first();
     }
 }

@@ -57,5 +57,6 @@ Route::group(['prefix' => 'cms', 'middleware' => ['admin.auth']], function () {
         Route::get('/index', [ShopController::class, 'index'])->name('shops.index');
         Route::get('/create', [ShopController::class, 'create'])->name('shops.create');
         Route::post('/store', [ShopController::class, 'store'])->name('shops.store');
+        Route::get('/key/edit', [ShopController::class, 'showKey'])->name('shops.key.edit');
     });
 });
