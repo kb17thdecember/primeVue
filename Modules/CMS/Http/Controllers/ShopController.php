@@ -36,9 +36,7 @@ class ShopController extends Controller
     public function create(): Response
     {
         return Inertia::render('shops/Create', [
-            'auth' => [
-                'user' => Auth::guard('admin')->user()
-            ]
+            'admin' => Auth::user()
         ]);
     }
 

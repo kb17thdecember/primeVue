@@ -129,7 +129,7 @@ import InputNumber from 'primevue/inputnumber';
 import Fluid from 'primevue/fluid';
 import Checkbox from 'primevue/checkbox';
 import Button from 'primevue/button';
-import { Link, useForm } from '@inertiajs/vue3';
+import {Link, useForm, usePage} from '@inertiajs/vue3';
 import Breadcrumb from '../../component/Breadcrumb.vue';
 import { useToast } from 'primevue/usetoast';
 import Select from 'primevue/select';
@@ -140,9 +140,11 @@ const provinces = ref([]);
 const districts = ref([]);
 const wards = ref([]);
 
+const {props} = usePage()
+
 const form = useForm({
   name: '',
-  admin_id: 1,
+  admin_id: props.auth.user.id,
   subdomain: '',
   province: '',
   prefecture: '',

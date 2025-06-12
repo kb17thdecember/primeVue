@@ -5,10 +5,10 @@ namespace Modules\CMS\Repositories;
 use App\Filters\FiltersOperator;
 use App\Models\Product;
 use App\Repositories\BaseRepositoryImpl;
-use Modules\CMS\Contracts\Repositories\ShopRepository;
+use Modules\CMS\Contracts\Repositories\ProductRepository;
 use Spatie\QueryBuilder\AllowedFilter;
 
-class ProductRepositoryImpl extends BaseRepositoryImpl implements ShopRepository
+class ProductRepositoryImpl extends BaseRepositoryImpl implements ProductRepository
 {
     public string $model = Product::class;
 
