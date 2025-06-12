@@ -14,7 +14,6 @@ class StoreRequest extends FormRequest
         return [
             'name' => 'required',
             'admin_id' => 'required',
-            'subdomain' => 'nullable',
             'province' => 'required|string',
             'prefecture' => 'required|string',
             'town' => 'string|nullable',
@@ -22,8 +21,6 @@ class StoreRequest extends FormRequest
             'phone_number' => 'required|numeric',
             'status' => 'required',
             'api_key' => 'required|string',
-            'channel_access_token' => 'nullable|string',
-            'channel_secret' => 'nullable|string',
             'created_at' => 'nullable|string'
         ];
     }

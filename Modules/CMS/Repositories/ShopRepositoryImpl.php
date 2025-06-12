@@ -19,7 +19,8 @@ class ShopRepositoryImpl extends BaseRepositoryImpl implements ShopRepository
     protected function setAllowedFilters(): void
     {
         $this->filters = [
-            AllowedFilter::custom('id', new FiltersOperator())
+            AllowedFilter::custom('id', new FiltersOperator()),
+            AllowedFilter::custom('admin_id', new FiltersOperator()),
         ];
     }
 }

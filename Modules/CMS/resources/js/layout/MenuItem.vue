@@ -8,7 +8,7 @@
       <i class="pi pi-fw pi-angle-down layout-submenu-toggler" v-if="item.items"></i>
     </a>
     <a v-if="item.routeName && !item.items && item.visible !== false" 
-       @click.prevent="itemClick($event, item, index); generateUrl(item.routeName)"
+       @click.prevent="itemClick($event, item, index); generateUrl(item.routeName, item.params)"
        :class="[item.class, { 'active-route': checkActiveRoute(item) }]" 
        href="#"
        tabindex="0">
@@ -30,8 +30,8 @@
 <script setup>
 import {useLayout} from './composables/layout.js';
 import {onBeforeMount, ref, watch} from 'vue';
-import {Link, usePage} from '@inertiajs/vue3';
-import { router } from '@inertiajs/vue3'
+import {Link, usePage, router} from '@inertiajs/vue3';
+import { route } from 'ziggy-js';
 
 const {layoutState, setActiveMenuItem, toggleMenu} = useLayout();
 
@@ -54,25 +54,9 @@ const props = defineProps({
   }
 });
 
-// Helper function to generate route URL
-function generateUrl(routeName) {
-  const routeMap = {
-    'dashboard': '/cms/home',
-    'categories.index': '/cms/categories/index',
-    'categories.create': '/cms/categories/create',
-    'brands.index': '/cms/brands/index',
-    'brands.create': '/cms/brands/create',
-    'products.index': '/cms/products/index',
-    'products.create': '/cms/products/create',
-    'orders.index': '/cms/orders/index',
-    'orders.analysis': '/cms/orders/analysis',
-    'shops.index': '/cms/shops/index',
-    'shops.create': '/cms/shops/create',
-  };
-
-  const url = routeMap[routeName];
-  if (url) {
-    router.get(url);
+function generateUrl(routeName, params) {
+  if (routeName) {
+    router.get(route(routeName, params || {}));
   }
 }
 
@@ -113,57 +97,36 @@ function itemClick(event, item) {
   }
 
   const foundItemKey = item.items ? (isActiveMenu.value ? props.parentItemKey : itemKey) : itemKey.value;
-
   setActiveMenuItem(foundItemKey);
+
+  if (item.routeName) {
+    event.preventDefault();
+    generateUrl(item.routeName, item.params);
+  }
 }
 
 function checkActiveRoute(item) {
+  if (!item.routeName) return false;
+  
   const page = usePage();
   const currentUrl = page.url;
   
-  // Map base URLs to route names
-  const baseUrlMap = {
-    '/cms/home': 'dashboard',
-    '/cms/categories': 'categories',
-    '/cms/brands': 'brands',
-    '/cms/products': 'products',
-    '/cms/orders': 'orders',
-    '/cms/shops': 'shops'
-  };
-
-  // Get the base URL (e.g., /cms/categories from /cms/categories/1/edit)
+  // Extract the main section from URL (e.g. 'categories' from '/cms/categories/index')
   const urlParts = currentUrl.split('/');
-  const baseUrl = ['', 'cms', urlParts[2]].join('/');
-  const baseRoute = baseUrlMap[baseUrl];
+  const currentSection = urlParts[2]; // 'categories', 'brands', etc.
   
-  // Get the action (index, create, edit, etc)
-  const lastPart = urlParts[urlParts.length - 1];
-  const isEdit = lastPart === 'edit';
-  const isCreate = lastPart === 'create';
-  const isIndex = lastPart === 'index';
+  // Extract the main section from routeName (e.g. 'categories' from 'categories.index')
+  const routeSection = item.routeName.split('.')[0];
   
-  // Construct current route name
-  let currentRouteName;
-  if (baseUrl === '/cms/home') {
-    currentRouteName = 'dashboard';
-  } else if (isEdit) {
-    currentRouteName = `${baseRoute}.edit`;
-  } else if (isCreate) {
-    currentRouteName = `${baseRoute}.create`;
-  } else if (isIndex) {
-    currentRouteName = `${baseRoute}.index`;
-  }
-
-  // Direct match
-  if (item.routeName === currentRouteName) {
-    return true;
-  }
-
-  // Check activeRouteNames
-  if (item.activeRouteNames && Array.isArray(item.activeRouteNames)) {
-    return item.activeRouteNames.includes(currentRouteName);
-  }
-
-  return false;
+  // Check if current section matches route section
+  const sectionMatches = currentSection === routeSection;
+  
+  // Check exact route match
+  const exactMatch = item.routeName === `${routeSection}.${urlParts[urlParts.length - 1]}`;
+  
+  // Check if route is in activeRouteNames array
+  const activeMatch = item.activeRouteNames?.includes(`${routeSection}.${urlParts[urlParts.length - 1]}`);
+  
+  return sectionMatches && (exactMatch || activeMatch);
 }
 </script>

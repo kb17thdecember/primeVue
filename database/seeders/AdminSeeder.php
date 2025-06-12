@@ -25,15 +25,5 @@ class AdminSeeder extends Seeder
                 'role' => Role::ADMIN,
             ]
         );
-
-        Admin::query()->updateOrCreate(
-            ['email' => 'shop_1@test.com'],
-            [
-                'name' => 'Shop 1',
-                'password' => bcrypt('12345678'),
-                'status' => AdminStatus::ENABLE,
-                'role' => Role::SHOP,
-            ]
-        );
     }
 }

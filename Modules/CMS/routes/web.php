@@ -9,14 +9,12 @@ use Modules\CMS\Http\Controllers\OrderController;
 use Modules\CMS\Http\Controllers\ProductController;
 use Modules\CMS\Http\Controllers\ShopController;
 
-// Public routes
 Route::get('/cms/login', [AuthController::class, 'formLogin'])->name('login.form')->middleware('guest:admin');
 Route::post('/cms/login', [AuthController::class, 'login'])->name('cms.login');
 Route::post('/cms/logout', [AuthController::class, 'logout'])->name('cms.logout');
 
 // Protected routes
 Route::group(['prefix' => 'cms', 'middleware' => ['admin.auth']], function () {
-    // Dashboard - Tất cả admin đều có thể truy cập
     Route::get('/home', function () {
         return Inertia::render('dashboard/Home');
     })->name('dashboard');
@@ -57,5 +55,8 @@ Route::group(['prefix' => 'cms', 'middleware' => ['admin.auth']], function () {
         Route::get('/index', [ShopController::class, 'index'])->name('shops.index');
         Route::get('/create', [ShopController::class, 'create'])->name('shops.create');
         Route::post('/store', [ShopController::class, 'store'])->name('shops.store');
+        Route::get('/key/edit', [ShopController::class, 'showKey'])->name('shops.key.edit');
+        Route::get('/shop/show',[ShopController::class, 'show'])->name('shops.show');
+        Route::put('/status', [ShopController::class, 'updateStatus'])->name('shops.status');
     });
 });

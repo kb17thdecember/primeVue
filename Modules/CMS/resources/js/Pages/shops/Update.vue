@@ -2,7 +2,7 @@
   <Breadcrumb :items="[{ label: 'Shops' }, { label: 'Create' }]" />
   <div class="card">
     <h2 class="text-xl font-bold">Add Shop</h2>
-    <Form @submit.prevent="handleCreate">
+    <Form @submit.prevent="handleStatus">
       <Fluid class="flex flex-col md:flex-row gap-8">
         <div class="md:w-2/3">
           <div class="card block flex-col gap-4">
@@ -13,24 +13,11 @@
                   :name="field.id"
                   :id="field.id"
                   type="text"
-                  v-model="form[field.id]"
+                  v-model="shop[field.id]"
                   size="large"
+                  disabled
                 />
                 <label :for="field.id">{{ field.label }}</label>
-              </FloatLabel>
-            </div>
-
-            <div class="mt-6">
-              <FloatLabel variant="on">
-                <InputText
-                  class="text-sm"
-                  name="password"
-                  id="password"
-                  type="text"
-                  v-model="form.password"
-                  size="large"
-                />
-                <label for="address">Password</label>
               </FloatLabel>
             </div>
 
@@ -38,7 +25,7 @@
               <div class="relative w-5/6">
                 <FloatLabel variant="on">
                   <InputText
-                    v-model="form.api_key"
+                    v-model="shop.api_key"
                     class="text-sm w-full pr-20"
                     id="api_key"
                     name="api_key"
@@ -46,6 +33,7 @@
                     autocomplete="off"
                     :class="{ 'text-transparent': !showKey, 'tracking-widest': !showKey }"
                     :style="!showKey ? 'text-security: disc; -webkit-text-security: disc;' : ''"
+                    disabled
                   />
                   <label for="api_key">API Key</label>
                 </FloatLabel>
@@ -68,13 +56,13 @@
               </div>
               <div class="ml-2 d-flex justify-end w-1/6">
                 <Button
-                  type="button"
-                  label="Get Key"
+                  type="submit"
+                  label="Reset"
                   size="large"
                   iconPos="right"
                   class="w-1/6"
-                  @click="generateKey"
-                  icon="pi pi-key"
+                  @click=""
+                  icon="pi pi-refresh"
                 />
               </div>
             </div>
@@ -82,46 +70,33 @@
             <div class="flex mt-6">
               <div class="w-1/3">
                 <FloatLabel variant="on">
-                  <Select
+                  <InputText
                     id="province"
-                    v-model="form.province"
-                    :options="provinces"
-                    optionLabel="name"
-                    optionValue="name"
+                    v-model="shop.province"
                     size="large"
-                    showClear
-                    @change="handleProvinceChange"
+                    disabled
                   />
                   <label for="province">City/Province</label>
                 </FloatLabel>
               </div>
               <div class="w-1/3 flex justify-end">
                 <FloatLabel variant="on" class="w-11/12">
-                  <Select
+                  <InputText
                     id="prefecture"
-                    v-model="form.prefecture"
-                    :options="districts"
-                    :disabled="!form.province"
-                    optionLabel="name"
-                    optionValue="name"
+                    v-model="shop.prefecture"
                     size="large"
-                    showClear
-                    @change="handleDistrictChange"
+                    disabled
                   />
                   <label for="prefecture">Prefecture/District</label>
                 </FloatLabel>
               </div>
               <div class="w-1/3 flex justify-end">
                 <FloatLabel variant="on" class="w-11/12">
-                  <Select
+                  <InputText
                     id="town"
-                    v-model="form.town"
-                    :options="wards"
-                    :disabled="!form.prefecture"
-                    optionLabel="name"
-                    optionValue="name"
+                    v-model="shop.town"
                     size="large"
-                    showClear
+                    disabled
                   />
                   <label for="town">Commune/Town</label>
                 </FloatLabel>
@@ -135,8 +110,9 @@
                   name="address"
                   id="address"
                   type="text"
-                  v-model="form.address"
+                  v-model="shop.address"
                   size="large"
+                  disabled
                 />
                 <label for="address">Address</label>
               </FloatLabel>
@@ -148,10 +124,11 @@
                   class="text-sm"
                   name="phone_number"
                   id="phone_number"
-                  v-model="form.phone_number"
+                  v-model="shop.phone_number"
                   size="large"
                   :useGrouping="false"
                   :max="99999999999"
+                  disabled
                 />
                 <label for="phone_number">Phone Number</label>
               </FloatLabel>
@@ -161,23 +138,17 @@
               <Checkbox
                 inputId="status"
                 name="status"
-                v-model="form.status"
+                v-model="shop.status"
                 :binary="true"
                 :trueValue="1"
                 :falseValue="0"
+                disabled
               />
               <label for="status"> Active/Inactive </label>
             </div>
           </div>
         </div>
       </Fluid>
-
-      <div class="flex justify-center mt-6">
-        <Link href="/cms/categories/index">
-          <Button class="mr-3" icon="pi pi-times" severity="danger" text raised rounded />
-        </Link>
-        <Button type="submit" class="ml-3" icon="pi pi-check" text raised rounded />
-      </div>
     </Form>
   </div>
 </template>
@@ -189,82 +160,19 @@ import InputNumber from 'primevue/inputnumber';
 import Fluid from 'primevue/fluid';
 import Checkbox from 'primevue/checkbox';
 import Button from 'primevue/button';
-import { Link, useForm, usePage } from '@inertiajs/vue3';
+import {Link, useForm, usePage} from '@inertiajs/vue3';
 import Breadcrumb from '../../component/Breadcrumb.vue';
+import { ref } from 'vue';
 import { useToast } from 'primevue/usetoast';
-import Select from 'primevue/select';
-import { ref, onMounted } from 'vue';
 
 const toast = useToast();
-const provinces = ref([]);
-const districts = ref([]);
-const wards = ref([]);
 
-const {props} = usePage()
-
-const form = useForm({
-  name: '',
-  email: '',
-  password: '',
-  admin_id: props.auth.user.id,
-  province: '',
-  prefecture: '',
-  town: '',
-  address: '',
-  phone_number: '',
-  status: 0,
-  api_key: '',
-  role: 1,
-  shop_id: 0
-});
+const { props } = usePage();
+const shop = props.shop;
 
 const formFields = [
   { id: 'name', label: 'Shop Name' },
-  { id: 'email', label: 'Email' },
 ];
-
-onMounted(async () => {
-  try {
-    const response = await fetch('https://provinces.open-api.vn/api/p/');
-    provinces.value = await response.json();
-  } catch (error) {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to load provinces', life: 3000 });
-  }
-});
-
-const handleProvinceChange = async (event) => {
-  form.prefecture = '';
-  form.town = '';
-  districts.value = [];
-  wards.value = [];
-
-  const selectedProvince = provinces.value.find(p => p.name === event.value);
-  if (selectedProvince) {
-    try {
-      const response = await fetch(`https://provinces.open-api.vn/api/p/${selectedProvince.code}?depth=2`);
-      const data = await response.json();
-      districts.value = data.districts;
-    } catch (error) {
-      toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to load districts', life: 3000 });
-    }
-  }
-};
-
-const handleDistrictChange = async (event) => {
-  form.town = '';
-  wards.value = [];
-
-  const selectedDistrict = districts.value.find(d => d.name === event.value);
-  if (selectedDistrict) {
-    try {
-      const response = await fetch(`https://provinces.open-api.vn/api/d/${selectedDistrict.code}?depth=2`);
-      const data = await response.json();
-      wards.value = data.wards;
-    } catch (error) {
-      toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to load wards', life: 3000 });
-    }
-  }
-};
 
 const showKey = ref(false);
 
@@ -274,26 +182,37 @@ const toggleShowKey = () => {
 
 const copyKey = async () => {
   try {
-    await navigator.clipboard.writeText(form.api_key);
+    await navigator.clipboard.writeText(shop.api_key);
     toast.add({ severity: 'success', summary: 'Success', detail: 'Copy API Key Success!', life: 3000 });
   } catch (e) {
     toast.add({ severity: 'error', summary: 'Error', detail: 'Copy API Key Error!', life: 3000 });
   }
 };
 
-const generateKey = () => {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  form.api_key = Array.from({ length: 50 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
-};
-
-const handleCreate = () => {
-  form.post('/cms/shops/store', {
+const form = useForm({
+  status: 2,
+})
+const handleStatus = () => {
+  form.transform((form) => {
+    const formData = new FormData();
+    formData.append('_method', 'PUT');
+    formData.append('status', form.status);
+    return formData;
+  }).post(`/cms/shops/status`, {
     preserveState: true,
     preserveScroll: true,
+    forceFormData: true,
     onSuccess: () => {
-      toast.add({ severity: 'success', summary: 'Success', detail: 'Create Shop Success!', life: 3000 });
-      form.reset();
+      toast.add({
+        severity: 'success',
+        summary: 'Success',
+        detail: 'Request Change Key Success!',
+        life: 3000
+      });
     },
-  });
-};
+    onError: (errors) => {
+      console.error('Request Change Key Failed:', errors);
+    },
+  })
+}
 </script>

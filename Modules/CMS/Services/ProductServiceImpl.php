@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use Modules\CMS\Contracts\Repositories\ShopRepository;
+use Modules\CMS\Contracts\Repositories\ProductRepository;
 use Modules\CMS\Contracts\Services\ProductService;
 use Modules\CMS\Contracts\Services\StorageService;
 use Modules\CMS\Http\Requests\Product\StoreRequest;
@@ -20,7 +20,7 @@ use Modules\CMS\Http\Requests\Product\UpdateRequest;
 class ProductServiceImpl implements ProductService
 {
     public function __construct(
-        private readonly ShopRepository $productRepository,
+        private readonly ProductRepository $productRepository,
         private readonly StorageService $storageService,
     ) {}
 
