@@ -18,20 +18,11 @@ class ProductResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'category_id' => $this->category_id,
-            'brand_id' => $this->brand_id,
             'description' => $this->description,
             'price' => $this->price,
-            'discount' => $this->discount,
-            'discount_code' => $this->discount_code,
             'image' => $this->image,
-            'tag' => $this->tag,
-            'display_order' => $this->display_order,
-            'status' => $this->status,
-            'quantity' => $this->quantity,
+            'type' => $this->type->string(),
             'release_date' => $this->release_date,
-            'brand' => new BrandResource($this->whenLoaded('brand')),
-            'category' => new CategoryResource($this->whenLoaded('category')),
         ];
     }
 }

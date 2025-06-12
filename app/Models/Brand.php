@@ -31,12 +31,4 @@ class Brand extends Model
             set: static fn ($value) => $value ? app(StorageService::class)->removeBasePath($value) : null
         );
     }
-
-    /**
-     * @return HasMany
-     */
-    public function product(): HasMany
-    {
-        return $this->hasMany(Product::class, 'brand_id', 'id');
-    }
 }

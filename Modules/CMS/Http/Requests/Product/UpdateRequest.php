@@ -2,6 +2,7 @@
 
 namespace Modules\CMS\Http\Requests\Product;
 
+use App\Enums\ProductType;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateRequest extends FormRequest
@@ -13,22 +14,10 @@ class UpdateRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'status' => 'required',
-            'category_id' => 'nullable',
-            'brand_id' => 'nullable',
-            'display_order' => 'nullable|numeric',
-            'image' => 'nullable|array',
-            'image.*' => [
-                ...($this->hasFile('image') ? ['file', 'mimes:jpeg,png', 'max:5120'] : ['string', 'url']),
-            ],
             'description' => 'nullable|string',
-            'price' => 'required|numeric',
-            'discount' => 'nullable|numeric',
-            'discount_code' => 'nullable|string',
-            'quantity' => 'required|numeric',
             'release_date' => 'nullable',
-            'tag' => 'nullable',
-            'updated_at' => 'nullable|date_format:Y-m-d H:i:s',
+            'price' => 'required|numeric',
+            'type' => 'required|in:' . implode(',', array_keys(ProductType::values())),
         ];
     }
 
@@ -44,7 +33,6 @@ class UpdateRequest extends FormRequest
     {
         return [
             'name.required' => 'Product name is required.',
-            'status.required' => 'Product status is required.',
         ];
     }
 }

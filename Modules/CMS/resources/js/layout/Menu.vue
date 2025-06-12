@@ -44,29 +44,24 @@ const menuItems = ref([
         icon: 'pi pi-fw pi-shopping-bag',
         routeName: 'products.index',
         activeRouteNames: ['products.index', 'products.create', 'products.edit'],
-        roles: [1]
+        roles: [0]
       },
-      // {label: 'Customer', icon: 'pi pi-fw pi-users', routeName: 'customers.index'},
-      // {
-      //   label: 'Order',
-      //   icon: 'pi pi-fw pi-shopping-cart',
-      //   class: 'rotated-icon',
-      //   activeRouteNames: ['orders.index', 'orders.analysis'],
-      //   items: [
-      //     {
-      //       label: 'List Order',
-      //       icon: 'pi pi-fw pi-wallet',
-      //       routeName: 'orders.index'
-      //     },
-      //     {
-      //       label: 'Analysis',
-      //       icon: 'pi pi-fw pi-chart-bar',
-      //       routeName: 'orders.analysis'
-      //     },
-      //   ]
-      // },
+      {
+        label: 'Order',
+        icon: 'pi pi-fw pi-shopping-cart',
+        class: 'rotated-icon',
+        activeRouteNames: ['subscriber-histories.index'],
+        items: [
+          {
+            label: 'List Order',
+            icon: 'pi pi-fw pi-wallet',
+            routeName: 'subscriber-histories.index'
+          },
+        ],
+        roles: [0]
+      },
     ],
-    roles: [0, 1] // Cả admin và staff đều thấy
+    roles: [0, 1]
   },
   {
     label: 'Notice',
@@ -84,16 +79,16 @@ const menuItems = ref([
     label: 'Shop',
     items: [
       {
-        label: 'List Shop', 
-        icon: 'pi pi-fw pi-shop', 
-        routeName: 'shops.index', 
+        label: 'List Shop',
+        icon: 'pi pi-fw pi-shop',
+        routeName: 'shops.index',
         activeRouteNames: ['shops.index'],
         roles: [0]
       },
       {
-        label: 'Add Shop', 
-        icon: 'pi pi-fw pi-plus', 
-        routeName: 'shops.create', 
+        label: 'Add Shop',
+        icon: 'pi pi-fw pi-plus',
+        routeName: 'shops.create',
         activeRouteNames: ['shops.create'],
         roles: [0]
       },
@@ -135,9 +130,9 @@ const filteredMenu = computed(() => {
     }
 
     const filteredSection = { ...section };
-    
+
     if (filteredSection.items) {
-      filteredSection.items = filteredSection.items.filter(item => 
+      filteredSection.items = filteredSection.items.filter(item =>
         item.roles?.includes(isAdmin.value ? 0 : 1)
       );
     }

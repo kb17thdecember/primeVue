@@ -2,6 +2,7 @@
 
 namespace Modules\CMS\Http\Controllers;
 
+use App\Enums\ProductType;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Product\ProductCollection;
 use Illuminate\Http\RedirectResponse;
@@ -38,12 +39,10 @@ class ProductController extends Controller
      */
     public function create(): Response
     {
-        $categories = $this->categoryService->getParent();
-        $brands = $this->brandService->getProductBrand();
+        $productTypes = ProductType::options();
 
         return Inertia::render('products/Create', [
-            'categories' => $categories,
-            'brands' => $brands
+            'productTypes' => $productTypes
         ]);
     }
 
@@ -65,13 +64,11 @@ class ProductController extends Controller
     public function edit($product): Response
     {
         $productEdit = $this->productService->edit($product);
-        $categories = $this->categoryService->getParent();
-        $brands = $this->brandService->getProductBrand();
+        $productTypes = ProductType::options();
 
         return Inertia::render('products/Update', [
             'product' => $productEdit,
-            'categories' => $categories,
-            'brands' => $brands
+            'productTypes' => $productTypes
         ]);
     }
 
