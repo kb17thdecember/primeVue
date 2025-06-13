@@ -14,14 +14,15 @@ return new class extends Migration
     {
         Schema::create('shops', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->foreignIdFor(Admin::class)->constrained()->cascadeOnDelete();
+            $table->unsignedBigInteger('admin_id')->nullable();
             $table->string('subdomain')->unique()->nullable();
             $table->string('name');
-            $table->string('province');
-            $table->string('prefecture');
-            $table->string('town');
-            $table->string('address');
+            $table->string('province')->nullable();
+            $table->string('prefecture')->nullable();
+            $table->string('town')->nullable();
+            $table->string('address')->nullable();
             $table->string('phone_number', 20)->nullable();
+            $table->string('request_key_flag')->nullable();
             $table->boolean('status');
             $table->string('api_key', 50)->unique()->nullable();
             $table->string('channel_access_token')->nullable();

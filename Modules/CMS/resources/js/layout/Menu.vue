@@ -66,7 +66,7 @@ const menuItems = ref([
   {
     label: 'Notice',
     items: [
-      {label: 'Notification', icon: 'pi pi-fw pi-bell', routeName: 'notifications.index', roles: [0, 1]},
+      {label: 'Setting Notice', icon: 'pi pi-fw pi-bell', routeName: 'settings.edit',activeRouteNames: ['settings.edit'], roles: [0, 1]},
       // {label: 'Message', icon: 'pi pi-fw pi-comment', routeName: 'messages.index'},
       // {label: 'Rate', icon: 'pi pi-fw pi-star', routeName: 'rates.index', class: 'rotated-icon'},
       // {label: 'Feedback', icon: 'pi pi-fw pi-thumbs-up', routeName: 'feedbacks.index', class: 'rotated-icon'},
@@ -95,8 +95,8 @@ const menuItems = ref([
       {
         label: 'Shop Detail',
         icon: 'pi pi-fw pi-shop',
-        routeName: 'shops.key.show',
-        activeRouteNames: ['shops.key.show'],
+        routeName: 'shops.key.edit',
+        activeRouteNames: ['shops.key.edit'],
         roles: [1]
       }
     ],

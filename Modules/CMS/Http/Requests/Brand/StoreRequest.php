@@ -14,6 +14,7 @@ class StoreRequest extends FormRequest
         return [
             'name' => 'required',
             'status' => 'required',
+            'shop_id' => 'required',
             'parent_id' => 'nullable',
             'display_order' => 'nullable|numeric',
             'logo' => 'nullable|mimes:jpg,jpeg,png',

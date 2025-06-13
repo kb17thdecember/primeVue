@@ -90,4 +90,14 @@ abstract class BaseRepositoryImpl implements BaseRepository
     {
         return $this->handle($request)->limit($request?->get('limit', 10) ?? 10)->get();
     }
+
+    /**
+     * @param array $attributes
+     * @param array $values
+     * @return Model
+     */
+    public function updateOrCreate(array $attributes = [], array $values): Model
+    {
+        return $this->model::query()->updateOrCreate(attributes: $attributes ?? [], values: $values);
+    }
 }

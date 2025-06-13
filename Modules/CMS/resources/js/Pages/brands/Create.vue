@@ -63,15 +63,18 @@ import InputText from 'primevue/inputtext';
 import Fluid from 'primevue/fluid';
 import Checkbox from 'primevue/checkbox';
 import Button from 'primevue/button';
-import {Link, useForm} from '@inertiajs/vue3';
+import {Link, useForm, usePage} from '@inertiajs/vue3';
 import Upload from '../../component/UploadFile.vue';
 import Breadcrumb from "../../component/Breadcrumb.vue";
 import { useToast } from 'primevue/usetoast';
 
 const toast = useToast();
 
+const {props} = usePage()
+
 const form = useForm({
   name: '',
+  shop_id: props.auth.user.id,
   display_order: '',
   description: '',
   status: 0,
@@ -83,10 +86,6 @@ const formFields = [
   {id: 'display_order', label: 'Display Order'},
   {id: 'description', label: 'Description'},
 ];
-
-const props = defineProps({
-  parents: Array
-});
 
 const handleUpload = (files) => {
   form.logo = files.length ? files[0] : null;

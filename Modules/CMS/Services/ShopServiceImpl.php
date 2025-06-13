@@ -2,6 +2,7 @@
 
 namespace Modules\CMS\Services;
 
+use App\Enums\RequestKeyFlag;
 use App\Enums\StatusPrefix;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -25,7 +26,7 @@ class ShopServiceImpl implements ShopService
     public function getAllShops(): Collection
     {
         $condition = new Request([
-            'admin_id' => Auth::user()->id
+//            'admin_id' => Auth::user()->id
         ]);
         return $this->shopRepository->handle($condition)->get();
     }
@@ -49,7 +50,8 @@ class ShopServiceImpl implements ShopService
     public function show(): Model
     {
         $condition = new Request([
-            'id' => Auth::user()->shop_id
+            'id' => Auth::user()->shop_id,
+            'admin_id' => Auth::user()->id
         ]);
 
         return $this->shopRepository->handle($condition)->firstOrFail();
@@ -87,13 +89,13 @@ class ShopServiceImpl implements ShopService
     /**
      * @return Model
      */
-    public function updateStatus(): Model
+    public function updateRequestKey(): Model
     {
         $shop = $this->show();
-        $status = [
-            'status' => StatusPrefix::REQUEST->value
+        $requestKey = [
+            'request_key_flag' => RequestKeyFlag::REQUEST->value
         ];
 
-        return $this->shopRepository->updateModel($shop, $status);
+        return $this->shopRepository->updateModel($shop, $requestKey);
     }
 }

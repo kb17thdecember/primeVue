@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Enums\Role;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Shop extends Model
 {
@@ -20,6 +22,7 @@ class Shop extends Model
         'address',
         'phone_number',
         'status',
+        'request_key_flag',
         'api_key',
         'updated_at',
         'created_at',
@@ -34,4 +37,14 @@ class Shop extends Model
     {
         return $this->hasMany(SubscriberHistory::class);
     }
+
+    /**
+     * @return HasOne
+     */
+    public function admin(): HasOne
+    {
+        return $this->hasOne(Admin::class, 'shop_id')
+            ->where('role', Role::SHOP->value);
+    }
+
 }

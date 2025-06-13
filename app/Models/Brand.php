@@ -18,6 +18,7 @@ class Brand extends Model
         'name',
         'display_order',
         'description',
+        'shop_id',
         'status',
         'logo',
         'created_at',

@@ -114,7 +114,7 @@
         <template #body="{ data }">
           <div class="flex flex-wrap gap-2 justify-center">
 
-            <Link href="#" v-if="data.status === 2">
+            <Link href="#" v-if="data.request_key_flag == 1">
               <OverlayBadge severity="danger">
                 <Button icon="pi pi-check" text raised rounded />
               </OverlayBadge>

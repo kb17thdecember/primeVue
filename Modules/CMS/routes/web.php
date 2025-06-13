@@ -7,6 +7,7 @@ use Modules\CMS\Http\Controllers\BrandController;
 use Modules\CMS\Http\Controllers\CategoryController;
 use Modules\CMS\Http\Controllers\OrderController;
 use Modules\CMS\Http\Controllers\ProductController;
+use Modules\CMS\Http\Controllers\SettingController;
 use Modules\CMS\Http\Controllers\ShopController;
 use Modules\CMS\Http\Controllers\SubscriberHistoryController;
 
@@ -16,6 +17,11 @@ Route::get('/cms/', function () {
 Route::get('/cms/login', [AuthController::class, 'formLogin'])->name('login.form')->middleware('guest:admin');
 Route::post('/cms/login', [AuthController::class, 'login'])->name('cms.login');
 Route::post('/cms/logout', [AuthController::class, 'logout'])->name('cms.logout');
+
+Route::prefix('cms')->group(function () {
+    Route::get('/auth/google/redirect', [AuthController::class, 'redirectToGoogle'])->name('auth.google.redirect');
+    Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallback'])->name('auth.google.callback');
+});
 
 // Protected routes
 Route::group(['prefix' => 'cms', 'middleware' => ['admin.auth']], function () {
@@ -68,5 +74,10 @@ Route::group(['prefix' => 'cms', 'middleware' => ['admin.auth']], function () {
         Route::put('/status', [ShopController::class, 'updateStatus'])->name('shops.status');
         Route::get('{shop}/edit', [ShopController::class, 'edit'])->name('shops.edit');
         Route::put('{shop}', [ShopController::class, 'update'])->name('shops.update');
+    });
+
+    Route::group(['prefix' => 'settings'], function () {
+        Route::get('/edit', [SettingController::class, 'edit'])->name('settings.edit');
+        Route::put('/update', [SettingController::class, 'update'])->name('settings.update');
     });
 });

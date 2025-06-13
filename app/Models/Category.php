@@ -19,6 +19,7 @@ class Category extends Model
         'id',
         'name',
         'parent_id',
+        'shop_id',
         'display_order',
         'description',
         'status',

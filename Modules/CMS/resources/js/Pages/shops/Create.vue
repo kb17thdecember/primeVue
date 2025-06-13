@@ -66,10 +66,10 @@
                   <i class="pi pi-copy"></i>
                 </button>
               </div>
-              <div class="ml-2 d-flex justify-end w-1/6">
+              <div class="ml-2 d-flex justify-end w-1/3">
                 <Button
                   type="button"
-                  label="Get Key"
+                  label="Generate Key"
                   size="large"
                   iconPos="right"
                   class="w-1/6"

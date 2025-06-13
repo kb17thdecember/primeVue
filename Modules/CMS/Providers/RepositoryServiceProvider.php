@@ -7,12 +7,14 @@ use Modules\CMS\Contracts\Repositories\AdminRepository;
 use Modules\CMS\Contracts\Repositories\BrandRepository;
 use Modules\CMS\Contracts\Repositories\CategoryRepository;
 use Modules\CMS\Contracts\Repositories\ProductRepository;
+use Modules\CMS\Contracts\Repositories\SettingRepository;
 use Modules\CMS\Contracts\Repositories\ShopRepository;
 use Modules\CMS\Repositories\AdminRepositoryImpl;
 use Modules\CMS\Contracts\Repositories\SubscriberHistoryRepository;
 use Modules\CMS\Repositories\BrandRepositoryImpl;
 use Modules\CMS\Repositories\CategoryRepositoryImpl;
 use Modules\CMS\Repositories\ProductRepositoryImpl;
+use Modules\CMS\Repositories\SettingRepositoryImpl;
 use Modules\CMS\Repositories\ShopRepositoryImpl;
 use Modules\CMS\Repositories\SubscriberHistoryRepositoryImpl;
 
@@ -24,7 +26,8 @@ class RepositoryServiceProvider extends ServiceProvider
         BrandRepository::class => BrandRepositoryImpl::class,
         ProductRepository::class => ProductRepositoryImpl::class,
         AdminRepository::class => AdminRepositoryImpl::class,
-        SubscriberHistoryRepository::class => SubscriberHistoryRepositoryImpl::class
+        SubscriberHistoryRepository::class => SubscriberHistoryRepositoryImpl::class,
+        SettingRepository::class => SettingRepositoryImpl::class,
     ];
     /**
      * Register the service provider.
