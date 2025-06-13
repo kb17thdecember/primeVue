@@ -41,5 +41,5 @@ interface ShopService
     /**
      * @return Model
      */
-    public function updateStatus(): Model;
+    public function updateRequestKey(): Model;
 }

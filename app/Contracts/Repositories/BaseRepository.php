@@ -46,4 +46,11 @@ interface BaseRepository
      * @return Collection
      */
     public function limit(?Request $request = null): Collection;
+
+    /**
+     * @param array $attributes
+     * @param array $values
+     * @return Model
+     */
+    public function updateOrCreate(array $attributes, array $values): Model;
 }

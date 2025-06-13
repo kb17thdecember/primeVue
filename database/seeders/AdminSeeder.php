@@ -21,8 +21,8 @@ class AdminSeeder extends Seeder
             [
                 'name' => 'Admin1',
                 'password' => bcrypt('12345678'),
-                'status' => AdminStatus::ENABLE,
-                'role' => Role::ADMIN,
+                'status' => AdminStatus::ENABLE->value,
+                'role' => Role::ADMIN->value,
             ]
         );
     }

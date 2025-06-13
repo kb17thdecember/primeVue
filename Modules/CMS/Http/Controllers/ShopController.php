@@ -109,9 +109,9 @@ class ShopController extends Controller
      */
     public function updateStatus(): RedirectResponse
     {
-        $this->shopService->updateStatus();
+        $this->shopService->updateRequestKey();
 
-        return to_route('shops.show');
+        return to_route('shops.key.edit');
     }
 
     /**

@@ -13,9 +13,10 @@ class UpdateRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'phone_number' => 'required|numeric|digits_between:10,11',
+            'phone_number' => 'nullable|digits_between:10,11',
             'status' => 'required',
             'api_key' => 'required|string|max:50',
+            'request_key_flag' => 'nullable',
             'update_at' => 'nullable|string'
         ];
     }

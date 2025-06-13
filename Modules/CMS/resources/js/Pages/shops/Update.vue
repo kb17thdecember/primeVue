@@ -52,10 +52,10 @@
                   <i class="pi pi-copy"></i>
                 </button>
               </div>
-              <div class="ml-2 d-flex justify-end w-1/6">
+              <div class="ml-2 d-flex justify-end w-1/3">
                 <Button
                   type="button"
-                  label="Get Key"
+                  label="Generate Key"
                   size="large"
                   iconPos="right"
                   class="w-1/6"
@@ -205,7 +205,8 @@ const handleUpdate = () => {
     formData.append('status', shop.status);
     formData.append('api_key', shop.api_key);
     formData.append('name', shop.name);
-    formData.append('phone_number', shop.phone_number);
+    formData.append('phone_number', shop.phone_number ?? '');
+    formData.append('request_key_flag', 0);
     return formData;
   }).post(`/cms/shops/${props.shop.id}`, {
     preserveState: true,

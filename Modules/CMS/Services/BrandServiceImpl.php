@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Auth;
 use Modules\CMS\Contracts\Repositories\BrandRepository;
 use Modules\CMS\Contracts\Services\BrandService;
 use Modules\CMS\Contracts\Services\StorageService;
@@ -38,6 +39,7 @@ class BrandServiceImpl implements BrandService
     public function store(StoreRequest $request): Brand
     {
         $data = $request->validated();
+        $data['shop_id'] = Auth::user()->id;
         $data['created_at'] = Carbon::now()->format('Y-m-d H:i:s');
 
         $image = $request->file('logo');

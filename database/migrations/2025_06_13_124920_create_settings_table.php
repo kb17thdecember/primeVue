@@ -11,14 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('brands', function (Blueprint $table) {
+        Schema::create('settings', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->unsignedBigInteger('shop_id');
-            $table->string('description')->nullable();
-            $table->string('logo')->nullable();
-            $table->integer('display_order')->nullable();
-            $table->integer('status')->default(0);
+            $table->integer('remaining')->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('brands');
+        Schema::dropIfExists('settings');
     }
 };

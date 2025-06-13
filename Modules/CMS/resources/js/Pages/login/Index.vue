@@ -43,6 +43,12 @@
             </div>
             <Button type="submit" label="Sign In" class="w-full"></Button>
           </Form>
+          <Button
+            label="Google"
+            icon="pi pi-google"
+            class="mr-2 mt-6"
+            @click="redirectToGoogle"
+          />
         </div>
       </div>
     </div>
@@ -60,6 +66,14 @@ import {useToast} from "primevue/usetoast";
 import Button from "primevue/button";
 
 const toast = useToast();
+
+import { computed } from 'vue'
+
+const googleRedirectUrl = computed(() => '/cms/auth/google/redirect')
+const redirectToGoogle = () => {
+  window.location.href = googleRedirectUrl.value
+}
+
 
 defineOptions({
   layout: null

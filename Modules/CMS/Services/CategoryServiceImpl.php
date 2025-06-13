@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Auth;
 use Modules\CMS\Contracts\Repositories\CategoryRepository;
 use Modules\CMS\Contracts\Services\CategoryService;
 use Modules\CMS\Contracts\Services\StorageService;
@@ -41,6 +42,7 @@ class CategoryServiceImpl implements CategoryService
     public function store(StoreRequest $request): Category
     {
         $data = $request->validated();
+        $data['shop_id'] = Auth::user()->id;
         $data['created_at'] = Carbon::now()->format('Y-m-d H:i:s');
 
         $image = $request->file('image');
