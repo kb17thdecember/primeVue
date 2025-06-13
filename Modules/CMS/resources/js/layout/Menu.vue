@@ -19,8 +19,8 @@ const { isAdmin } = useAuth();
 const menuItems = ref([
   {
     label: 'Home',
-    items: [{label: 'Dashboard', icon: 'pi pi-fw pi-home', routeName: 'dashboard'}],
-    roles: [0, 1]
+    items: [{label: 'Dashboard', icon: 'pi pi-fw pi-home', routeName: 'cms.dashboard',activeRouteNames: ['cms.dashboard'] , roles: [1]}],
+    roles: [1]
   },
   {
     label: 'Services',

@@ -5,11 +5,17 @@ use Inertia\Inertia;
 use Modules\CMS\Http\Controllers\AuthController;
 use Modules\CMS\Http\Controllers\BrandController;
 use Modules\CMS\Http\Controllers\CategoryController;
+use Modules\CMS\Http\Controllers\DashboardController;
 use Modules\CMS\Http\Controllers\OrderController;
 use Modules\CMS\Http\Controllers\ProductController;
 use Modules\CMS\Http\Controllers\SettingController;
 use Modules\CMS\Http\Controllers\ShopController;
 use Modules\CMS\Http\Controllers\SubscriberHistoryController;
+use Modules\CMS\Http\Middleware\TrackShopFrequency;
+
+Route::middleware(['web', TrackShopFrequency::class,])->get('/cms/test-track', function () {
+    return response()->json(['message' => 'Tracked']);
+});
 
 Route::get('/cms/', function () {
     return redirect()->route('dashboard');
@@ -25,9 +31,8 @@ Route::prefix('cms')->group(function () {
 
 // Protected routes
 Route::group(['prefix' => 'cms', 'middleware' => ['admin.auth']], function () {
-    Route::get('/home', function () {
-        return Inertia::render('dashboard/Home');
-    })->name('dashboard');
+    Route::get('/home', [DashboardController::class, 'index'])->name('cms.dashboard');
+    Route::get('/dashboard/shop-frequency', [DashboardController::class, 'shopFrequency']);
 
     Route::group(['prefix' => 'categories'], function () {
         Route::get('/index', [CategoryController::class, 'index'])->name('categories.index');
