@@ -13,16 +13,10 @@ class UpdateRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'admin_id' => 'required',
-            'subdomain' => 'nullable',
-            'prefecture' => 'required|string',
-            'address_1' => 'string|nullable',
-            'address_2' => 'string|nullable',
             'phone_number' => 'required|numeric|digits_between:10,11',
             'status' => 'required',
             'api_key' => 'required|string|max:50',
-            'channel_access_token' => 'nullable|string',
-            'channel_secret' => 'nullable|string',
+            'update_at' => 'nullable|string'
         ];
     }
 

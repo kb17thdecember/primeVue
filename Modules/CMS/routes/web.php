@@ -10,6 +10,9 @@ use Modules\CMS\Http\Controllers\ProductController;
 use Modules\CMS\Http\Controllers\ShopController;
 use Modules\CMS\Http\Controllers\SubscriberHistoryController;
 
+Route::get('/cms/', function () {
+    return redirect()->route('dashboard');
+})->name('login.form')->middleware('guest:admin');
 Route::get('/cms/login', [AuthController::class, 'formLogin'])->name('login.form')->middleware('guest:admin');
 Route::post('/cms/login', [AuthController::class, 'login'])->name('cms.login');
 Route::post('/cms/logout', [AuthController::class, 'logout'])->name('cms.logout');
@@ -61,7 +64,9 @@ Route::group(['prefix' => 'cms', 'middleware' => ['admin.auth']], function () {
         Route::get('/create', [ShopController::class, 'create'])->name('shops.create');
         Route::post('/store', [ShopController::class, 'store'])->name('shops.store');
         Route::get('/key/edit', [ShopController::class, 'showKey'])->name('shops.key.edit');
-        Route::get('/shop/show',[ShopController::class, 'show'])->name('shops.show');
+        Route::get('/key/show',[ShopController::class, 'showKey'])->name('shops.key.show');
         Route::put('/status', [ShopController::class, 'updateStatus'])->name('shops.status');
+        Route::get('{shop}/edit', [ShopController::class, 'edit'])->name('shops.edit');
+        Route::put('{shop}', [ShopController::class, 'update'])->name('shops.update');
     });
 });

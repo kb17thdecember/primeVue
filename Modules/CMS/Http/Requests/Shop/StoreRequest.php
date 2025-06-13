@@ -20,7 +20,7 @@ class StoreRequest extends FormRequest
             'address' => 'string|nullable',
             'phone_number' => 'required|numeric',
             'status' => 'required',
-            'api_key' => 'required|string',
+            'api_key' => 'nullable|string',
             'created_at' => 'nullable|string'
         ];
     }

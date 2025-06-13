@@ -2,7 +2,7 @@
   <Breadcrumb :items="[{ label: 'Shops' }, { label: 'Create' }]" />
   <div class="card">
     <h2 class="text-xl font-bold">Add Shop</h2>
-    <Form @submit.prevent="handleUpdate">
+    <Form @submit.prevent="handleStatus">
       <Fluid class="flex flex-col md:flex-row gap-8">
         <div class="md:w-2/3">
           <div class="card block flex-col gap-4">
@@ -15,6 +15,7 @@
                   type="text"
                   v-model="shop[field.id]"
                   size="large"
+                  disabled
                 />
                 <label :for="field.id">{{ field.label }}</label>
               </FloatLabel>
@@ -32,6 +33,7 @@
                     autocomplete="off"
                     :class="{ 'text-transparent': !showKey, 'tracking-widest': !showKey }"
                     :style="!showKey ? 'text-security: disc; -webkit-text-security: disc;' : ''"
+                    disabled
                   />
                   <label for="api_key">API Key</label>
                 </FloatLabel>
@@ -54,13 +56,13 @@
               </div>
               <div class="ml-2 d-flex justify-end w-1/6">
                 <Button
-                  type="button"
-                  label="Get Key"
+                  type="submit"
+                  label="Reset"
                   size="large"
                   iconPos="right"
                   class="w-1/6"
-                  @click="generateKey"
-                  icon="pi pi-key"
+                  @click=""
+                  icon="pi pi-refresh"
                 />
               </div>
             </div>
@@ -126,6 +128,7 @@
                   size="large"
                   :useGrouping="false"
                   :max="99999999999"
+                  disabled
                 />
                 <label for="phone_number">Phone Number</label>
               </FloatLabel>
@@ -139,19 +142,13 @@
                 :binary="true"
                 :trueValue="1"
                 :falseValue="0"
+                disabled
               />
               <label for="status"> Active/Inactive </label>
             </div>
           </div>
         </div>
       </Fluid>
-
-      <div class="flex justify-center mt-6">
-        <Link href="/cms/shops/index">
-          <Button class="mr-3" icon="pi pi-times" severity="danger" text raised rounded />
-        </Link>
-        <Button type="submit" class="ml-3" icon="pi pi-check" text raised rounded />
-      </div>
     </Form>
   </div>
 </template>
@@ -192,22 +189,16 @@ const copyKey = async () => {
   }
 };
 
-const generateKey = () => {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  shop.api_key = Array.from({ length: 50 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
-};
-
-const form = useForm({})
-const handleUpdate = () => {
+const form = useForm({
+  status: 2,
+})
+const handleStatus = () => {
   form.transform((form) => {
     const formData = new FormData();
     formData.append('_method', 'PUT');
-    formData.append('status', shop.status);
-    formData.append('api_key', shop.api_key);
-    formData.append('name', shop.name);
-    formData.append('phone_number', shop.phone_number);
+    formData.append('status', form.status);
     return formData;
-  }).post(`/cms/shops/${props.shop.id}`, {
+  }).post(`/cms/shops/status`, {
     preserveState: true,
     preserveScroll: true,
     forceFormData: true,
@@ -215,12 +206,12 @@ const handleUpdate = () => {
       toast.add({
         severity: 'success',
         summary: 'Success',
-        detail: 'Update Shop Success!',
+        detail: 'Request Change Key Success!',
         life: 3000
       });
     },
     onError: (errors) => {
-      console.error('Update Shop Failed:', errors);
+      console.error('Request Change Key Failed:', errors);
     },
   })
 }

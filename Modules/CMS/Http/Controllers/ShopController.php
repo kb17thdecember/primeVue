@@ -10,6 +10,7 @@ use Inertia\Response;
 use Modules\CMS\Contracts\Services\AdminService;
 use Modules\CMS\Contracts\Services\ShopService;
 use Modules\CMS\Http\Requests\Shop\StoreRequest;
+use Modules\CMS\Http\Requests\Shop\UpdateRequest;
 
 class ShopController extends Controller
 {
@@ -61,7 +62,7 @@ class ShopController extends Controller
     {
         $shop = $this->shopService->show();
 
-        return Inertia::render('shops/UpdateKey',[
+        return Inertia::render('shops/RequestKey',[
             'shop' => $shop,
         ]);
     }
@@ -73,9 +74,34 @@ class ShopController extends Controller
     {
         $shop = $this->shopService->show();
 
-        return Inertia::render('shops/Update', [
+        return Inertia::render('shops/UpdateKey', [
             'shop' => $shop
         ]);
+    }
+
+    /**
+     * @param int $shop
+     * @return Response
+     */
+    public function edit(int $shop): Response
+    {
+        $data = $this->shopService->edit($shop);
+
+        return Inertia::render('shops/Update', [
+            'shop' => $data
+        ]);
+    }
+
+    /**
+     * @param UpdateRequest $request
+     * @param int $shop
+     * @return RedirectResponse
+     */
+    public function update(UpdateRequest $request, int $shop): RedirectResponse
+    {
+        $this->shopService->update($request, $shop);
+
+        return to_route('shops.index');
     }
 
     /**
