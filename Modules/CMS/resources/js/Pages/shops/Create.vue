@@ -173,7 +173,7 @@
       </Fluid>
 
       <div class="flex justify-center mt-6">
-        <Link href="/cms/categories/index">
+        <Link href="/cms/shops/index">
           <Button class="mr-3" icon="pi pi-times" severity="danger" text raised rounded />
         </Link>
         <Button type="submit" class="ml-3" icon="pi pi-check" text raised rounded />

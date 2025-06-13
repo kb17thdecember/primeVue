@@ -95,8 +95,8 @@ const menuItems = ref([
       {
         label: 'Shop Detail',
         icon: 'pi pi-fw pi-shop',
-        routeName: 'shops.show',
-        activeRouteNames: ['shops.show'],
+        routeName: 'shops.key.show',
+        activeRouteNames: ['shops.key.show'],
         roles: [1]
       }
     ],

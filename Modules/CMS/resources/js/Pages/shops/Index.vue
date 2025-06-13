@@ -110,7 +110,7 @@
       </Column>
 
 
-      <Column field="" header="" style="max-width: 5rem" class="">
+      <Column field="" header="" style="max-width: 5rem; min-width: 3rem" class="">
         <template #body="{ data }">
           <div class="flex flex-wrap gap-2 justify-center">
 
@@ -119,7 +119,7 @@
                 <Button icon="pi pi-check" text raised rounded />
               </OverlayBadge>
             </Link>
-            <Link :href="`/cms/brands/${data.id}/edit`">
+            <Link :href="`/cms/shops/${data.id}/edit`">
               <Button icon="pi pi-pencil" severity="info" text raised rounded />
             </Link>
             <Button icon="pi pi-trash" @click="showConfirmation(data.id)" severity="danger" text raised rounded />

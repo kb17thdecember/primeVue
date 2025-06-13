@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('address');
             $table->string('phone_number', 20)->nullable();
             $table->boolean('status');
-            $table->string('api_key', 50)->unique();
+            $table->string('api_key', 50)->unique()->nullable();
             $table->string('channel_access_token')->nullable();
             $table->string('channel_secret')->nullable();
             $table->timestamps();

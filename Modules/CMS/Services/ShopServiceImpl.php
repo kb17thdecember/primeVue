@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Modules\CMS\Contracts\Repositories\ShopRepository;
 use Modules\CMS\Contracts\Services\ShopService;
 use Modules\CMS\Http\Requests\Shop\StoreRequest;
+use Modules\CMS\Http\Requests\Shop\UpdateRequest;
 
 class ShopServiceImpl implements ShopService
 {
@@ -48,10 +49,39 @@ class ShopServiceImpl implements ShopService
     public function show(): Model
     {
         $condition = new Request([
-            'id' => Auth::user()->id
+            'id' => Auth::user()->shop_id
         ]);
 
         return $this->shopRepository->handle($condition)->firstOrFail();
+    }
+
+    /**
+     * @param int $shop
+     * @return Model
+     */
+    public function edit(int $shop): Model
+    {
+        $condition = new Request([
+            'id' => $shop
+        ]);
+
+        return $this->shopRepository->handle($condition)->firstOrFail();
+    }
+
+    /**
+     * @param UpdateRequest $request
+     * @param int $shop
+     * @return Model
+     */
+    public function update(UpdateRequest $request, int $shop): Model
+    {
+        $data = $request->validated();
+        $condition = new Request([
+            'id' => $shop
+        ]);
+        $shopData = $this->shopRepository->handle($condition)->firstOrFail();
+
+        return$this->shopRepository->updateModel($shopData, $data);
     }
 
     /**
