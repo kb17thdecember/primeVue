@@ -1,7 +1,7 @@
 <template>
-  <Breadcrumb :items="[{ label: 'Shops' }, { label: 'Create' }]" />
+  <Breadcrumb :items="[{ label: 'Shops' }, { label: 'Edit' }]" />
   <div class="card">
-    <h2 class="text-xl font-bold">Add Shop</h2>
+    <h2 class="text-xl font-bold">Edit Shop</h2>
     <Form @submit.prevent="handleUpdate">
       <Fluid class="flex flex-col md:flex-row gap-8">
         <div class="md:w-2/3">
@@ -13,28 +13,33 @@
                   :name="field.id"
                   :id="field.id"
                   type="text"
-                  v-model="shop[field.id]"
+                  v-model="form[field.id]"
                   size="large"
+                  :invalid="!!errors[field.id]"
+                  @input="validateField(field.id)"
                 />
                 <label :for="field.id">{{ field.label }}</label>
               </FloatLabel>
+              <small v-if="errors[field.id]" class="p-error">{{ errors[field.id] }}</small>
             </div>
 
             <div class="mt-6 flex justify-between">
               <div class="relative w-5/6">
                 <FloatLabel variant="on">
                   <InputText
-                    v-model="shop.api_key"
+                    v-model="form.api_key"
                     class="text-sm w-full pr-20"
                     id="api_key"
                     name="api_key"
                     size="large"
                     autocomplete="off"
-                    :class="{ 'text-transparent': !showKey, 'tracking-widest': !showKey }"
+                    :class="{ 'text-transparent': !showKey, 'tracking-widest': !showKey, 'p-invalid': !!errors.api_key }"
                     :style="!showKey ? 'text-security: disc; -webkit-text-security: disc;' : ''"
+                    @input="validateField('api_key')"
                   />
                   <label for="api_key">API Key</label>
                 </FloatLabel>
+                <small v-if="errors.api_key" class="p-error">{{ errors.api_key }}</small>
 
                 <button
                   type="button"
@@ -70,7 +75,7 @@
                 <FloatLabel variant="on">
                   <InputText
                     id="province"
-                    v-model="shop.province"
+                    v-model="form.province"
                     size="large"
                     disabled
                   />
@@ -81,7 +86,7 @@
                 <FloatLabel variant="on" class="w-11/12">
                   <InputText
                     id="prefecture"
-                    v-model="shop.prefecture"
+                    v-model="form.prefecture"
                     size="large"
                     disabled
                   />
@@ -92,7 +97,7 @@
                 <FloatLabel variant="on" class="w-11/12">
                   <InputText
                     id="town"
-                    v-model="shop.town"
+                    v-model="form.town"
                     size="large"
                     disabled
                   />
@@ -108,7 +113,7 @@
                   name="address"
                   id="address"
                   type="text"
-                  v-model="shop.address"
+                  v-model="form.address"
                   size="large"
                   disabled
                 />
@@ -122,23 +127,26 @@
                   class="text-sm"
                   name="phone_number"
                   id="phone_number"
-                  v-model="shop.phone_number"
+                  v-model="form.phone_number"
                   size="large"
                   :useGrouping="false"
-                  :max="99999999999"
+                  :invalid="!!errors.phone_number"
+                  @input="validateField('phone_number')"
                 />
                 <label for="phone_number">Phone Number</label>
               </FloatLabel>
+              <small v-if="errors.phone_number" class="p-error">{{ errors.phone_number }}</small>
             </div>
 
             <div class="mt-6">
               <Checkbox
                 inputId="status"
                 name="status"
-                v-model="shop.status"
+                v-model="form.status"
                 :binary="true"
                 :trueValue="1"
                 :falseValue="0"
+                @input="validateField('status')"
               />
               <label for="status"> Active/Inactive </label>
             </div>
@@ -150,7 +158,14 @@
         <Link href="/cms/shops/index">
           <Button class="mr-3" icon="pi pi-times" severity="danger" text raised rounded />
         </Link>
-        <Button type="submit" class="ml-3" icon="pi pi-check" text raised rounded />
+        <Button
+          type="submit"
+          class="ml-3"
+          icon="pi pi-check"
+          text
+          raised
+          rounded
+        />
       </div>
     </Form>
     <ConfirmDialog
@@ -168,25 +183,68 @@ import InputNumber from 'primevue/inputnumber';
 import Fluid from 'primevue/fluid';
 import Checkbox from 'primevue/checkbox';
 import Button from 'primevue/button';
-import {Link, useForm, usePage} from '@inertiajs/vue3';
+import { Link, useForm, usePage } from '@inertiajs/vue3';
 import Breadcrumb from '../../component/Breadcrumb.vue';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useToast } from 'primevue/usetoast';
-import ConfirmDialog from "../../component/ConfirmDialog.vue";
+import ConfirmDialog from '../../component/ConfirmDialog.vue';
 
 const toast = useToast();
-
 const { props } = usePage();
-const shop = props.shop;
 
 const displayConfirmation = ref(false);
 const showConfirmation = () => {
   displayConfirmation.value = true;
 };
 
+const form = useForm({
+  name: props.shop.name || '',
+  api_key: props.shop.api_key || '',
+  province: props.shop.province || '',
+  prefecture: props.shop.prefecture || '',
+  town: props.shop.town || '',
+  address: props.shop.address || '',
+  phone_number: props.shop.phone_number || null,
+  status: props.shop.status || 0,
+  request_key_flag: 0
+});
+
 const formFields = [
   { id: 'name', label: 'Shop Name' },
 ];
+
+const errors = ref({});
+const touchedFields = ref(new Set());
+const isFormValid = computed(() => {
+  const requiredFields = ['name', 'phone_number'];
+  const allTouched = requiredFields.every(field => touchedFields.value.has(field));
+  return allTouched && Object.keys(errors.value).length === 0;
+});
+
+const validateField = (field) => {
+  touchedFields.value.add(field);
+  errors.value[field] = '';
+
+  if (field === 'name' && !form.name) {
+    errors.value.name = 'Name is required';
+  }
+
+  if (field === 'phone_number' && form.phone_number !== null) {
+    const phoneRegex = /^\d{10,11}$/;
+    if (!phoneRegex.test(form.phone_number)) {
+      errors.value.phone_number = 'Phone number must be 10 or 11 digits';
+    }
+  }
+
+  errors.value = { ...errors.value };
+};
+
+const validateForm = () => {
+  ['name', 'phone_number'].forEach(field => {
+    touchedFields.value.add(field);
+    validateField(field);
+  });
+};
 
 const showKey = ref(false);
 
@@ -196,28 +254,34 @@ const toggleShowKey = () => {
 
 const copyKey = async () => {
   try {
-    await navigator.clipboard.writeText(shop.api_key);
+    await navigator.clipboard.writeText(form.api_key);
     toast.add({ severity: 'success', summary: 'Success', detail: 'Copy API Key Success!', life: 3000 });
-  } catch (e) {
+  } catch (error) {
     toast.add({ severity: 'error', summary: 'Error', detail: 'Copy API Key Error!', life: 3000 });
   }
 };
 
 const generateKey = () => {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  shop.api_key = Array.from({ length: 50 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+  form.api_key = Array.from({ length: 50 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+  displayConfirmation.value = false;
 };
 
-const form = useForm({})
 const handleUpdate = () => {
-  form.transform((form) => {
+  validateForm();
+  if (!isFormValid.value) {
+    toast.add({ severity: 'error', summary: 'Error', detail: 'Please fill in all required fields correctly', life: 3000 });
+    return;
+  }
+
+  form.transform((data) => {
     const formData = new FormData();
     formData.append('_method', 'PUT');
-    formData.append('status', shop.status);
-    formData.append('api_key', shop.api_key);
-    formData.append('name', shop.name);
-    formData.append('phone_number', shop.phone_number ?? '');
-    formData.append('request_key_flag', 0);
+    formData.append('name', data.name);
+    formData.append('phone_number', data.phone_number ?? '');
+    formData.append('api_key', data.api_key);
+    formData.append('status', data.status);
+    formData.append('request_key_flag', data.request_key_flag);
     return formData;
   }).post(`/cms/shops/${props.shop.id}`, {
     preserveState: true,
@@ -230,10 +294,29 @@ const handleUpdate = () => {
         detail: 'Update Shop Success!',
         life: 3000
       });
+      errors.value = {};
+      touchedFields.value.clear();
     },
-    onError: (errors) => {
-      console.error('Update Shop Failed:', errors);
-    },
-  })
-}
+    onError: (backendErrors) => {
+      Object.keys(backendErrors).forEach((key) => {
+        errors.value[key] = backendErrors[key];
+      });
+      toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Failed to update shop',
+        life: 3000
+      });
+    }
+  });
+};
 </script>
+
+<style scoped>
+.p-error {
+  color: #ef4444 !important;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+</style>

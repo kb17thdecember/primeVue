@@ -15,9 +15,12 @@
                   type="text"
                   v-model="form[field.id]"
                   size="large"
+                  :invalid="!!errors[field.id]"
+                  @input="validateField(field.id)"
                 />
                 <label :for="field.id">{{ field.label }}</label>
               </FloatLabel>
+              <small v-if="errors[field.id]" class="p-error">{{ errors[field.id] }}</small>
             </div>
 
             <div class="mt-6">
@@ -29,9 +32,12 @@
                   type="text"
                   v-model="form.password"
                   size="large"
+                  :invalid="!!errors.password"
+                  @input="validateField('password')"
                 />
-                <label for="address">Password</label>
+                <label for="password">Password</label>
               </FloatLabel>
+              <small v-if="errors.password" class="p-error">{{ errors.password }}</small>
             </div>
 
             <div class="mt-6 flex justify-between">
@@ -44,11 +50,13 @@
                     name="api_key"
                     size="large"
                     autocomplete="off"
-                    :class="{ 'text-transparent': !showKey, 'tracking-widest': !showKey }"
+                    :class="{ 'text-transparent': !showKey, 'tracking-widest': !showKey, 'p-invalid': !!errors.api_key }"
                     :style="!showKey ? 'text-security: disc; -webkit-text-security: disc;' : ''"
+                    @input="validateField('api_key')"
                   />
                   <label for="api_key">API Key</label>
                 </FloatLabel>
+                <small v-if="errors.api_key" class="p-error">{{ errors.api_key }}</small>
 
                 <button
                   type="button"
@@ -90,6 +98,7 @@
                     optionValue="name"
                     size="large"
                     showClear
+                    :invalid="!!errors.province"
                     @change="handleProvinceChange"
                   />
                   <label for="province">City/Province</label>
@@ -106,6 +115,7 @@
                     optionValue="name"
                     size="large"
                     showClear
+                    :invalid="!!errors.prefecture"
                     @change="handleDistrictChange"
                   />
                   <label for="prefecture">Prefecture/District</label>
@@ -122,6 +132,8 @@
                     optionValue="name"
                     size="large"
                     showClear
+                    :invalid="!!errors.town"
+                    @change="validateField('town')"
                   />
                   <label for="town">Commune/Town</label>
                 </FloatLabel>
@@ -137,6 +149,8 @@
                   type="text"
                   v-model="form.address"
                   size="large"
+                  :invalid="!!errors.address"
+                  @input="validateField('address')"
                 />
                 <label for="address">Address</label>
               </FloatLabel>
@@ -152,9 +166,12 @@
                   size="large"
                   :useGrouping="false"
                   :max="99999999999"
+                  :invalid="!!errors.phone_number"
+                  @input="validateField('phone_number')"
                 />
                 <label for="phone_number">Phone Number</label>
               </FloatLabel>
+              <small v-if="errors.phone_number" class="p-error">{{ errors.phone_number }}</small>
             </div>
 
             <div class="mt-6">
@@ -165,6 +182,7 @@
                 :binary="true"
                 :trueValue="1"
                 :falseValue="0"
+                @input="validateField('status')"
               />
               <label for="status"> Active/Inactive </label>
             </div>
@@ -176,7 +194,14 @@
         <Link href="/cms/shops/index">
           <Button class="mr-3" icon="pi pi-times" severity="danger" text raised rounded />
         </Link>
-        <Button type="submit" class="ml-3" icon="pi pi-check" text raised rounded />
+        <Button
+          type="submit"
+          class="ml-3"
+          icon="pi pi-check"
+          text
+          raised
+          rounded
+        />
       </div>
     </Form>
     <ConfirmDialog
@@ -198,15 +223,15 @@ import { Link, useForm, usePage } from '@inertiajs/vue3';
 import Breadcrumb from '../../component/Breadcrumb.vue';
 import { useToast } from 'primevue/usetoast';
 import Select from 'primevue/select';
-import { ref, onMounted } from 'vue';
-import ConfirmDialog from "../../component/ConfirmDialog.vue";
+import { ref, computed, onMounted } from 'vue';
+import ConfirmDialog from '../../component/ConfirmDialog.vue';
 
 const toast = useToast();
 const provinces = ref([]);
 const districts = ref([]);
 const wards = ref([]);
 
-const {props} = usePage()
+const { props } = usePage();
 
 const displayConfirmation = ref(false);
 const showConfirmation = () => {
@@ -222,7 +247,7 @@ const form = useForm({
   prefecture: '',
   town: '',
   address: '',
-  phone_number: '',
+  phone_number: null,
   status: 0,
   api_key: '',
   role: 1,
@@ -233,6 +258,52 @@ const formFields = [
   { id: 'name', label: 'Shop Name' },
   { id: 'email', label: 'Email' },
 ];
+
+const errors = ref({});
+const touchedFields = ref(new Set());
+const isFormValid = computed(() => {
+  const requiredFields = ['name', 'email', 'password', 'api_key', 'phone_number'];
+  const allTouched = requiredFields.every(field => touchedFields.value.has(field));
+  return allTouched && Object.keys(errors.value).length === 0;
+});
+
+const validateField = (field) => {
+  touchedFields.value.add(field);
+  errors.value[field] = '';
+
+  if (['name', 'email', 'password', 'api_key'].includes(field)) {
+    if (!form[field]) {
+      errors.value[field] = `${field.charAt(0).toUpperCase() + field.slice(1)} is required`;
+    }
+  }
+
+  if (field === 'email' && form.email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(form.email)) {
+      errors.value.email = 'Invalid email format';
+    }
+  }
+
+  if (field === 'password' && form.password && form.password.length < 6) {
+    errors.value.password = 'Password must be at least 6 characters';
+  }
+
+  if (field === 'phone_number' && form.phone_number !== null) {
+    const phoneRegex = /^\d{10,11}$/;
+    if (!phoneRegex.test(form.phone_number)) {
+      errors.value.phone_number = 'Phone number must be 10 or 11 digits';
+    }
+  }
+
+  errors.value = { ...errors.value };
+};
+
+const validateForm = () => {
+  ['name', 'email', 'password', 'api_key', 'phone_number'].forEach(field => {
+    touchedFields.value.add(field);
+    validateField(field);
+  });
+};
 
 onMounted(async () => {
   try {
@@ -248,6 +319,8 @@ const handleProvinceChange = async (event) => {
   form.town = '';
   districts.value = [];
   wards.value = [];
+  validateField('prefecture');
+  validateField('town');
 
   const selectedProvince = provinces.value.find(p => p.name === event.value);
   if (selectedProvince) {
@@ -264,6 +337,7 @@ const handleProvinceChange = async (event) => {
 const handleDistrictChange = async (event) => {
   form.town = '';
   wards.value = [];
+  validateField('town');
 
   const selectedDistrict = districts.value.find(d => d.name === event.value);
   if (selectedDistrict) {
@@ -287,7 +361,7 @@ const copyKey = async () => {
   try {
     await navigator.clipboard.writeText(form.api_key);
     toast.add({ severity: 'success', summary: 'Success', detail: 'Copy API Key Success!', life: 3000 });
-  } catch (e) {
+  } catch (error) {
     toast.add({ severity: 'error', summary: 'Error', detail: 'Copy API Key Error!', life: 3000 });
   }
 };
@@ -295,16 +369,41 @@ const copyKey = async () => {
 const generateKey = () => {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   form.api_key = Array.from({ length: 50 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+  validateField('api_key');
+  displayConfirmation.value = false;
 };
 
 const handleCreate = () => {
+  validateForm();
+  if (!isFormValid.value) {
+    toast.add({ severity: 'error', summary: 'Error', detail: 'Please fill in all required fields correctly', life: 3000 });
+    return;
+  }
+
   form.post('/cms/shops/store', {
     preserveState: true,
     preserveScroll: true,
     onSuccess: () => {
-      toast.add({ severity: 'success', summary: 'Success', detail: 'Create Shop Success!', life: 3000 });
+      toast.add({severity: 'success', summary: 'Success', detail: 'Create Shop Success!', life: 3000});
       form.reset();
+      errors.value = {};
+      touchedFields.value.clear();
     },
+    onError: (backendErrors) => {
+      Object.keys(backendErrors).forEach((key) => {
+        errors.value[key] = backendErrors[key];
+      });
+      toast.add({severity: 'error', summary: 'Error', detail: 'Failed to create shop', life: 3000});
+    }
   });
 };
 </script>
+
+<style scoped>
+.p-error {
+  color: #ef4444 !important;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+</style>
