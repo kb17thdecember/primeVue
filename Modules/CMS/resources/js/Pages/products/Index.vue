@@ -42,7 +42,7 @@
         <template #body="{ data }">
           <div class="flex items-center">
             <img class="rounded-full"
-                 v-if="data.image"
+                 v-if="data.image[0]"
                  :src="getImageUrl(data.image[0])"
                  alt="Product image"
                  style="width: 32px; height: 32px; object-fit: cover;"
@@ -52,7 +52,7 @@
         </template>
       </Column>
 
-      <Column field="price" header="Price ($)" style="max-width: 5rem">
+      <Column field="price" header="Price (cent $)" style="max-width: 5rem">
         <template #body="{ data }">
           <span>{{ data.price || '-' }}</span>
         </template>
@@ -60,6 +60,15 @@
           <InputText v-model="filterModel.value" type="text" placeholder="Search by price" />
         </template>
       </Column>
+
+        <Column field="token_qty" header="Token qty" style="max-width: 5rem">
+            <template #body="{ data }">
+                <span>{{ data.token_qty || '-' }}</span>
+            </template>
+            <template #filter="{ filterModel }">
+                <InputText v-model="filterModel.value" type="text" placeholder="Search by token qty" />
+            </template>
+        </Column>
 
       <Column field="release_date" header="Release Date" style="max-width: 5rem">
         <template #body="{ data }">

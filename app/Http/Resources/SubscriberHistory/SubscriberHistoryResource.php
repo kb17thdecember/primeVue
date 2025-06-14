@@ -17,12 +17,13 @@ class SubscriberHistoryResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'subscriber_id' => $this->subscriber_id,
+            'payment_data' => $this->payment_data,
             'shop_id' => $this->shop_id,
-            'shop_name' => $this->shop->name,
+            'shop_name' => $this->shop?->name,
             'product_id' => $this->product_id,
             'product_name' => $this->product->name,
             'price' => $this->price,
+            'token_qty' => $this->token_qty,
             'type' => $this->type->string(),
             'payment_status' => $this->payment_status->string(),
             'buy_at' => $this->created_at->format('Y-m-d H:i:s'),

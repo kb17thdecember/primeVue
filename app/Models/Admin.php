@@ -7,10 +7,11 @@ use App\Enums\Role;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Cashier\Billable;
 
 class Admin extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable, Billable;
 
     protected $fillable = [
         'name',

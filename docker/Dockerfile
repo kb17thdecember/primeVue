@@ -53,6 +53,8 @@ RUN apk update \
     && docker-php-ext-enable redis \
     && docker-php-ext-configure gd
 
+RUN docker-php-ext-install bcmath
+
 COPY docker/php/ /
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 

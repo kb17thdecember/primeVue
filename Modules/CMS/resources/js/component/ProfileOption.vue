@@ -14,22 +14,6 @@
       </div>
       <Divider />
       <div class="flex flex-col gap-2 -mx-4">
-        <Button
-          type="button"
-          label="Profile"
-          icon="pi pi-user"
-          severity="secondary"
-          text
-          class="justify-start"
-        />
-        <Button
-          type="button"
-          label="Settings"
-          icon="pi pi-cog"
-          severity="secondary"
-          text
-          class="justify-start"
-        />
         <form @submit.prevent="logout" class="w-full">
           <Button
             type="submit"

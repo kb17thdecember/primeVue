@@ -15,9 +15,10 @@ class SubscriberHistory extends Model
     public $table = 'subscriber_histories';
 
     protected $fillable = [
-        'subscriber_id',
+        'payment_data',
         'shop_id',
         'product_id',
+        'token_qty',
         'price',
         'type',
         'payment_status',
@@ -28,6 +29,7 @@ class SubscriberHistory extends Model
     protected $casts = [
         'type' => ProductType::class,
         'payment_status' => PaymentStatus::class,
+        'payment_data' => 'object',
     ];
 
     /**

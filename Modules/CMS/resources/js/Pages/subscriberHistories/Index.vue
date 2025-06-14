@@ -32,17 +32,6 @@
                 </div>
             </template>
 
-            <Column field="subscriber_id" header="Subscriber ID" style="max-width: 5rem">
-                <template #filter="{ filterModel }">
-                    <InputText v-model="filterModel.value" type="text" placeholder="Search by subscriber ID" />
-                </template>
-                <template #body="{ data }">
-                    <div class="flex items-center">
-                        <span class="ml-2">{{ data.subscriber_id}}</span>
-                    </div>
-                </template>
-            </Column>
-
             <Column field="shop_name" header="Shop" style="max-width: 5rem">
                 <template #filter="{ filterModel }">
                     <InputText v-model="filterModel.value" type="text" placeholder="Search by shop name" />

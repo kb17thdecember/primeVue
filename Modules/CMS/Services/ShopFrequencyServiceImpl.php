@@ -27,7 +27,7 @@ class ShopFrequencyServiceImpl implements ShopFrequencyService
         ]);
         $shop = $this->shopRepository->handle($condition)->first();
 
-        $apiKey = $shop->api_key;
+        $apiKey = $shop?->api_key;
 
         return $this->shopFrequencyRepository->handle(new Request(['api_key' => $apiKey]))->get();
     }

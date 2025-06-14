@@ -14,4 +14,16 @@ interface SubscriberHistoryService
      * @return Collection
      */
     public function getAll(): Collection;
+
+    /**
+     * @param int $productId
+     * @param array $requestData
+     * @return bool
+     */
+    public function store(int $productId, array $requestData): bool;
+
+    /**
+     * @return array
+     */
+    public function stripeSetupIntent(): array;
 }

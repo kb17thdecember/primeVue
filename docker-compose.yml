@@ -1,5 +1,6 @@
 services:
     nginx:
+        container_name: nginx
         build:
             context: .
             dockerfile: docker/Dockerfile
@@ -12,6 +13,7 @@ services:
             - .:/var/www/html
 
     app:
+        container_name: app
         build:
             context: .
             dockerfile: docker/Dockerfile
@@ -24,6 +26,7 @@ services:
             - mysql
 
     mysql:
+        container_name: mysql
         image: mysql:8.0.32
         volumes:
             - mysql-data:/var/lib/mysql

@@ -2,6 +2,7 @@
 
 namespace Modules\CMS\Http\Requests\Product;
 
+use App\Enums\ProductType;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreRequest extends FormRequest
@@ -15,9 +16,13 @@ class StoreRequest extends FormRequest
             'name' => 'required',
             'image' => 'nullable|array',
             'image.*' => 'file|mimes:jpg,jpeg,png',
+            'subtitle' => 'nullable|string',
             'description' => 'nullable|string',
+            'token_qty' => 'required|numeric',
             'price' => 'required|numeric',
             'release_date' => 'nullable',
+            'type' => 'required|in:' . implode(',', array_keys(ProductType::values())),
+            'stripe_product_id' => 'required|string'
         ];
     }
 

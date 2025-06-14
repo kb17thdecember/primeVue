@@ -16,6 +16,11 @@ interface ProductService
     public function getAllProducts(): Collection;
 
     /**
+     * @return array
+     */
+    public function getAllPricing(): array;
+
+    /**
      * @param StoreRequest $request
      * @return Product
      */

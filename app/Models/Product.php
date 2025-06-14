@@ -13,11 +13,14 @@ class Product extends Model
 
     protected $fillable = [
         'name',
+        'subtitle',
         'description',
         'price',
+        'token_qty',
         'image',
         'type',
         'release_date',
+        'stripe_product_id',
         'updated_at',
         'created_at',
     ];

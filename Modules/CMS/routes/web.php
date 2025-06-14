@@ -12,6 +12,7 @@ use Modules\CMS\Http\Controllers\SettingController;
 use Modules\CMS\Http\Controllers\ShopController;
 use Modules\CMS\Http\Controllers\SubscriberHistoryController;
 use Modules\CMS\Http\Middleware\TrackShopFrequency;
+use Modules\CMS\Http\Controllers\PricingController;
 
 Route::middleware(['web', TrackShopFrequency::class,])->get('/cms/test-track', function () {
     return response()->json(['message' => 'Tracked']);
@@ -67,7 +68,16 @@ Route::group(['prefix' => 'cms', 'middleware' => ['admin.auth']], function () {
 
     Route::group(['prefix' => 'orders'], function () {
         Route::get('/index', [OrderController::class, 'index'])->name('orders.index');
+        Route::post('/create', [OrderController::class, 'store'])->name('orders.store');
+
+        Route::post('/stripe/setup-intent', [OrderController::class, 'stripeSetupIntent'])->name('orders.stripeSetupIntent');
+        Route::post('/stripe/payment', [OrderController::class, 'stripePaymentIntent'])->name('orders.stripePaymentIntent');
+
         Route::get('/analysis', [OrderController::class, 'analysis'])->name('orders.analysis');
+    });
+
+    Route::group(['prefix' => 'pricing'], function () {
+        Route::get('/index', [PricingController::class, 'index'])->name('pricing.index');
     });
 
     Route::group(['prefix' => 'shops'], function () {

@@ -2,6 +2,7 @@
 
 namespace Modules\CMS\Services;
 
+use App\Enums\ProductType;
 use App\Enums\StoragePrefix;
 use App\Models\Product;
 use Carbon\Carbon;
@@ -33,6 +34,45 @@ class ProductServiceImpl implements ProductService
         $condition = new Request();
 
         return $this->productRepository->handle($condition)->get();
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllPricing(): array
+    {
+        try {
+            $result = [];
+
+            $allProducts = $this->getAllProducts();
+
+            $productTypes = ProductType::stringNames();
+
+            foreach ($productTypes as $productTypeKey => $productTypeName) {
+                $products = $allProducts->filter(function ($product) use ($productTypeKey) {
+                    return $product->type->value == $productTypeKey;
+                });
+
+                if (count($products)) {
+                    $result[] = [
+                        'typeName' => $productTypeName,
+                        'typeId' => $productTypeKey,
+                        'products' => $products->transform(function ($product) {
+                            $product->typeName = $product->type->string();
+
+                            return $product;
+                        })->toArray()
+                    ];
+                }
+            }
+
+            return $result;
+        } catch (\Exception $e) {
+            Log::error(__METHOD__ . ' error: ' . $e->getMessage());
+            Log::error($e);
+
+            return [];
+        }
     }
 
     /**

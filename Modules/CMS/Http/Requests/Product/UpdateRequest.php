@@ -14,10 +14,13 @@ class UpdateRequest extends FormRequest
     {
         return [
             'name' => 'required',
+            'subtitle' => 'nullable|string',
             'description' => 'nullable|string',
             'release_date' => 'nullable',
             'price' => 'required|numeric',
+            'token_qty' => 'required|numeric',
             'type' => 'required|in:' . implode(',', array_keys(ProductType::values())),
+            'stripe_product_id' => 'required|string'
         ];
     }
 
