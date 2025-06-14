@@ -4,7 +4,7 @@ namespace Modules\CMS\Http\Requests\Shop;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class KeyRequest extends FormRequest
+class UpdateKeyRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.

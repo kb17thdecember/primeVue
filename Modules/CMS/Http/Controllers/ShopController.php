@@ -3,14 +3,16 @@
 namespace Modules\CMS\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Inertia\Response;
 use Modules\CMS\Contracts\Services\AdminService;
 use Modules\CMS\Contracts\Services\ShopService;
-use Modules\CMS\Http\Requests\Shop\KeyRequest;
+use Modules\CMS\Http\Requests\Shop\UpdateKeyRequest;
 use Modules\CMS\Http\Requests\Shop\StoreRequest;
 use Modules\CMS\Http\Requests\Shop\UpdateRequest;
 
@@ -118,14 +120,16 @@ class ShopController extends Controller
     }
 
     /**
-     * @param KeyRequest $request
+     * @param UpdateKeyRequest $request
+     * @param $id
      * @return RedirectResponse
      */
-    public function updateApiKey(KeyRequest $request): RedirectResponse
+    public function updateApiKey(UpdateKeyRequest $request, $id): RedirectResponse
     {
-        $this->shopService->updateApiKey($request);
+            $this->shopService->updateApiKey($request, $id);
 
-        return to_route('shops.index');
+            return to_route('shops.index');
+
     }
 
     /**

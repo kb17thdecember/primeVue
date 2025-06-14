@@ -5,7 +5,7 @@ namespace Modules\CMS\Contracts\Services;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-use Modules\CMS\Http\Requests\Shop\KeyRequest;
+use Modules\CMS\Http\Requests\Shop\UpdateKeyRequest;
 use Modules\CMS\Http\Requests\Shop\StoreRequest;
 use Modules\CMS\Http\Requests\Shop\UpdateRequest;
 
@@ -46,8 +46,9 @@ interface ShopService
     public function updateRequestKey(): Model;
 
     /**
-     * @param KeyRequest $request
+     * @param UpdateKeyRequest $request
+     * @param $id
      * @return Model
      */
-    public function updateApiKey(KeyRequest $request): Model;
+    public function updateApiKey(UpdateKeyRequest $request, $id): Model;
 }

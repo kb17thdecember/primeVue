@@ -1,11 +1,11 @@
 <template>
   <Breadcrumb :items="[
-    { label: 'Brand' },
+    { label: 'Shop' },
     { label: 'List Shops' },
   ]"/>
   <div class="card">
     <div class="flex justify-between">
-      <h2 class="text-xl font-bold mb-4">List Brands</h2>
+      <h2 class="text-xl font-bold mb-4">List Shops</h2>
       <Link href="/cms/shops/create" class="mb-4">
         <Button label="Primary" outlined>Create</Button>
       </Link>
@@ -102,20 +102,20 @@
             showClear
           >
             <template #option="slotProps">
-              <Tag :value="slotProps.option.label" :severity="getStatusSeverity(slotProps.option.value)"
-              />
+              <Tag :value="slotProps.option.label" :severity="getStatusSeverity(slotProps.option.value)" />
             </template>
           </Select>
         </template>
       </Column>
 
-
       <Column field="" header="" style="max-width: 5rem; min-width: 3rem" class="">
         <template #body="{ data }">
           <div class="flex flex-wrap gap-2 justify-center">
-            <OverlayBadge severity="danger" v-if="data.request_key_flag == 1" @click="() => showChange(data)">
-              <Button icon="pi pi-check" text raised rounded />
-            </OverlayBadge>
+            <form class="d-none" v-if="data.request_key_flag === '1'" @submit.prevent="handleChange(data)">
+              <OverlayBadge severity="danger" @click="() => showChange(data)">
+                <Button icon="pi pi-check" text raised rounded />
+              </OverlayBadge>
+            </form>
             <Link :href="`/cms/shops/${data.id}/edit`">
               <Button icon="pi pi-pencil" severity="info" text raised rounded />
             </Link>
@@ -126,21 +126,21 @@
     </DataTable>
     <ConfirmDialog
       v-model:visible="displayConfirmation"
-      message="Are you sure you want to delete this brand?"
+      message="Are you sure you want to delete this shop?"
       @confirm="handleDelete"
     />
 
     <ConfirmDialog
       v-model:visible="displayChange"
       :header="'Confirm Change API Key'"
-      :message="`Do you want to change API Key form ${changingShop?.api_key ?? '-'} to ${newApiKey}?`"
+      :message="`Do you want to change API Key from ${changingShop?.api_key ?? '-'} to ${newApiKey}?`"
       @confirm="handleChange"
     />
   </div>
 </template>
 
 <script setup>
-import {ref} from 'vue';
+import { ref } from 'vue';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import InputText from 'primevue/inputtext';
@@ -149,16 +149,15 @@ import InputIcon from 'primevue/inputicon';
 import Button from 'primevue/button';
 import Tag from 'primevue/tag';
 import Select from 'primevue/select';
-import {FilterMatchMode, FilterOperator} from '@primevue/core/api';
-import {Link, useForm, usePage} from '@inertiajs/vue3';
+import { FilterMatchMode, FilterOperator } from '@primevue/core/api';
+import { Link, useForm, usePage } from '@inertiajs/vue3';
 import ConfirmDialog from '../../component/ConfirmDialog.vue';
-import Breadcrumb from "../../component/Breadcrumb.vue";
+import Breadcrumb from '../../component/Breadcrumb.vue';
 import { useToast } from 'primevue/usetoast';
 import OverlayBadge from 'primevue/overlaybadge';
 
 const toast = useToast();
-
-const {props} = usePage();
+const { props } = usePage();
 const displayConfirmation = ref(false);
 const shops = ref(props.shops ?? []);
 const filters = ref(null);
@@ -171,6 +170,7 @@ const statuses = ref([
 
 const changingShop = ref(null);
 const newApiKey = ref('');
+
 function generateRandomApiKey(length = 50) {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let result = '';
@@ -179,15 +179,16 @@ function generateRandomApiKey(length = 50) {
   }
   return result;
 }
+
 function initFilters() {
   filters.value = {
-    global: {value: null, matchMode: FilterMatchMode.CONTAINS},
-    name: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.STARTS_WITH}]},
-    phone_number: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.STARTS_WITH}]},
-    status: {operator: FilterOperator.OR, constraints: [{value: null, matchMode: FilterMatchMode.EQUALS}]},
-    province: {operator: FilterOperator.OR, constraints: [{value: null, matchMode: FilterMatchMode.EQUALS}]},
-    prefecture: {operator: FilterOperator.OR, constraints: [{value: null, matchMode: FilterMatchMode.EQUALS}]},
-    town: {operator: FilterOperator.OR, constraints: [{value: null, matchMode: FilterMatchMode.EQUALS}]},
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    name: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+    phone_number: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+    status: { operator: FilterOperator.OR, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
+    province: { operator: FilterOperator.OR, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
+    prefecture: { operator: FilterOperator.OR, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
+    town: { operator: FilterOperator.OR, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
   };
 }
 
@@ -212,9 +213,10 @@ function getStatusLabel(status) {
     default: return '-';
   }
 }
-const selectedBrandId = ref(null);
+
+const selectedShopId = ref(null);
 const showConfirmation = (id) => {
-  selectedBrandId.value = id;
+  selectedShopId.value = id;
   displayConfirmation.value = true;
 };
 
@@ -225,13 +227,9 @@ const showChange = (shop) => {
   displayChange.value = true;
 };
 
-
 const form = useForm({});
+const formApi = useForm({});
 
-const formApi = useForm({
-  api_key: '',
-  request_key_flag: ''
-})
 const handleChange = () => {
   if (!changingShop.value) return;
 
@@ -241,25 +239,36 @@ const handleChange = () => {
     formData.append('api_key', newApiKey.value);
     formData.append('request_key_flag', '0');
     return formData;
-  }).post(`/cms/shops/api-key`, {
+  }).post(`/cms/shops/${changingShop.value.id}/api-key`, {
     preserveState: true,
     preserveScroll: true,
     forceFormData: true,
     onSuccess: () => {
       closeChange();
+      shops.value = shops.value.map(shop =>
+        shop.id === changingShop.value.id
+          ? { ...shop, api_key: newApiKey.value, request_key_flag: '0' }
+          : shop
+      );
       toast.add({
         severity: 'success',
         summary: 'Success',
-        detail: 'Update Key Success!',
+        detail: 'Update API Key Success!',
         life: 3000
       });
     },
     onError: (errors) => {
-      console.error('Update Key failed:', errors);
-      closeConfirmation();
+      console.error('Update API Key failed:', errors);
+      toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Failed to update API key. Please try again.',
+        life: 3000
+      });
+      closeChange();
     },
-  })
-}
+  });
+};
 
 function closeConfirmation() {
   displayConfirmation.value = false;
@@ -270,8 +279,8 @@ function closeChange() {
 }
 
 const handleDelete = () => {
-  if (!selectedBrandId.value) {
-    console.error('Brand ID is missing');
+  if (!selectedShopId.value) {
+    console.error('Shop ID is missing');
     return;
   }
 
@@ -279,22 +288,26 @@ const handleDelete = () => {
     return {
       ...data,
       '_method': 'DELETE'
-    }
-  })
-
-  form.post(`/cms/brands/${selectedBrandId.value}`, {
+    };
+  }).post(`/cms/shops/${selectedShopId.value}`, {
     onSuccess: () => {
-      brands.value = brands.value.filter(brand => brand.id !== selectedBrandId.value);
+      shops.value = shops.value.filter(shop => shop.id !== selectedShopId.value);
       closeConfirmation();
       toast.add({
         severity: 'success',
         summary: 'Success',
-        detail: 'Delete Brand Success!',
+        detail: 'Delete Shop Success!',
         life: 3000
       });
     },
     onError: (errors) => {
       console.error('Delete failed:', errors);
+      toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Failed to delete shop. Please try again.',
+        life: 3000
+      });
       closeConfirmation();
     },
   });
