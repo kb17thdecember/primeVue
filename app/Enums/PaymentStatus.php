@@ -7,13 +7,15 @@ enum PaymentStatus: int
     use EnumTrait;
 
     case SUCCESS = 1;
-    case FAILED = 2;
+    case CANCEL = 2;
+    case PENDING = 3;
 
     public static function stringNames(): array
     {
         return [
             self::SUCCESS->value => 'Success',
-            self::FAILED->value => 'Failed',
+            self::CANCEL->value => 'Failed',
+            self::PENDING->value => 'Pending',
         ];
     }
 

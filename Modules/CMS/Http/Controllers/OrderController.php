@@ -5,10 +5,12 @@ namespace Modules\CMS\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Inertia\Response;
 use Modules\CMS\Contracts\Services\SubscriberHistoryService;
 use Modules\CMS\Http\Requests\Order\StoreOrderRequest;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class OrderController extends Controller
 {
@@ -44,22 +46,59 @@ class OrderController extends Controller
     {
         $productId = $request->get('productId');
 
-        $resultStore = $this->subscriberHistoryService->store($productId, $request->all());
+        $resultStore = $this->subscriberHistoryService->store($productId);
 
-        if (!$resultStore) {
-            return redirect()->back()->with('error', 'Thanh toán thất bại');
+        if (!$resultStore['result']) {
+            return redirect()->back()->with('error', $resultStore['message']);
         }
 
-        return redirect()->back()->with('success', 'Thanh toán thành công');
+        return Inertia::location($resultStore['stripeUrl']);
     }
 
     /**
      * @param Request $request
-     * @return void
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function stripePaymentSuccess(Request $request)
     {
-        dd($request->all());
+        $sessionId = $request->get('session_id');
+        try {
+            $handleSuccessPaymentSession = $this->subscriberHistoryService->handleStripePaymentSuccess($sessionId);
+
+            if (!$handleSuccessPaymentSession) {
+                return redirect()->route('pricing.index')->with('error', 'Handle payment session success failed');
+            }
+
+            return redirect()->route('pricing.index')->with('success', 'Payment success!');
+        } catch (\Exception $e) {
+            Log::error(__METHOD__ . " error:" . $e->getMessage());
+            Log::error($e);
+
+            return redirect()->route('pricing.index')->with('error', $e->getMessage());
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function stripePaymentCancel(Request $request)
+    {
+        $sessionId = $request->get('session_id');
+        try {
+            $handleSuccessPaymentSession = $this->subscriberHistoryService->handleStripePaymentCancel($sessionId);
+
+            if (!$handleSuccessPaymentSession) {
+                return redirect()->route('pricing.index')->with('error', 'Handle payment session cancel was failed');
+            }
+
+            return redirect()->route('pricing.index')->with('warning', 'Payment is cancelled!');
+        } catch (\Exception $e) {
+            Log::error(__METHOD__ . " error:" . $e->getMessage());
+            Log::error($e);
+
+            return redirect()->route('pricing.index')->with('error', $e->getMessage());
+        }
     }
 
     /**

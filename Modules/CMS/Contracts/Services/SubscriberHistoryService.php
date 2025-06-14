@@ -17,13 +17,24 @@ interface SubscriberHistoryService
 
     /**
      * @param int $productId
-     * @param array $requestData
-     * @return bool
+     * @return array
      */
-    public function store(int $productId, array $requestData): bool;
+    public function store(int $productId): array;
 
     /**
      * @return array
      */
     public function stripeSetupIntent(): array;
+
+    /**
+     * @param string $sessionId
+     * @return bool
+     */
+    public function handleStripePaymentSuccess(string $sessionId): bool;
+
+    /**
+     * @param string $sessionId
+     * @return bool
+     */
+    public function handleStripePaymentCancel(string $sessionId): bool;
 }
