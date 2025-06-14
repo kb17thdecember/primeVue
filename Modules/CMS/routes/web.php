@@ -19,8 +19,9 @@ Route::middleware(['web', TrackShopFrequency::class,])->get('/cms/test-track', f
 });
 
 Route::get('/cms/', function () {
-    return redirect()->route('dashboard');
-})->name('login.form')->middleware('guest:admin');
+    return redirect()->route('cms.dashboard');
+});
+
 Route::get('/cms/login', [AuthController::class, 'formLogin'])->name('login.form')->middleware('guest:admin');
 Route::post('/cms/login', [AuthController::class, 'login'])->name('cms.login');
 Route::post('/cms/logout', [AuthController::class, 'logout'])->name('cms.logout');

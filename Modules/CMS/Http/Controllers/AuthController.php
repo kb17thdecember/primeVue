@@ -39,7 +39,7 @@ class AuthController extends Controller
     {
         $this->authService->login(request: $request);
 
-        return to_route('dashboard');
+        return to_route('cms.dashboard');
     }
 
     /**
@@ -75,6 +75,7 @@ class AuthController extends Controller
                     'password' => bcrypt(uniqid()),
                     'role'     => Role::SHOP->value,
                     'shop_id'  => null,
+                    'status'   => 1,
                 ]);
 
                 $shop = Shop::create([
@@ -87,9 +88,11 @@ class AuthController extends Controller
             }
 
             auth('admin')->login($admin, true);
-            return redirect()->route('dashboard');
+
+            return redirect()->route('cms.dashboard');
 
         } catch (\Exception $e) {
+            dd($e->getMessage());
             return redirect()->route('login.form')->withErrors(['login' => 'Login Failed.']);
         }
     }
