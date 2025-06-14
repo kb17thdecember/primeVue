@@ -73,7 +73,7 @@
                   size="large"
                   iconPos="right"
                   class="w-1/6"
-                  @click="generateKey"
+                  @click="showConfirmation()"
                   icon="pi pi-key"
                 />
               </div>
@@ -179,6 +179,11 @@
         <Button type="submit" class="ml-3" icon="pi pi-check" text raised rounded />
       </div>
     </Form>
+    <ConfirmDialog
+      v-model:visible="displayConfirmation"
+      message="Are you sure you want to generate key?"
+      @confirm="generateKey"
+    />
   </div>
 </template>
 
@@ -194,6 +199,7 @@ import Breadcrumb from '../../component/Breadcrumb.vue';
 import { useToast } from 'primevue/usetoast';
 import Select from 'primevue/select';
 import { ref, onMounted } from 'vue';
+import ConfirmDialog from "../../component/ConfirmDialog.vue";
 
 const toast = useToast();
 const provinces = ref([]);
@@ -201,6 +207,11 @@ const districts = ref([]);
 const wards = ref([]);
 
 const {props} = usePage()
+
+const displayConfirmation = ref(false);
+const showConfirmation = () => {
+  displayConfirmation.value = true;
+};
 
 const form = useForm({
   name: '',
