@@ -90,6 +90,7 @@ Route::group(['prefix' => 'cms', 'middleware' => ['admin.auth']], function () {
         Route::put('/status', [ShopController::class, 'updateStatus'])->name('shops.status');
         Route::get('{shop}/edit', [ShopController::class, 'edit'])->name('shops.edit');
         Route::put('{shop}', [ShopController::class, 'update'])->name('shops.update');
+        Route::put('/api-key', [ShopController::class, 'updateApiKey'])->name('shops.api-key');
     });
 
     Route::group(['prefix' => 'settings'], function () {

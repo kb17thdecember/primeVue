@@ -113,12 +113,9 @@
       <Column field="" header="" style="max-width: 5rem; min-width: 3rem" class="">
         <template #body="{ data }">
           <div class="flex flex-wrap gap-2 justify-center">
-
-            <Link href="#" v-if="data.request_key_flag == 1">
-              <OverlayBadge severity="danger">
-                <Button icon="pi pi-check" text raised rounded />
-              </OverlayBadge>
-            </Link>
+            <OverlayBadge severity="danger" v-if="data.request_key_flag == 1" @click="() => showChange(data)">
+              <Button icon="pi pi-check" text raised rounded />
+            </OverlayBadge>
             <Link :href="`/cms/shops/${data.id}/edit`">
               <Button icon="pi pi-pencil" severity="info" text raised rounded />
             </Link>
@@ -131,6 +128,13 @@
       v-model:visible="displayConfirmation"
       message="Are you sure you want to delete this brand?"
       @confirm="handleDelete"
+    />
+
+    <ConfirmDialog
+      v-model:visible="displayChange"
+      :header="'Confirm Change API Key'"
+      :message="`Do you want to change API Key form ${changingShop?.api_key ?? '-'} to ${newApiKey}?`"
+      @confirm="handleChange"
     />
   </div>
 </template>
@@ -165,6 +169,16 @@ const statuses = ref([
   { label: 'request', value: 2 }
 ]);
 
+const changingShop = ref(null);
+const newApiKey = ref('');
+function generateRandomApiKey(length = 50) {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
 function initFilters() {
   filters.value = {
     global: {value: null, matchMode: FilterMatchMode.CONTAINS},
@@ -204,11 +218,57 @@ const showConfirmation = (id) => {
   displayConfirmation.value = true;
 };
 
+const displayChange = ref(false);
+const showChange = (shop) => {
+  newApiKey.value = generateRandomApiKey();
+  changingShop.value = shop;
+  displayChange.value = true;
+};
+
+
+const form = useForm({});
+
+const formApi = useForm({
+  api_key: '',
+  request_key_flag: ''
+})
+const handleChange = () => {
+  if (!changingShop.value) return;
+
+  formApi.transform((form) => {
+    const formData = new FormData();
+    formData.append('_method', 'PUT');
+    formData.append('api_key', newApiKey.value);
+    formData.append('request_key_flag', '0');
+    return formData;
+  }).post(`/cms/shops/api-key`, {
+    preserveState: true,
+    preserveScroll: true,
+    forceFormData: true,
+    onSuccess: () => {
+      closeChange();
+      toast.add({
+        severity: 'success',
+        summary: 'Success',
+        detail: 'Update Key Success!',
+        life: 3000
+      });
+    },
+    onError: (errors) => {
+      console.error('Update Key failed:', errors);
+      closeConfirmation();
+    },
+  })
+}
+
 function closeConfirmation() {
   displayConfirmation.value = false;
 }
 
-const form = useForm({});
+function closeChange() {
+  displayChange.value = false;
+}
+
 const handleDelete = () => {
   if (!selectedBrandId.value) {
     console.error('Brand ID is missing');

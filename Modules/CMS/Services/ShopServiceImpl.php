@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Modules\CMS\Contracts\Repositories\ShopRepository;
 use Modules\CMS\Contracts\Services\ShopService;
+use Modules\CMS\Http\Requests\Shop\KeyRequest;
 use Modules\CMS\Http\Requests\Shop\StoreRequest;
 use Modules\CMS\Http\Requests\Shop\UpdateRequest;
 
@@ -97,5 +98,17 @@ class ShopServiceImpl implements ShopService
         ];
 
         return $this->shopRepository->updateModel($shop, $requestKey);
+    }
+
+    /**
+     * @param KeyRequest $request
+     * @return Model
+     */
+    public function updateApiKey(KeyRequest $request): Model
+    {
+        $data = $request->validated();
+        $shop = $this->show();
+
+        return $this->shopRepository->updateModel($shop, $data);
     }
 }

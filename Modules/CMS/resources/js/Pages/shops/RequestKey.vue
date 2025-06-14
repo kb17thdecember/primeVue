@@ -199,9 +199,9 @@ const form = useForm({
 
 const displayConfirmation = ref(false);
 
-const showConfirmation = (id) => {
-  displayConfirmation.value = true;
-};
+  const showConfirmation = (id) => {
+    displayConfirmation.value = true;
+  };
 
 const handleRequest = () => {
   form.transform((form) => {

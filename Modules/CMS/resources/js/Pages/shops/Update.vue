@@ -59,7 +59,7 @@
                   size="large"
                   iconPos="right"
                   class="w-1/6"
-                  @click="generateKey"
+                  @click="showConfirmation()"
                   icon="pi pi-key"
                 />
               </div>
@@ -153,6 +153,11 @@
         <Button type="submit" class="ml-3" icon="pi pi-check" text raised rounded />
       </div>
     </Form>
+    <ConfirmDialog
+      v-model:visible="displayConfirmation"
+      message="Are you sure you want to generate key?"
+      @confirm="generateKey"
+    />
   </div>
 </template>
 
@@ -167,11 +172,17 @@ import {Link, useForm, usePage} from '@inertiajs/vue3';
 import Breadcrumb from '../../component/Breadcrumb.vue';
 import { ref } from 'vue';
 import { useToast } from 'primevue/usetoast';
+import ConfirmDialog from "../../component/ConfirmDialog.vue";
 
 const toast = useToast();
 
 const { props } = usePage();
 const shop = props.shop;
+
+const displayConfirmation = ref(false);
+const showConfirmation = () => {
+  displayConfirmation.value = true;
+};
 
 const formFields = [
   { id: 'name', label: 'Shop Name' },
