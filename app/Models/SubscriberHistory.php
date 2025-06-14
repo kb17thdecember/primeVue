@@ -15,6 +15,7 @@ class SubscriberHistory extends Model
     public $table = 'subscriber_histories';
 
     protected $fillable = [
+        'payment_session_id',
         'payment_data',
         'shop_id',
         'product_id',

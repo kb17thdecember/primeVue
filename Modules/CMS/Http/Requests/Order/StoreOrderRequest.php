@@ -13,8 +13,6 @@ class StoreOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'cardholderName' => 'required|string|max:255',
-            'payment_method' => 'required|string',
             'productId' => 'required'
         ];
     }
