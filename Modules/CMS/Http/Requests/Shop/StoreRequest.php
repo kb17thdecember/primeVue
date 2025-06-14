@@ -14,8 +14,8 @@ class StoreRequest extends FormRequest
         return [
             'name' => 'required',
             'admin_id' => 'required',
-            'province' => 'required|string',
-            'prefecture' => 'required|string',
+            'province' => 'nullable|string',
+            'prefecture' => 'nullable|string',
             'town' => 'string|nullable',
             'address' => 'string|nullable',
             'phone_number' => 'required|numeric',
