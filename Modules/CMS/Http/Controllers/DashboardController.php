@@ -18,9 +18,11 @@ class DashboardController extends \App\Http\Controllers\Controller
     public function index(): Response
     {
         $shopFrequency = $this->shopFrequencyService->getShopFrequency();
+        $dataReport = $this->shopFrequencyService->getDataDashboardReport();
 
         return Inertia::render('dashboard/Home', [
-            'frequency' => $shopFrequency
+            'frequency' => $shopFrequency,
+            'dataReport' => $dataReport
         ]);
     }
 

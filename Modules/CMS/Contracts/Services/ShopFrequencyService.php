@@ -11,4 +11,9 @@ interface ShopFrequencyService
      * @return Collection
      */
     public function getShopFrequency(): Collection;
+
+    /**
+     * @return array
+     */
+    public function getDataDashboardReport(): array;
 }

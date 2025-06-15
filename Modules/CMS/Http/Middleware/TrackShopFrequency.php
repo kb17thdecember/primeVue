@@ -3,6 +3,8 @@
 namespace Modules\CMS\Http\Middleware;
 
 use App\Enums\ShopStatus;
+use App\Mail\ReminderMail;
+use App\Models\Setting;
 use App\Models\Shop;
 use Closure;
 use Illuminate\Http\Request;
@@ -10,6 +12,7 @@ use App\Models\ShopFrequency;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class TrackShopFrequency
 {
@@ -43,6 +46,12 @@ class TrackShopFrequency
             DB::beginTransaction();
             $shop->current_token_qty --;
             $shop->save();
+
+            $setting = Setting::first();
+
+            if ($setting->remaining == $shop->current_token_qty) {
+                Mail::to($shop->admin->email)->send(new ReminderMail($setting));
+            }
 
             $date = Carbon::today()->toDateString();
 

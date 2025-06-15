@@ -3,7 +3,7 @@
 
   <div class="flex mt-6 justify-between">
     <div class="w-[24%]" v-for="(card, index) in cards" :key="index">
-      <div class="card mb-0">
+      <div class="card mb-0" style="min-height: 150px">
         <div class="flex justify-between mb-4">
           <div>
             <span class="block text-muted-color font-medium mb-4">{{ card.title }}</span>
@@ -17,8 +17,10 @@
             <i :class="card.icon + ' !text-xl ' + card.iconColor"></i>
           </div>
         </div>
-        <span class="text-primary font-medium">{{ card.meta1 }}</span>
-        <span class="text-muted-color">{{ card.meta2 }}</span>
+        <p>
+            <span class="text-primary font-medium" v-if="card.meta1">{{ card.meta1 + ' '}}</span>
+            <span class="text-muted-color" v-if="card.meta2">({{ card.meta2 }})</span>
+        </p>
       </div>
     </div>
   </div>
@@ -36,43 +38,43 @@ import Breadcrumb from '../../component/Breadcrumb.vue'
 import Chart from 'primevue/chart'
 
 const {props} = usePage()
+// 'order_qty' => count($orders),
+//     'token_available' => $currentUser->shop?->current_token_qty,
+//     'token_used' => $shopFrequency->sum('daily_count'),
+//     'revenue' => $orders->sum('daily_count'),
 
 const cards = ref([
   {
     title: 'Orders',
-    value: '152',
+    value: props.dataReport.order_qty,
     icon: 'pi pi-shopping-cart',
     iconColor: 'text-blue-500',
     iconBg: 'bg-blue-100 dark:bg-blue-400/10',
-    meta1: '24 new ',
-    meta2: 'since last visit',
+    meta1: props.dataReport.order_qty_current_month + ' new',
+    meta2: 'current month',
   },
   {
-    title: 'Revenue',
-    value: '$2.100',
+    title: 'Month revenue',
+    value: '$' + props.dataReport.revenue,
     icon: 'pi pi-dollar',
     iconColor: 'text-orange-500',
     iconBg: 'bg-orange-100 dark:bg-orange-400/10',
-    meta1: '%52+ ',
-    meta2: 'since last week',
   },
+{
+    title: 'Total Revenue',
+    value: '$' + props.dataReport.revenue_current_month,
+    icon: 'pi pi-dollar',
+    iconColor: 'text-orange-500',
+    iconBg: 'bg-orange-100 dark:bg-orange-400/10'
+},
   {
-    title: 'Customers',
-    value: '28441',
+    title: 'API token',
+    value: props.dataReport.token_available,
     icon: 'pi pi-users',
     iconColor: 'text-cyan-500',
     iconBg: 'bg-cyan-100 dark:bg-cyan-400/10',
-    meta1: '520 ',
-    meta2: 'newly registered',
-  },
-  {
-    title: 'Comments',
-    value: '152 Unread',
-    icon: 'pi pi-comment',
-    iconColor: 'text-purple-500',
-    iconBg: 'bg-purple-100 dark:bg-purple-400/10',
-    meta1: '85 ',
-    meta2: 'responded',
+    meta1: props.dataReport.token_used,
+    meta2: 'used',
   },
 ])
 
