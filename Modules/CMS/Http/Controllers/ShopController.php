@@ -144,11 +144,11 @@ class ShopController extends Controller
     {
         $this->shopService->updateRequestKey();
         $this->mailService->send([
-            'to' => 'thanh98nv@gmail.com',
+            'to' => 'nguyentuankietdz@gmail.com',
             'subject' => 'Request Key Updated',
             'content' => "A new request key update API Key has been submitted.\n\n"
-                . "Shop: " . Auth::user()->name . "\n"
-                . "Email: " . Auth::user()->email . "\n"
+                . "Shop name: " . Auth::user()->name . "\n"
+                . "Shop email: " . Auth::user()->email . "\n"
                 . "Requested at: " . now()->format('Y-m-d H:i:s'),
         ]);
 

@@ -98,9 +98,4 @@ Route::group(['prefix' => 'cms', 'middleware' => ['admin.auth']], function () {
         Route::get('/edit', [SettingController::class, 'edit'])->name('settings.edit');
         Route::put('/update', [SettingController::class, 'update'])->name('settings.update');
     });
-
-    Route::group(['prefix' => 'mail'], function () {
-        Route::get('/compose', [MailController::class, 'create'])->name('cms.mail.compose');
-        Route::post('/send', [MailController::class, 'send'])->name('cms.mail.send');
-    });
 });
