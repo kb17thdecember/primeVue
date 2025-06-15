@@ -19,9 +19,7 @@ class SettingServiceImpl implements SettingService
      */
     public function getSetting(): mixed
     {
-        $setting = $this->settingRepository->handle()->first();
-
-        return $setting ? $setting->remaining : '';
+        return $this->settingRepository->handle()->first();
     }
 
     /**
@@ -32,6 +30,8 @@ class SettingServiceImpl implements SettingService
     {
         $data = [
             'remaining' => $request->get('remaining'),
+            'mail_template' => $request->get('mailTemplate'),
+            'mail_subject' => $request->get('mailSubject'),
         ];
 
         $setting = $this->settingRepository->handle()->first();

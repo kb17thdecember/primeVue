@@ -92,7 +92,6 @@ class AuthController extends Controller
             return redirect()->route('cms.dashboard');
 
         } catch (\Exception $e) {
-            dd($e->getMessage());
             return redirect()->route('login.form')->withErrors(['login' => 'Login Failed.']);
         }
     }

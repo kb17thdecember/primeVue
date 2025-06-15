@@ -12,6 +12,8 @@ class Setting extends Model
 
     protected $fillable = [
         'remaining',
+        'mail_subject',
+        'mail_template',
         'updated_at',
         'created_at',
     ];

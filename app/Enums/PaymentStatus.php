@@ -9,6 +9,7 @@ enum PaymentStatus: int
     case SUCCESS = 1;
     case CANCEL = 2;
     case PENDING = 3;
+    case SYSTEM_CANCEL = 4;
 
     public static function stringNames(): array
     {
@@ -16,6 +17,7 @@ enum PaymentStatus: int
             self::SUCCESS->value => 'Success',
             self::CANCEL->value => 'Failed',
             self::PENDING->value => 'Pending',
+            self::SYSTEM_CANCEL->value => 'System cancel',
         ];
     }
 

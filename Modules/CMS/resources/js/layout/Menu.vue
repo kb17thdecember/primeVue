@@ -70,15 +70,10 @@ const menuItems = ref([
                 icon: 'pi pi-fw pi-bell',
                 routeName: 'settings.edit',
                 activeRouteNames: ['settings.edit'],
-                roles: [0, 1]
-            },
-            // {label: 'Message', icon: 'pi pi-fw pi-comment', routeName: 'messages.index'},
-            // {label: 'Rate', icon: 'pi pi-fw pi-star', routeName: 'rates.index', class: 'rotated-icon'},
-            // {label: 'Feedback', icon: 'pi pi-fw pi-thumbs-up', routeName: 'feedbacks.index', class: 'rotated-icon'},
-            // {label: 'Complaints', icon: 'pi pi-fw pi-envelope', routeName: 'complaints.index', class: 'rotated-icon'},
-            // {label: 'News', icon: 'pi pi-fw pi-globe', routeName: 'news.index', class: 'rotated-icon'},
+                roles: [0]
+            }
         ],
-        roles: [0, 1]
+        roles: [0]
     },
     {
         label: 'Shop',
