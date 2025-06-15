@@ -6,6 +6,7 @@ use Modules\CMS\Http\Controllers\AuthController;
 use Modules\CMS\Http\Controllers\BrandController;
 use Modules\CMS\Http\Controllers\CategoryController;
 use Modules\CMS\Http\Controllers\DashboardController;
+use Modules\CMS\Http\Controllers\MailController;
 use Modules\CMS\Http\Controllers\OrderController;
 use Modules\CMS\Http\Controllers\ProductController;
 use Modules\CMS\Http\Controllers\SettingController;
@@ -96,5 +97,10 @@ Route::group(['prefix' => 'cms', 'middleware' => ['admin.auth']], function () {
     Route::group(['prefix' => 'settings'], function () {
         Route::get('/edit', [SettingController::class, 'edit'])->name('settings.edit');
         Route::put('/update', [SettingController::class, 'update'])->name('settings.update');
+    });
+
+    Route::group(['prefix' => 'mail'], function () {
+        Route::get('/compose', [MailController::class, 'create'])->name('cms.mail.compose');
+        Route::post('/send', [MailController::class, 'send'])->name('cms.mail.send');
     });
 });

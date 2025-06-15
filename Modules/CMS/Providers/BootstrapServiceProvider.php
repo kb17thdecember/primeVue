@@ -7,6 +7,7 @@ use Modules\CMS\Contracts\Services\AdminService;
 use Modules\CMS\Contracts\Services\AuthService;
 use Modules\CMS\Contracts\Services\BrandService;
 use Modules\CMS\Contracts\Services\CategoryService;
+use Modules\CMS\Contracts\Services\MailService;
 use Modules\CMS\Contracts\Services\ProductService;
 use Modules\CMS\Contracts\Services\SettingService;
 use Modules\CMS\Contracts\Services\ShopFrequencyService;
@@ -17,6 +18,7 @@ use Modules\CMS\Services\AdminServiceImpl;
 use Modules\CMS\Services\AuthServiceImpl;
 use Modules\CMS\Services\BrandServiceImpl;
 use Modules\CMS\Services\CategoryServiceImpl;
+use Modules\CMS\Services\MailServiceImpl;
 use Modules\CMS\Services\ProductServiceImpl;
 use Modules\CMS\Services\SettingServiceImpl;
 use Modules\CMS\Services\ShopFrequencyServiceImpl;
@@ -40,6 +42,7 @@ class BootstrapServiceProvider extends ServiceProvider
         AdminService::class => AdminServiceImpl::class,
         SettingService::class => SettingServiceImpl::class,
         ShopFrequencyService::class => ShopFrequencyServiceImpl::class,
+        MailService::class => MailServiceImpl::class,
     ];
 
     /**

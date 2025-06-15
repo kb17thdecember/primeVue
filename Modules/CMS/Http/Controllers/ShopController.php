@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Inertia\Response;
 use Modules\CMS\Contracts\Services\AdminService;
+use Modules\CMS\Contracts\Services\MailService;
 use Modules\CMS\Contracts\Services\ShopService;
 use Modules\CMS\Http\Requests\Shop\UpdateKeyRequest;
 use Modules\CMS\Http\Requests\Shop\StoreRequest;
@@ -22,7 +23,8 @@ class ShopController extends Controller
 {
     public function __construct(
         private readonly ShopService $shopService,
-        private readonly AdminService $adminService
+        private readonly AdminService $adminService,
+        private readonly MailService $mailService
     ){}
 
     /**
@@ -141,6 +143,14 @@ class ShopController extends Controller
     public function updateStatus(): RedirectResponse
     {
         $this->shopService->updateRequestKey();
+        $this->mailService->send([
+            'to' => 'thanh98nv@gmail.com',
+            'subject' => 'Request Key Updated',
+            'content' => "A new request key update API Key has been submitted.\n\n"
+                . "Shop: " . Auth::user()->name . "\n"
+                . "Email: " . Auth::user()->email . "\n"
+                . "Requested at: " . now()->format('Y-m-d H:i:s'),
+        ]);
 
         return to_route('shops.key.edit');
     }
