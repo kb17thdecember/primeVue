@@ -43,12 +43,25 @@
             </div>
             <Button type="submit" label="Sign In" class="w-full"></Button>
           </Form>
+
+          <p class="text-gray-500 mt-4 text-center">or</p>
+
           <Button
-            label="Google"
-            icon="pi pi-google"
-            class="mr-2 mt-6"
+            label="Sign in with Google"
+            severity="secondary"
+            outlined
             @click="redirectToGoogle"
-          />
+            class="w-full"
+          >
+            <template #icon>
+              <svg class="w-5 h-5 mr-2" viewBox="0 0 533.5 544.3" xmlns="http://www.w3.org/2000/svg">
+                <path fill="#4285f4" d="M533.5 278.4c0-18.3-1.5-36.1-4.3-53.3H272v100.9h146.9c-6.3 33.7-25.1 62.2-53.6 81.3v67.3h86.8c50.8-46.8 81.4-115.7 81.4-196.2z"/>
+                <path fill="#34a853" d="M272 544.3c72.6 0 133.7-24.1 178.3-65.6l-86.8-67.3c-24.1 16.2-55 25.6-91.5 25.6-70.4 0-130.1-47.6-151.4-111.5H30.9v69.9C75.8 476.6 166.2 544.3 272 544.3z"/>
+                <path fill="#fbbc04" d="M120.6 325.5c-10.1-29.7-10.1-61.6 0-91.3V164.3H30.9c-30.5 60.6-30.5 131.4 0 192z"/>
+                <path fill="#ea4335" d="M272 107.1c38.5-.6 75.4 13.8 103.6 39.9l77.4-77.4C404.7 23.6 339.9-1.6 272 0 166.2 0 75.8 67.7 30.9 164.3l89.7 69.9C141.9 154.7 201.6 107.1 272 107.1z"/>
+              </svg>
+            </template>
+          </Button>
         </div>
       </div>
     </div>
