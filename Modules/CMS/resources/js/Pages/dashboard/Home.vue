@@ -7,7 +7,7 @@
         <div class="flex justify-between mb-4">
           <div>
             <span class="block text-muted-color font-medium mb-4">{{ card.title }}</span>
-            <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">{{ card.value }}</div>
+            <div class="font-medium text-xl">{{ card.value }}</div>
           </div>
           <div
             class="flex items-center justify-center rounded-border"
