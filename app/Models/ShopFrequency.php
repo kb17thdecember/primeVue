@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ShopFrequency extends Model
 {
@@ -13,7 +14,16 @@ class ShopFrequency extends Model
         'api_key',
         'date',
         'daily_count',
+        'shop_id'
     ];
 
     protected $casts = [];
+
+    /**
+     * @return BelongsTo
+     */
+    public function shop(): BelongsTo
+    {
+        return $this->belongsTo(Shop::class);
+    }
 }

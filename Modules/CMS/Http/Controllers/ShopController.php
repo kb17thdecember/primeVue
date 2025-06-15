@@ -2,7 +2,9 @@
 
 namespace Modules\CMS\Http\Controllers;
 
+use App\Enums\ShopStatus;
 use App\Http\Controllers\Controller;
+use App\Models\Shop;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -33,6 +35,30 @@ class ShopController extends Controller
         return Inertia::render('shops/Index', [
             'shops' => $shops,
         ]);
+    }
+
+    public function getInfo(Request $request): JsonResponse
+    {
+        $apiKey = $request->header('X-Shop-Api-Key');
+
+        $shop = Shop::query()
+            ->where('api_key', $apiKey)
+            ->where('status', ShopStatus::ACTIVE->value)
+            ->first();
+
+        if (!$shop) {
+            return response()->json([
+                'message' => 'Shop not found',
+            ], 404);
+        }
+
+        return response()->json([
+            'name' => $shop->name,
+            'address' => $shop->address,
+            'phone_number' => $shop->phone_number,
+            'current_token_qty' => $shop->current_token_qty,
+            'token_expired_date' => $shop->token_expired_date,
+        ], 200);
     }
 
     /**

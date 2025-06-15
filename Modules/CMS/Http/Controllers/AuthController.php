@@ -2,7 +2,9 @@
 
 namespace Modules\CMS\Http\Controllers;
 
+use App\Enums\AdminStatus;
 use App\Enums\Role;
+use App\Enums\ShopStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use App\Models\Shop;
@@ -75,13 +77,13 @@ class AuthController extends Controller
                     'password' => bcrypt(uniqid()),
                     'role'     => Role::SHOP->value,
                     'shop_id'  => null,
-                    'status'   => 1,
+                    'status'   => AdminStatus::ENABLE->value,
                 ]);
 
                 $shop = Shop::create([
                     'admin_id' => $admin->id,
                     'name'     => $googleUser->getName(),
-                    'status'   => 1,
+                    'status'   => ShopStatus::ACTIVE->value,
                 ]);
 
                 $admin->update(['shop_id' => $shop->id]);

@@ -14,9 +14,7 @@ use Modules\CMS\Http\Controllers\SubscriberHistoryController;
 use Modules\CMS\Http\Middleware\TrackShopFrequency;
 use Modules\CMS\Http\Controllers\PricingController;
 
-Route::middleware(['web', TrackShopFrequency::class,])->get('/cms/test-track', function () {
-    return response()->json(['message' => 'Tracked']);
-});
+Route::middleware(['web', TrackShopFrequency::class,])->get('/cms/get-info', [ShopController::class, 'getInfo']);
 
 Route::get('/cms/', function () {
     return redirect()->route('cms.dashboard');

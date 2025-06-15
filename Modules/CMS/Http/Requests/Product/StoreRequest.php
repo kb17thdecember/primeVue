@@ -19,6 +19,7 @@ class StoreRequest extends FormRequest
             'subtitle' => 'nullable|string',
             'description' => 'nullable|string',
             'token_qty' => 'required|numeric',
+            'day_available' => 'required|numeric',
             'price' => 'required|numeric',
             'release_date' => 'nullable',
             'type' => 'required|in:' . implode(',', array_keys(ProductType::values())),

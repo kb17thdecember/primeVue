@@ -92,6 +92,18 @@
                                 </FloatLabel>
                             </div>
                         </div>
+                        <FloatLabel variant="on" class="mt-6">
+                            <InputText
+                                class="text-sm"
+                                name="day_available"
+                                id="day_available"
+                                type="number"
+                                size="large"
+                                v-model="form.day_available"
+                            />
+                            <label for="day_available">Day available (only apply for type One time)</label>
+                        </FloatLabel>
+
                     </div>
                 </div>
 
@@ -150,7 +162,8 @@ const form = useForm({
     image: props.product?.image ?? [],
     stripe_product_id: props.product?.stripe_product_id ?? '',
     subtitle: props.product?.subtitle ?? '',
-    token_qty: props.product?.token_qty ?? 1000
+    token_qty: props.product?.token_qty ?? 1000,
+    day_available: props.product?.day_available ?? 30
 })
 
 const formFields = [
@@ -173,6 +186,7 @@ const handleUpdate = () => {
         description: form.description,
         price: form.price,
         token_qty: form.token_qty,
+        day_available: form.day_available,
         release_date: dayjs(form.release_date).format('YYYY-MM-DD'),
         type: form.type,
         stripe_product_id: form.stripe_product_id,

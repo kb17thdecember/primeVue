@@ -21,6 +21,7 @@ class Product extends Model
         'type',
         'release_date',
         'stripe_product_id',
+        'day_available',
         'updated_at',
         'created_at',
     ];

@@ -2,6 +2,7 @@
 
 namespace Modules\CMS\Services;
 
+use App\Enums\Role;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -22,9 +23,11 @@ class ShopFrequencyServiceImpl implements ShopFrequencyService
      */
     public function getShopFrequency(): Collection
     {
-        $condition = new Request([
-            'id' => Auth::user()->shop_id,
-        ]);
+        $currentUser = Auth::user();
+        $requestData = Role::SHOP->is($currentUser->role)
+            ? ['id' => $currentUser->shop_id]
+            : [];
+        $condition = new Request($requestData);
         $shop = $this->shopRepository->handle($condition)->first();
 
         $apiKey = $shop?->api_key;

@@ -23,6 +23,7 @@ class SubscriberHistory extends Model
         'price',
         'type',
         'payment_status',
+        'day_available',
         'updated_at',
         'created_at',
     ];

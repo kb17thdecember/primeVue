@@ -24,6 +24,7 @@ class ProductResource extends JsonResource
             'image' => $this->image,
             'type' => $this->type->string(),
             'release_date' => $this->release_date,
+            'day_available' => $this->day_available
         ];
     }
 }

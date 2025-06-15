@@ -4,13 +4,18 @@ namespace Modules\CMS\Services;
 
 use App\Enums\PaymentStatus;
 use App\Enums\ProductType;
+use App\Enums\Role;
+use App\Enums\TokenStockStatus;
 use App\Models\Admin;
 use App\Models\Product;
+use App\Models\ShopTokenStocks;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Modules\CMS\Contracts\Repositories\ProductRepository;
+use Modules\CMS\Contracts\Repositories\ShopTokenStockRepository;
 use Modules\CMS\Contracts\Repositories\SubscriberHistoryRepository;
 use Modules\CMS\Contracts\Services\SubscriberHistoryService;
 use Stripe\SetupIntent;
@@ -22,6 +27,7 @@ readonly class SubscriberHistoryServiceImpl implements SubscriberHistoryService
     public function __construct(
         private SubscriberHistoryRepository $subscriberHistoryRepository,
         private ProductRepository $productRepository,
+        private ShopTokenStockRepository $shopTokenStockRepository,
     ) {}
 
     /**
@@ -73,6 +79,13 @@ readonly class SubscriberHistoryServiceImpl implements SubscriberHistoryService
         \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
 
         try {
+            $currentUser = auth()->user();
+            if (Role::ADMIN->is($currentUser->role)) {
+                Log::error("Admin can not subscribe product");
+
+                return false;
+            }
+
             $session = \Stripe\Checkout\Session::retrieve($sessionId);
 
             if (!$session) {
@@ -82,10 +95,10 @@ readonly class SubscriberHistoryServiceImpl implements SubscriberHistoryService
             }
 
             $request = new Request([
-                'payment_session_id' => $session->id,
+                'payment_session_id' => $session->id
             ]);
 
-            $subscriberHistory = $this->subscriberHistoryRepository->handle($request)->first();
+            $subscriberHistory = $this->subscriberHistoryRepository->handle($request)->with(['product', 'shop'])->first();
 
             if (!$subscriberHistory) {
                 Log::error(__METHOD__ . " Not found subscribe history has session_id => $sessionId");
@@ -95,13 +108,55 @@ readonly class SubscriberHistoryServiceImpl implements SubscriberHistoryService
 
 
             if ($subscriberHistory->payment_status === PaymentStatus::PENDING) {
+                $subscriberHistory->payment_data = $session->toArray();
                 $subscriberHistory->payment_status = PaymentStatus::SUCCESS->value;
-
                 $subscriberHistory->save();
+
+                $this->handleTokenStockAfterSuccessPayment($subscriberHistory);
             }
 
             return true;
         } catch (\Exception $e) {
+            Log::error(__METHOD__ . " error:" . $e->getMessage());
+            Log::error($e);
+
+            return false;
+        }
+    }
+
+    protected function handleTokenStockAfterSuccessPayment($subscriberHistory)
+    {
+        try {
+            DB::beginTransaction();
+            $product = $subscriberHistory->product;
+            $currentUser = auth()->user();
+
+            $availableEndDate = ProductType::ONE_TIME->is($product->type)
+                ? now()->addDays($product->day_available)->format('Y-m-d H:i:s')
+                : null;
+
+            $this->shopTokenStockRepository->create([
+                'shop_id' => $subscriberHistory->shop_id,
+                'product_id' => $product->id,
+                'token_qty' => $product->token_qty,
+                'available_start_date' => now()->format('Y-m-d H:i:s'),
+                'available_end_date' => $availableEndDate,
+                'status' => TokenStockStatus::ADDED
+            ]);
+
+            $shop = $subscriberHistory->shop;
+            if (!isset($shop)) {
+                DB::rollBack();
+            }
+            $shop->token_expired_date = $availableEndDate;
+            $shop->current_token_qty += $product->token_qty;
+            $shop->save();
+
+            DB::commit();
+
+            return true;
+        } catch (\Exception $e) {
+            DB::rollBack();
             Log::error(__METHOD__ . " error:" . $e->getMessage());
             Log::error($e);
 

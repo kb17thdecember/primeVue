@@ -24,9 +24,9 @@ const menuItems = ref([
             icon: 'pi pi-fw pi-home',
             routeName: 'cms.dashboard',
             activeRouteNames: ['cms.dashboard'],
-            roles: [1]
+            roles: [0, 1]
         }],
-        roles: [1]
+        roles: [0, 1]
     },
     {
         label: 'Services',

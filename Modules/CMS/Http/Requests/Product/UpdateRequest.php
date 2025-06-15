@@ -19,6 +19,7 @@ class UpdateRequest extends FormRequest
             'release_date' => 'nullable',
             'price' => 'required|numeric',
             'token_qty' => 'required|numeric',
+            'day_available' => 'required_if:type,' . ProductType::ONE_TIME->value . '|numeric',
             'type' => 'required|in:' . implode(',', array_keys(ProductType::values())),
             'stripe_product_id' => 'required|string'
         ];

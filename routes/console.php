@@ -9,3 +9,5 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command("app:auto-cancel-subscribe-payment-stripe")->everyThirtyMinutes();
+Schedule::command("app:inactive-shop-token-stock-expired")->cron('0 0 * * *');
+

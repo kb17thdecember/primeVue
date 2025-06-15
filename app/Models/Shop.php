@@ -24,6 +24,8 @@ class Shop extends Model
         'status',
         'request_key_flag',
         'api_key',
+        'current_token_qty',
+        'token_expired_date',
         'updated_at',
         'created_at',
     ];
@@ -47,4 +49,11 @@ class Shop extends Model
             ->where('role', Role::SHOP->value);
     }
 
+    /**
+     * @return HasMany
+     */
+    public function shopFrequencies(): HasMany
+    {
+        return $this->hasMany(ShopFrequency::class);
+    }
 }

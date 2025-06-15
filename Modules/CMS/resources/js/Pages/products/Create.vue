@@ -92,6 +92,17 @@
                                 </FloatLabel>
                             </div>
                         </div>
+                        <FloatLabel variant="on" class="mt-6">
+                            <InputText
+                                class="text-sm"
+                                name="day_available"
+                                id="day_available"
+                                type="number"
+                                size="large"
+                                v-model="form.day_available"
+                            />
+                            <label for="day_available">Day available (only apply for type One time)</label>
+                        </FloatLabel>
                     </div>
                 </div>
 
@@ -146,6 +157,7 @@ const form = useForm({
     price: '',
     token_qty: 1000,
     release_date: today,
+    day_available: 30
 });
 
 const formFields = [
