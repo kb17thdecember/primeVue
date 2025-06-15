@@ -22,8 +22,10 @@ class SettingController extends Controller
     public function edit(): Response
     {
         $data = $this->settingService->getSetting();
+
         return Inertia::render('settings/Update', [
-            'setting' => $data
+            'setting' => $data,
+            'remainingQtyVariable' => config('mail.remaining_templates.variables.remaining_qty')
         ]);
     }
 

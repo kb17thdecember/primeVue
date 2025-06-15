@@ -34,7 +34,7 @@
                         </FloatLabel>
                     </div>
                     <div class="relative mt-6">
-                        <span>Please use "[remaining_number]" to fill value of remaining qty into mail template</span>
+                        <span>Please use "{{props.remainingQtyVariable}}" to fill value of remaining qty into mail template</span>
                         <FloatLabel variant="on" class="mt-2">
                             <div id="mailTemplate">
                                 <Editor v-model="form.mailTemplate" editorStyle="height: 200px"/>

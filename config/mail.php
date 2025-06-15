@@ -113,4 +113,9 @@ return [
         'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
 
+    'remaining_templates' => [
+        'variables' => [
+            'remaining_qty' => "[remaining_number]",
+        ]
+    ],
 ];

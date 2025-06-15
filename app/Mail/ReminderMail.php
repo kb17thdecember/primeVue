@@ -27,7 +27,8 @@ class ReminderMail extends Mailable
      */
     public function build(): static
     {
-        $mailTemplate = str_replace('[remaining_number]', $this->setting->remaining, $this->setting->mail_template);
+        $remainingQtyVariable = config('mail.remaining_templates.variables.remaining_qty');
+        $mailTemplate = str_replace($remainingQtyVariable, $this->setting->remaining, $this->setting->mail_template);
 
         return $this->subject($this->setting->mail_subject)
             ->view('emails.remaining', compact('mailTemplate'));
