@@ -16,7 +16,7 @@
                   v-model="form[field.id]"
                   size="large"
                   :invalid="!!errors[field.id]"
-                  @input="validateField(field.id)"
+                  @input="clearError(field.id)"
                 />
                 <label :for="field.id">{{ field.label }}</label>
               </FloatLabel>
@@ -33,7 +33,7 @@
                   v-model="form.password"
                   size="large"
                   :invalid="!!errors.password"
-                  @input="validateField('password')"
+                  @input="clearError('password')"
                 />
                 <label for="password">Password</label>
               </FloatLabel>
@@ -52,7 +52,7 @@
                     autocomplete="off"
                     :class="{ 'text-transparent': !showKey, 'tracking-widest': !showKey, 'p-invalid': !!errors.api_key }"
                     :style="!showKey ? 'text-security: disc; -webkit-text-security: disc;' : ''"
-                    @input="validateField('api_key')"
+                    @input="clearError('api_key')"
                   />
                   <label for="api_key">API Key</label>
                 </FloatLabel>
@@ -133,7 +133,7 @@
                     size="large"
                     showClear
                     :invalid="!!errors.town"
-                    @change="validateField('town')"
+                    @change="clearError('town')"
                   />
                   <label for="town">Commune/Town</label>
                 </FloatLabel>
@@ -150,7 +150,7 @@
                   v-model="form.address"
                   size="large"
                   :invalid="!!errors.address"
-                  @input="validateField('address')"
+                  @input="clearError('address')"
                 />
                 <label for="address">Address</label>
               </FloatLabel>
@@ -158,7 +158,7 @@
 
             <div class="mt-6">
               <FloatLabel variant="on">
-                <InputNumber
+                <InputText
                   class="text-sm"
                   name="phone_number"
                   id="phone_number"
@@ -167,7 +167,7 @@
                   :useGrouping="false"
                   :max="99999999999"
                   :invalid="!!errors.phone_number"
-                  @input="validateField('phone_number')"
+                  @input="clearError('phone_number')"
                 />
                 <label for="phone_number">Phone Number</label>
               </FloatLabel>
@@ -182,7 +182,6 @@
                 :binary="true"
                 :trueValue="1"
                 :falseValue="0"
-                @input="validateField('status')"
               />
               <label for="status"> Active/Inactive </label>
             </div>
@@ -223,7 +222,7 @@ import { Link, useForm, usePage } from '@inertiajs/vue3';
 import Breadcrumb from '../../component/Breadcrumb.vue';
 import { useToast } from 'primevue/usetoast';
 import Select from 'primevue/select';
-import { ref, computed, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import ConfirmDialog from '../../component/ConfirmDialog.vue';
 
 const toast = useToast();
@@ -260,35 +259,43 @@ const formFields = [
 ];
 
 const errors = ref({});
-const touchedFields = ref(new Set());
-const isFormValid = computed(() => {
-  const requiredFields = ['name', 'email', 'password', 'api_key', 'phone_number'];
-  const allTouched = requiredFields.every(field => touchedFields.value.has(field));
-  return allTouched && Object.keys(errors.value).length === 0;
-});
 
-const validateField = (field) => {
-  touchedFields.value.add(field);
-  errors.value[field] = '';
-
-  if (['name', 'email', 'password', 'api_key'].includes(field)) {
-    if (!form[field]) {
-      errors.value[field] = `${field.charAt(0).toUpperCase() + field.slice(1)} is required`;
-    }
+const clearError = (field) => {
+  if (errors.value[field]) {
+    errors.value[field] = '';
+    errors.value = { ...errors.value };
   }
+};
 
-  if (field === 'email' && form.email) {
+const validateForm = () => {
+  errors.value = {};
+
+  const requiredFields = [
+    { id: 'name', label: 'Shop Name' },
+    { id: 'email', label: 'Email' },
+    { id: 'password', label: 'Password' },
+    { id: 'api_key', label: 'API Key' },
+    { id: 'phone_number', label: 'Phone Number' }
+  ];
+
+  requiredFields.forEach(field => {
+    if (!form[field.id]) {
+      errors.value[field.id] = `${field.label} is required`;
+    }
+  });
+
+  if (form.email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(form.email)) {
       errors.value.email = 'Invalid email format';
     }
   }
 
-  if (field === 'password' && form.password && form.password.length < 6) {
+  if (form.password && form.password.length < 6) {
     errors.value.password = 'Password must be at least 6 characters';
   }
 
-  if (field === 'phone_number' && form.phone_number !== null) {
+  if (form.phone_number !== null) {
     const phoneRegex = /^\d{10,11}$/;
     if (!phoneRegex.test(form.phone_number)) {
       errors.value.phone_number = 'Phone number must be 10 or 11 digits';
@@ -296,13 +303,7 @@ const validateField = (field) => {
   }
 
   errors.value = { ...errors.value };
-};
-
-const validateForm = () => {
-  ['name', 'email', 'password', 'api_key', 'phone_number'].forEach(field => {
-    touchedFields.value.add(field);
-    validateField(field);
-  });
+  return Object.keys(errors.value).length === 0;
 };
 
 onMounted(async () => {
@@ -319,8 +320,9 @@ const handleProvinceChange = async (event) => {
   form.town = '';
   districts.value = [];
   wards.value = [];
-  validateField('prefecture');
-  validateField('town');
+  clearError('province');
+  clearError('prefecture');
+  clearError('town');
 
   const selectedProvince = provinces.value.find(p => p.name === event.value);
   if (selectedProvince) {
@@ -337,7 +339,8 @@ const handleProvinceChange = async (event) => {
 const handleDistrictChange = async (event) => {
   form.town = '';
   wards.value = [];
-  validateField('town');
+  clearError('prefecture');
+  clearError('town');
 
   const selectedDistrict = districts.value.find(d => d.name === event.value);
   if (selectedDistrict) {
@@ -360,23 +363,29 @@ const toggleShowKey = () => {
 const copyKey = async () => {
   try {
     await navigator.clipboard.writeText(form.api_key);
-    toast.add({ severity: 'success', summary: 'Success', detail: 'Copy API Key Success!', life: 3000 });
+    toast.add({ severity: 'success', summary: 'Success', detail: 'API Key copied successfully!', life: 3000 });
   } catch (error) {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Copy API Key Error!', life: 3000 });
+    toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to copy API Key!', life: 3000 });
   }
 };
 
 const generateKey = () => {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   form.api_key = Array.from({ length: 50 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
-  validateField('api_key');
+  clearError('api_key');
   displayConfirmation.value = false;
 };
 
 const handleCreate = () => {
-  validateForm();
-  if (!isFormValid.value) {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Please fill in all required fields correctly', life: 3000 });
+  const isValid = validateForm();
+  if (!isValid) {
+    const errorMessages = Object.values(errors.value).filter(msg => msg).join(', ');
+    toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: errorMessages || 'Please fill in all required fields correctly',
+      life: 3000
+    });
     return;
   }
 
@@ -384,16 +393,13 @@ const handleCreate = () => {
     preserveState: true,
     preserveScroll: true,
     onSuccess: () => {
-      toast.add({severity: 'success', summary: 'Success', detail: 'Create Shop Success!', life: 3000});
+      toast.add({ severity: 'success', summary: 'Success', detail: 'Shop created successfully!', life: 3000 });
       form.reset();
       errors.value = {};
-      touchedFields.value.clear();
     },
     onError: (backendErrors) => {
-      Object.keys(backendErrors).forEach((key) => {
-        errors.value[key] = backendErrors[key];
-      });
-      toast.add({severity: 'error', summary: 'Error', detail: 'Failed to create shop', life: 3000});
+      errors.value = { ...backendErrors };
+      toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to create shop', life: 3000 });
     }
   });
 };

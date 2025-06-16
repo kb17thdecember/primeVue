@@ -16,7 +16,7 @@
                   v-model="form[field.id]"
                   size="large"
                   :invalid="!!errors[field.id]"
-                  @input="validateField(field.id)"
+                  @input="clearError(field.id)"
                 />
                 <label :for="field.id">{{ field.label }}</label>
               </FloatLabel>
@@ -35,7 +35,8 @@
                     autocomplete="off"
                     :class="{ 'text-transparent': !showKey, 'tracking-widest': !showKey, 'p-invalid': !!errors.api_key }"
                     :style="!showKey ? 'text-security: disc; -webkit-text-security: disc;' : ''"
-                    @input="validateField('api_key')"
+                    @input="clearError('api_key')"
+                    disabled
                   />
                   <label for="api_key">API Key</label>
                 </FloatLabel>
@@ -123,7 +124,7 @@
 
             <div class="mt-6">
               <FloatLabel variant="on">
-                <InputNumber
+                <InputText
                   class="text-sm"
                   name="phone_number"
                   id="phone_number"
@@ -131,7 +132,7 @@
                   size="large"
                   :useGrouping="false"
                   :invalid="!!errors.phone_number"
-                  @input="validateField('phone_number')"
+                  @input="clearError('phone_number')"
                 />
                 <label for="phone_number">Phone Number</label>
               </FloatLabel>
@@ -146,7 +147,6 @@
                 :binary="true"
                 :trueValue="1"
                 :falseValue="0"
-                @input="validateField('status')"
               />
               <label for="status"> Active/Inactive </label>
             </div>
@@ -179,13 +179,12 @@
 <script setup>
 import FloatLabel from 'primevue/floatlabel';
 import InputText from 'primevue/inputtext';
-import InputNumber from 'primevue/inputnumber';
 import Fluid from 'primevue/fluid';
 import Checkbox from 'primevue/checkbox';
 import Button from 'primevue/button';
 import { Link, useForm, usePage } from '@inertiajs/vue3';
 import Breadcrumb from '../../component/Breadcrumb.vue';
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import { useToast } from 'primevue/usetoast';
 import ConfirmDialog from '../../component/ConfirmDialog.vue';
 
@@ -214,22 +213,29 @@ const formFields = [
 ];
 
 const errors = ref({});
-const touchedFields = ref(new Set());
-const isFormValid = computed(() => {
-  const requiredFields = ['name', 'phone_number'];
-  const allTouched = requiredFields.every(field => touchedFields.value.has(field));
-  return allTouched && Object.keys(errors.value).length === 0;
-});
 
-const validateField = (field) => {
-  touchedFields.value.add(field);
-  errors.value[field] = '';
-
-  if (field === 'name' && !form.name) {
-    errors.value.name = 'Name is required';
+const clearError = (field) => {
+  if (errors.value[field]) {
+    errors.value[field] = '';
+    errors.value = { ...errors.value };
   }
+};
 
-  if (field === 'phone_number' && form.phone_number !== null) {
+const validateForm = () => {
+  errors.value = {};
+
+  const requiredFields = [
+    { id: 'name', label: 'Shop Name' },
+    { id: 'phone_number', label: 'Phone Number' }
+  ];
+
+  requiredFields.forEach(field => {
+    if (!form[field.id]) {
+      errors.value[field.id] = `${field.label} is required`;
+    }
+  });
+
+  if (form.phone_number !== null) {
     const phoneRegex = /^\d{10,11}$/;
     if (!phoneRegex.test(form.phone_number)) {
       errors.value.phone_number = 'Phone number must be 10 or 11 digits';
@@ -237,13 +243,7 @@ const validateField = (field) => {
   }
 
   errors.value = { ...errors.value };
-};
-
-const validateForm = () => {
-  ['name', 'phone_number'].forEach(field => {
-    touchedFields.value.add(field);
-    validateField(field);
-  });
+  return Object.keys(errors.value).length === 0;
 };
 
 const showKey = ref(false);
@@ -264,13 +264,20 @@ const copyKey = async () => {
 const generateKey = () => {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   form.api_key = Array.from({ length: 50 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+  clearError('api_key');
   displayConfirmation.value = false;
 };
 
 const handleUpdate = () => {
-  validateForm();
-  if (!isFormValid.value) {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Please fill in all required fields correctly', life: 3000 });
+  const isValid = validateForm();
+  if (!isValid) {
+    const errorMessages = Object.values(errors.value).filter(msg => msg).join(', ');
+    toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: errorMessages || 'Please fill in all required fields correctly',
+      life: 3000
+    });
     return;
   }
 
@@ -295,12 +302,9 @@ const handleUpdate = () => {
         life: 3000
       });
       errors.value = {};
-      touchedFields.value.clear();
     },
     onError: (backendErrors) => {
-      Object.keys(backendErrors).forEach((key) => {
-        errors.value[key] = backendErrors[key];
-      });
+      errors.value = { ...backendErrors };
       toast.add({
         severity: 'error',
         summary: 'Error',

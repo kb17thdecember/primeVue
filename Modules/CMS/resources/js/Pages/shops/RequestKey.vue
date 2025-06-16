@@ -108,7 +108,7 @@
 
             <div class="mt-6">
               <FloatLabel variant="on">
-                <InputNumber
+                <InputText
                   class="text-sm"
                   name="phone_number"
                   id="phone_number"
