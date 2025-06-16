@@ -143,14 +143,14 @@ class ShopController extends Controller
     public function updateStatus(): RedirectResponse
     {
         $this->shopService->updateRequestKey();
-        $this->mailService->send([
-            'to' => 'nguyentuankietdz@gmail.com',
-            'subject' => 'Request Key Updated',
-            'content' => "A new request key update API Key has been submitted.\n\n"
-                . "Shop name: " . Auth::user()->name . "\n"
-                . "Shop email: " . Auth::user()->email . "\n"
-                . "Requested at: " . now()->format('Y-m-d H:i:s'),
-        ]);
+//        $this->mailService->send([
+//            'to' => 'nguyentuankietdz@gmail.com',
+//            'subject' => 'Request Key Updated',
+//            'content' => "A new request key update API Key has been submitted.\n\n"
+//                . "Shop name: " . Auth::user()->name . "\n"
+//                . "Shop email: " . Auth::user()->email . "\n"
+//                . "Requested at: " . now()->format('Y-m-d H:i:s'),
+//        ]);
 
         return to_route('shops.key.edit');
     }
