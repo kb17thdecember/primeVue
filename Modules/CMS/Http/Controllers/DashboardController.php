@@ -3,6 +3,7 @@
 namespace Modules\CMS\Http\Controllers;
 
 use App\Models\ShopFrequency;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -26,9 +27,13 @@ class DashboardController extends \App\Http\Controllers\Controller
         ]);
     }
 
-    public function shopFrequency(Request $request)
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function shopFrequency(Request $request): JsonResponse
     {
-        $apiKey = $request->query('api_key'); // nhận từ frontend hoặc từ middleware gắn trên auth
+        $apiKey = $request->query('api_key');
 
         if (!$apiKey) {
             return response()->json([
