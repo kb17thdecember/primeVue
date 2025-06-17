@@ -25,23 +25,4 @@ class LoginRequest extends FormRequest
             'remember_token' => ['nullable', 'boolean']
         ];
     }
-
-    /**
-     * @return string[]
-     */
-    public function messages(): array
-    {
-        return [
-            'email.required' => 'ユーザー名は必須項目です。',
-            'password.required' => 'パスワードは必須です。',
-        ];
-    }
-
-    public function attributes(): array
-    {
-        return [
-            'email' => __('account.field.email'),
-            'password' => __('account.field.password'),
-        ];
-    }
 }
