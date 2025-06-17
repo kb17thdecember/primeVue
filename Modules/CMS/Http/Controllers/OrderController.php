@@ -49,7 +49,7 @@ class OrderController extends Controller
         $resultStore = $this->subscriberHistoryService->store($productId);
 
         if (!$resultStore['result']) {
-            return redirect()->back()->with('error', $resultStore['message']);
+            return redirect()->back()->with('toast_error', $resultStore['message']);
         }
 
         return Inertia::location($resultStore['stripeUrl']);
@@ -66,15 +66,15 @@ class OrderController extends Controller
             $handleSuccessPaymentSession = $this->subscriberHistoryService->handleStripePaymentSuccess($sessionId);
 
             if (!$handleSuccessPaymentSession) {
-                return redirect()->route('pricing.index')->with('error', 'Handle payment session success failed');
+                return redirect()->route('pricing.index')->with('toast_error', 'Handle payment session success failed');
             }
 
-            return redirect()->route('pricing.index')->with('success', 'Payment success!');
+            return redirect()->route('pricing.index')->with('toast_success', 'Payment success!');
         } catch (\Exception $e) {
             Log::error(__METHOD__ . " error:" . $e->getMessage());
             Log::error($e);
 
-            return redirect()->route('pricing.index')->with('error', $e->getMessage());
+            return redirect()->route('pricing.index')->with('toast_error', $e->getMessage());
         }
     }
 
@@ -89,15 +89,15 @@ class OrderController extends Controller
             $handleSuccessPaymentSession = $this->subscriberHistoryService->handleStripePaymentCancel($sessionId);
 
             if (!$handleSuccessPaymentSession) {
-                return redirect()->route('pricing.index')->with('error', 'Handle payment session cancel was failed');
+                return redirect()->route('pricing.index')->with('toast_error', 'Handle payment session cancel was failed');
             }
 
-            return redirect()->route('pricing.index')->with('warning', 'Payment is cancelled!');
+            return redirect()->route('pricing.index')->with('toast_warn', 'Payment is cancelled!');
         } catch (\Exception $e) {
             Log::error(__METHOD__ . " error:" . $e->getMessage());
             Log::error($e);
 
-            return redirect()->route('pricing.index')->with('error', $e->getMessage());
+            return redirect()->route('pricing.index')->with('toast_error', $e->getMessage());
         }
     }
 

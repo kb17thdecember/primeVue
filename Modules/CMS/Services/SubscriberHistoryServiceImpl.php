@@ -222,12 +222,7 @@ readonly class SubscriberHistoryServiceImpl implements SubscriberHistoryService
 
             $currentUser = auth()->user();
 
-            if (ProductType::ONE_TIME->is($product->type)) {
-                $resultPayment = $this->handleOneTimePayment($currentUser, $product);
-
-            } else {
-                $resultPayment = $this->handleSubscribePayment($currentUser, $product);
-            }
+            $resultPayment = $this->handlePayment($currentUser, $product);
 
             if (!$resultPayment['result']) {
                 DB::rollBack();
@@ -258,7 +253,7 @@ readonly class SubscriberHistoryServiceImpl implements SubscriberHistoryService
      * @param Product $product
      * @return array
      */
-    private function handleOneTimePayment($user, Product $product): array
+    private function handlePayment($user, Product $product): array
     {
         try {
             $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET'));

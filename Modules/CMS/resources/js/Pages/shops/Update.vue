@@ -1,6 +1,6 @@
 <template>
-  <Breadcrumb :items="[{ label: 'Shops' }, { label: 'Edit' }]" />
   <div class="card">
+    <Breadcrumb :items="[{ label: 'Shops' }, { label: 'Edit' }]" />
     <h2 class="text-xl font-bold">Edit Shop</h2>
     <Form @submit.prevent="handleUpdate">
       <Fluid class="flex flex-col md:flex-row gap-8">

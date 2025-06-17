@@ -42,7 +42,46 @@ class HandleInertiaRequests extends Middleware
             ],
             'errors' => fn () => $request->session()->get('errors')
                 ? $request->session()->get('errors')->getBag('default')->toArray()
-                : (object) []
+                : (object) [],
+            'toast' => function () use ($request) {
+                $result = [];
+
+                $toastSettings = [
+                    'toast_success' => [
+                        "type" => "success",
+                        "label" => "Success message"
+                    ],
+                    'toast_error' => [
+                        "type" => "error",
+                        "label" => "Error message"
+                    ],
+                    'toast_info' => [
+                        "type" => "info",
+                        "label" => "Infor message"
+                    ],
+                    'toast_warn' => [
+                        "type" => "warn",
+                        "label" => "Warning message"
+                    ],
+                    'toast_secondary' => [
+                        "type" => "secondary",
+                        "label" => "Message"
+                    ],
+                    'toast_contrast' => [
+                        "type" => "contrast",
+                        "label" => "Contrast message"
+                    ],
+                ];
+
+                foreach ($toastSettings as $type => $toastSetting) {
+                    $message = $request->session()->get($type);
+                    if ($message) {
+                        $result[] = ['type' => $toastSetting['type'], 'label' => $toastSetting['label'], 'message' => $message];
+                    }
+                }
+
+                return $result;
+            }
         ]);
     }
 }

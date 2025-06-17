@@ -1,16 +1,17 @@
 <template>
-  <div class="layout-wrapper" :class="containerClass">
-    <TopBar></TopBar>
-    <SideBar></SideBar>
-    <div class="layout-main-container">
-      <div class="layout-main">
-        <slot></slot>
-      </div>
-      <Footer></Footer>
+    <div class="layout-wrapper" :class="containerClass">
+        <TopBar></TopBar>
+        <SideBar></SideBar>
+        <div class="layout-main-container">
+            <div class="layout-main">
+                <slot></slot>
+            </div>
+            <Footer></Footer>
+        </div>
+        <div class="layout-mask animate-fadein"></div>
     </div>
-    <div class="layout-mask animate-fadein"></div>
-  </div>
-  <Toast/>
+<!--    <Toast/>-->
+    <ToastMessage :toast-arr="page.props.toast"></ToastMessage>
 </template>
 
 <script setup>
@@ -19,54 +20,57 @@ import {computed, ref, watch} from 'vue';
 import Footer from "./Footer.vue";
 import SideBar from "./SideBar.vue";
 import TopBar from "./TopBar.vue";
-import Toast from 'primevue/toast';
+import ToastMessage from "./ToastMessage.vue";
+import {usePage} from "@inertiajs/vue3";
 
 const {layoutConfig, layoutState, isSidebarActive} = useLayout();
 
 const outsideClickListener = ref(null);
 
+const page = usePage();
+
 watch(isSidebarActive, (newVal) => {
-  if (newVal) {
-    bindOutsideClickListener();
-  } else {
-    unbindOutsideClickListener();
-  }
+    if (newVal) {
+        bindOutsideClickListener();
+    } else {
+        unbindOutsideClickListener();
+    }
 });
 
 const containerClass = computed(() => {
-  return {
-    'layout-overlay': layoutConfig.menuMode === 'overlay',
-    'layout-static': layoutConfig.menuMode === 'static',
-    'layout-static-inactive': layoutState.staticMenuDesktopInactive && layoutConfig.menuMode === 'static',
-    'layout-overlay-active': layoutState.overlayMenuActive,
-    'layout-mobile-active': layoutState.staticMenuMobileActive
-  };
+    return {
+        'layout-overlay': layoutConfig.menuMode === 'overlay',
+        'layout-static': layoutConfig.menuMode === 'static',
+        'layout-static-inactive': layoutState.staticMenuDesktopInactive && layoutConfig.menuMode === 'static',
+        'layout-overlay-active': layoutState.overlayMenuActive,
+        'layout-mobile-active': layoutState.staticMenuMobileActive
+    };
 });
 
 function bindOutsideClickListener() {
-  if (!outsideClickListener.value) {
-    outsideClickListener.value = (event) => {
-      if (isOutsideClicked(event)) {
-        layoutState.overlayMenuActive = false;
-        layoutState.staticMenuMobileActive = false;
-        layoutState.menuHoverActive = false;
-      }
-    };
-    document.addEventListener('click', outsideClickListener.value);
-  }
+    if (!outsideClickListener.value) {
+        outsideClickListener.value = (event) => {
+            if (isOutsideClicked(event)) {
+                layoutState.overlayMenuActive = false;
+                layoutState.staticMenuMobileActive = false;
+                layoutState.menuHoverActive = false;
+            }
+        };
+        document.addEventListener('click', outsideClickListener.value);
+    }
 }
 
 function unbindOutsideClickListener() {
-  if (outsideClickListener.value) {
-    document.removeEventListener('click', outsideClickListener);
-    outsideClickListener.value = null;
-  }
+    if (outsideClickListener.value) {
+        document.removeEventListener('click', outsideClickListener);
+        outsideClickListener.value = null;
+    }
 }
 
 function isOutsideClicked(event) {
-  const sidebarEl = document.querySelector('.layout-sidebar');
-  const topbarEl = document.querySelector('.layout-menu-button');
+    const sidebarEl = document.querySelector('.layout-sidebar');
+    const topbarEl = document.querySelector('.layout-menu-button');
 
-  return !(sidebarEl.isSameNode(event.target) || sidebarEl.contains(event.target) || topbarEl.isSameNode(event.target) || topbarEl.contains(event.target));
+    return !(sidebarEl.isSameNode(event.target) || sidebarEl.contains(event.target) || topbarEl.isSameNode(event.target) || topbarEl.contains(event.target));
 }
 </script>

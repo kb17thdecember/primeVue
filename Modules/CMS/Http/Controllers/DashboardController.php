@@ -16,7 +16,7 @@ class DashboardController extends \App\Http\Controllers\Controller
     public function __construct(
         private readonly ShopFrequencyService $shopFrequencyService,
     ) {}
-    public function index(): Response
+    public function index()
     {
         $shopFrequency = $this->shopFrequencyService->getShopFrequency();
         $dataReport = $this->shopFrequencyService->getDataDashboardReport();
