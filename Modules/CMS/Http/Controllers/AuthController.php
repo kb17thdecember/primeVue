@@ -10,6 +10,7 @@ use App\Models\Admin;
 use App\Models\Shop;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Inertia\Response;
 use Laravel\Socialite\Facades\Socialite;
@@ -94,6 +95,7 @@ class AuthController extends Controller
             return redirect()->route('cms.dashboard');
 
         } catch (\Exception $e) {
+            Log::error($e);
             return redirect()->route('login.form')->withErrors(['login' => 'Login Failed.']);
         }
     }

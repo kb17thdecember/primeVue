@@ -1,10 +1,7 @@
 <template>
-    <Breadcrumb :items="[
-    { label: 'Subscriber' },
-    { label: 'Subscriber Histories' },
-  ]"/>
     <div class="card">
-        <div class="flex justify-between">
+        <Breadcrumb :items="[{ label: 'Subscriber' }, { label: 'Subscriber Histories' },]"/>
+        <div class="flex justify-between mt-4">
             <h2 class="text-xl font-bold mb-4">Subscriber Histories</h2>
         </div>
         <DataTable
@@ -22,38 +19,38 @@
         >
             <template #header>
                 <div class="flex justify-between">
-                    <Button type="button" icon="pi pi-filter-slash" label="Clear" outlined @click="clearFilter" />
+                    <Button type="button" icon="pi pi-filter-slash" label="Clear" outlined @click="clearFilter"/>
                     <IconField>
                         <InputIcon>
-                            <i class="pi pi-search" />
+                            <i class="pi pi-search"/>
                         </InputIcon>
-                        <InputText v-model="filters['global'].value" placeholder="Keyword Search" />
+                        <InputText v-model="filters['global'].value" placeholder="Keyword Search"/>
                     </IconField>
                 </div>
             </template>
 
             <Column field="shop_name" header="Shop" style="max-width: 5rem">
                 <template #filter="{ filterModel }">
-                    <InputText v-model="filterModel.value" type="text" placeholder="Search by shop name" />
+                    <InputText v-model="filterModel.value" type="text" placeholder="Search by shop name"/>
                 </template>
                 <template #body="{ data }">
                     <div class="flex items-center">
-                        <span class="ml-2">{{ data.shop_name}}</span>
+                        <span class="ml-2">{{ data.shop_name }}</span>
                         <br>
-                        <span class="ml-2">{{ data.shop_id}}</span>
+                        <span class="ml-2">{{ data.shop_id }}</span>
                     </div>
                 </template>
             </Column>
 
             <Column field="name" header="Product" style="max-width: 5rem">
                 <template #filter="{ filterModel }">
-                    <InputText v-model="filterModel.value" type="text" placeholder="Search by product name" />
+                    <InputText v-model="filterModel.value" type="text" placeholder="Search by product name"/>
                 </template>
                 <template #body="{ data }">
                     <div class="flex items-center">
-                        <span class="ml-2">{{ data.product_name}}</span>
+                        <span class="ml-2">{{ data.product_name }}</span>
                         <br>
-                        <span class="ml-2">{{ data.product_id}}</span>
+                        <span class="ml-2">{{ data.product_id }}</span>
                     </div>
                 </template>
             </Column>
@@ -63,7 +60,7 @@
                     <span>{{ data.price || '-' }}</span>
                 </template>
                 <template #filter="{ filterModel }">
-                    <InputText v-model="filterModel.value" type="text" placeholder="Search by price" />
+                    <InputText v-model="filterModel.value" type="text" placeholder="Search by price"/>
                 </template>
             </Column>
 
@@ -72,7 +69,7 @@
                     <span>{{ data.type }}</span>
                 </template>
                 <template #filter="{ filterModel }">
-                    <InputText v-model="filterModel.value" type="text" placeholder="Search by type" />
+                    <InputText v-model="filterModel.value" type="text" placeholder="Search by type"/>
                 </template>
             </Column>
 
@@ -81,7 +78,7 @@
                     <span>{{ data.buy_at || '-' }}</span>
                 </template>
                 <template #filter="{ filterModel }">
-                    <InputText v-model="filterModel.value" type="text" placeholder="Search by buy at" />
+                    <InputText v-model="filterModel.value" type="text" placeholder="Search by buy at"/>
                 </template>
             </Column>
 
@@ -115,7 +112,7 @@ const loading = ref(false);
 function initFilters() {
     filters.value = {
         global: {value: null},
-        subscribe_id: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+        subscribe_id: {value: null, matchMode: FilterMatchMode.STARTS_WITH},
         price: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.EQUALS}]},
         buy_at: {value: null, matchMode: FilterMatchMode.DATE_IS},
     };

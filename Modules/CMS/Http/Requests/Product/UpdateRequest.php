@@ -17,11 +17,11 @@ class UpdateRequest extends FormRequest
             'subtitle' => 'nullable|string',
             'description' => 'nullable|string',
             'release_date' => 'nullable',
-            'price' => 'required|numeric',
             'token_qty' => 'required|numeric',
+            'price' => 'required|numeric',
             'day_available' => 'required_if:type,' . ProductType::ONE_TIME->value . '|numeric',
-            'type' => 'required|in:' . implode(',', array_keys(ProductType::values())),
-            'stripe_product_id' => 'required|string'
+            'type' => 'required|in:' . implode(',', ProductType::values()),
+            'stripe_price_id' => 'required|string'
         ];
     }
 

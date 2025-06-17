@@ -1,5 +1,5 @@
 <template>
-  <Breadcrumb :home="breadcrumbHome" :model="items" />
+  <Breadcrumb :home="breadcrumbHome" :model="items" style="padding: unset !important;"/>
 </template>
 
 <script setup>

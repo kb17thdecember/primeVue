@@ -19,11 +19,11 @@ class StoreRequest extends FormRequest
             'subtitle' => 'nullable|string',
             'description' => 'nullable|string',
             'token_qty' => 'required|numeric',
-            'day_available' => 'required|numeric',
             'price' => 'required|numeric',
+            'day_available' => 'required|numeric',
             'release_date' => 'nullable',
             'type' => 'required|in:' . implode(',', array_keys(ProductType::values())),
-            'stripe_product_id' => 'required|string'
+            'stripe_price_id' => 'required|string'
         ];
     }
 

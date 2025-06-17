@@ -1,6 +1,6 @@
 <template>
-    <Breadcrumb :items="[{ label: 'Setting Notice' }, { label: 'Update' }]"/>
     <div class="card">
+        <Breadcrumb :items="[{ label: 'Setting Notice' }, { label: 'Update' }]"/>
         <h2 class="text-xl font-bold">Update Setting</h2>
         <Fluid class="flex flex-col md:flex-row gap-8">
             <div class="card block flex-col gap-4">
@@ -34,7 +34,7 @@
                         </FloatLabel>
                     </div>
                     <div class="relative mt-6">
-                        <span>Please use "{{props.remainingQtyVariable}}" to fill value of remaining qty into mail template</span>
+                        <span>Please use "{{ props.remainingQtyVariable }}" to fill value of remaining qty into mail template</span>
                         <FloatLabel variant="on" class="mt-2">
                             <div id="mailTemplate">
                                 <Editor v-model="form.mailTemplate" editorStyle="height: 200px"/>
