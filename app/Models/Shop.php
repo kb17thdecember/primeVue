@@ -56,4 +56,12 @@ class Shop extends Model
     {
         return $this->hasMany(ShopFrequency::class);
     }
+
+    /**
+     * @return HasOne
+     */
+    public function currentSubscription(): HasOne
+    {
+        return $this->hasOne(CurrentSubscription::class, 'shop_id', 'id');
+    }
 }

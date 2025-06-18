@@ -9,19 +9,35 @@
         </div>
 
         <div class="flex gap-4">
-            <Card style="width: 300px; min-height: 250px; overflow: hidden"
+            <Card style="width: 300px; min-height: 250px; overflow: hidden;"
+                  :class="{'current-subscription': props.currentSubscriber?.product_id === product.id}"
                   v-for="product in pricing.products">
                 <template #content>
                     <div style="min-height: 200px">
-                        <p class="text-green-600 text-2xl font-bold">{{ product.name }}</p>
-                        <p class="text-xl font-bold">{{ product.price }} VND</p>
+                        <p class="text-2xl font-bold" style="color: var(--primary-color)">
+                            {{ product.name }}
+                            <Tag v-if="props.currentSubscriber?.product_id === product.id" icon="pi pi-check" severity="success" value="Subscribed"></Tag>
+                        </p>
+                        <p class="text-xl font-bold">{{ product.price }}$ - {{ product.token_qty }} token</p>
                         <p>{{ product.subtitle }}</p>
                     </div>
                 </template>
                 <template #footer>
                     <div class="flex gap-3 mt-auto" style="height: 100%">
                         <Button label="Detail" class="w-full" severity="info" @click="showDetail(product)"/>
-                        <Button label="Subscribe" class="w-full" @click="confirmSubscribe(product)" v-if="props.auth.user.role === 1"/>
+                        <Button
+                            label="Unsubscribe"
+                            severity="danger"
+                            class="w-full"
+                            @click="confirmUnsubscribe(product)"
+                            v-if="props.auth.user.role === 1 && props.currentSubscriber?.product_id === product.id"
+                        />
+                        <Button
+                            label="Subscription"
+                            class="w-full"
+                            @click="confirmSubscribe(product)"
+                            v-if="props.auth.user.role === 1 && props.currentSubscriber?.product_id !== product.id"
+                        />
                     </div>
                 </template>
             </Card>
@@ -31,7 +47,7 @@
     <Dialog v-model:visible="visible" modal header="Product detail" :style="{ width: '800px' }">
         <span class="p-text-secondary block mb-2">{{ detailProduct.name }}</span>
         <span class="p-text-secondary block mb-2">Type: {{ detailProduct.typeName }}</span>
-        <span class="p-text-secondary block mb-5">Price: {{ detailProduct.price }}</span>
+        <span class="p-text-secondary block mb-5">{{ detailProduct.price }}$ - {{ detailProduct.token_qty }} token</span>
         <div class="flex align-items-center gap-3 mb-5">
             <Galleria :value="detailProduct.image" :numVisible="5" v-model:activeIndex="activeIndex">
                 <template #item="slotProps">
@@ -45,7 +61,8 @@
         <p style="max-width: 100%" v-html="detailProduct.description"></p>
         <div class="flex justify-content-end gap-2">
             <Button type="button" label="Close" severity="danger" @click="visible = false"></Button>
-            <Button type="button" label="Subscribe" @click="confirmSubscribe(detailProduct)" v-if="props.auth.user.role === 1"></Button>
+            <Tag v-if="props.currentSubscriber?.product_id === detailProduct.id" icon="pi pi-check" severity="success" value="Subscribed"></Tag>
+            <Button type="button" label="Subscribe" @click="confirmSubscribe(detailProduct)" v-if="props.auth.user.role === 1 && props.currentSubscriber?.product_id !== detailProduct.id"></Button>
         </div>
     </Dialog>
 
@@ -65,11 +82,14 @@ import {useToast} from "primevue/usetoast";
 import ConfirmDialog from 'primevue/confirmdialog';
 import Toast from "primevue/toast";
 import InputText from "primevue/inputtext";
+import Tag from 'primevue/tag';
 
 const confirm = useConfirm();
 const visible = ref(false);
 const {props} = usePage();
 const activeIndex = ref(0);
+const productIdSelected = ref(null)
+
 const detailProduct = ref({
     id: '',
     name: '',
@@ -78,15 +98,12 @@ const detailProduct = ref({
     description: '',
     image: []
 })
-const card = ref(null)
 
 const form = useForm({
     cardholderName: '',
     payment_method: '',
     productId: null
 })
-
-const productIdSelected = ref(null)
 
 const confirmSubscribe = (product) => {
     confirm.require({
@@ -105,6 +122,24 @@ const confirmSubscribe = (product) => {
         }
     });
 };
+
+
+const confirmUnsubscribe = () => {
+    confirm.require({
+        message: 'Are you sure you want to unsubscribe?',
+        header: 'Confirmation',
+        icon: 'pi pi-exclamation-triangle',
+        rejectClass: 'p-button-secondary p-button-outlined',
+        rejectLabel: 'Cancel',
+        acceptLabel: 'Unsubscribe',
+        accept: async () => {
+            visible.value = false
+
+
+            // checkout()
+        }
+    });
+}
 
 function checkout() {
     const formCheckout = useForm({
@@ -127,3 +162,8 @@ function showDetail(product) {
     visible.value = true
 }
 </script>
+<style>
+.current-subscription {
+    border: 2px solid var(--primary-color);
+}
+</style>

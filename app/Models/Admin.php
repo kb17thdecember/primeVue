@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\RequestKeyFlag;
 use App\Enums\Role;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Cashier\Billable;
@@ -34,11 +35,10 @@ class Admin extends Authenticatable
     ];
 
     /**
-     * @return BelongsTo
+     * @return HasOne
      */
-    public function shop(): BelongsTo
+    public function shop(): HasOne
     {
-        return $this->belongsTo(Shop::class, 'shop_id');
+        return $this->hasOne(Shop::class, 'id', 'shop_id');
     }
-
 }

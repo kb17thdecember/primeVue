@@ -8,11 +8,13 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Modules\CMS\Contracts\Services\ProductService;
+use Modules\CMS\Contracts\Services\SubscriberHistoryService;
 
 class PricingController extends Controller
 {
-    public function __construct(protected ProductService $productService)
-    {
+    public function __construct(protected ProductService $productService,
+        protected SubscriberHistoryService $subscriberHistoryService
+    ) {
 
     }
 
@@ -23,10 +25,12 @@ class PricingController extends Controller
     {
         $pricingCollection = $this->productService->getAllPricing();
         $stipeKey = env('STRIPE_KEY');
+        $currentSubscriber = $this->subscriberHistoryService->getCurrentSubscriber();
 
         return Inertia::render('pricing/Index', [
             'pricingCollection' => $pricingCollection,
-            'stripeKey' => $stipeKey
+            'stripeKey' => $stipeKey,
+            'currentSubscriber' => $currentSubscriber
         ]);
     }
 

@@ -6,12 +6,15 @@ use App\Enums\PaymentStatus;
 use App\Enums\ProductType;
 use App\Enums\Role;
 use App\Enums\TokenStockStatus;
+use App\Models\CurrentSubscription;
 use App\Models\Product;
+use App\Models\SubscriberHistory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Modules\CMS\Contracts\Repositories\CurrentSubscriptionRepository;
 use Modules\CMS\Contracts\Repositories\ProductRepository;
 use Modules\CMS\Contracts\Repositories\ShopTokenStockRepository;
 use Modules\CMS\Contracts\Repositories\SubscriberHistoryRepository;
@@ -27,6 +30,7 @@ readonly class SubscriberHistoryServiceImpl implements SubscriberHistoryService
         private SubscriberHistoryRepository $subscriberHistoryRepository,
         private ProductRepository           $productRepository,
         private ShopTokenStockRepository    $shopTokenStockRepository,
+        private CurrentSubscriptionRepository   $currentSubscriptionRepository,
     )
     {
     }
@@ -76,59 +80,6 @@ readonly class SubscriberHistoryServiceImpl implements SubscriberHistoryService
     }
 
     /**
-     * @return bool
-     */
-    public function stripePaymentSubscribeSuccess(): bool
-    {
-        try {
-            $currentUser = auth()->user();
-
-            if (Role::ADMIN->is($currentUser->role)) {
-                Log::error("Admin can not subscribe product");
-
-                return false;
-            }
-
-            $subscription = $currentUser->subscription(env('STRIPE_SUBSCRIPTION_NAME', "default"));
-            dd($subscription);
-
-            $session = \Stripe\Checkout\Session::retrieve($sessionId);
-
-            if (!$session) {
-                Log::error(__METHOD__ . " payment session not found: session_id => $sessionId");
-
-                return false;
-            }
-
-            $subscriberHistory = $this->subscriberHistoryRepository->handle()
-                ->where('payment_session_id', $session->id)
-                ->with(['product', 'shop'])
-                ->first();
-
-            if (!$subscriberHistory) {
-                Log::error(__METHOD__ . " Not found subscribe history has session_id => $sessionId");
-
-                return false;
-            }
-
-            if ($subscriberHistory->payment_status === PaymentStatus::PENDING) {
-                $subscriberHistory->payment_data = $session->toArray();
-                $subscriberHistory->payment_status = PaymentStatus::SUCCESS->value;
-                $subscriberHistory->save();
-
-                $this->handleTokenStockAfterSuccessPayment($subscriberHistory);
-            }
-
-            return true;
-        } catch (\Exception $e) {
-            Log::error(__METHOD__ . " error:" . $e->getMessage());
-            Log::error($e);
-
-            return false;
-        }
-    }
-
-    /**
      * @param string $sessionId
      * @return bool
      */
@@ -169,7 +120,7 @@ readonly class SubscriberHistoryServiceImpl implements SubscriberHistoryService
                 $subscriberHistory->payment_status = PaymentStatus::SUCCESS->value;
                 $subscriberHistory->save();
 
-                $this->handleTokenStockAfterSuccessPayment($subscriberHistory);
+                $this->handleTokenStockAfterSuccessPayment($subscriberHistory, $currentUser);
             }
 
             return true;
@@ -181,15 +132,26 @@ readonly class SubscriberHistoryServiceImpl implements SubscriberHistoryService
         }
     }
 
-    protected function handleTokenStockAfterSuccessPayment($subscriberHistory)
+    /**
+     * @param $subscriberHistory
+     * @param $currentUser
+     * @return bool
+     */
+    protected function handleTokenStockAfterSuccessPayment($subscriberHistory, $currentUser): bool
     {
         try {
             DB::beginTransaction();
             $product = $subscriberHistory->product;
 
-            $availableEndDate = ProductType::ONE_TIME->is($product->type)
-                ? now()->addDays($product->day_available)->format('Y-m-d H:i:s')
-                : null;
+            $availableEndDate = match ($product->type) {
+                ProductType::ONE_TIME->value => now()->addDays($product->day_available)->format('Y-m-d H:i:s'),
+                ProductType::WEEKLY => now()->addDays(7)->format('Y-m-d H:i:s'),
+                ProductType::MONTHLY => now()->addMonth()->format('Y-m-d H:i:s'),
+                ProductType::YEARLY => now()->addYear()->format('Y-m-d H:i:s'),
+                ProductType::EVERY_THREE_MONTH => now()->addMonths(3)->format('Y-m-d H:i:s'),
+                ProductType::EVERY_SIX_MONTH => now()->addMonths(6)->format('Y-m-d H:i:s'),
+                default => null
+            };
 
             $this->shopTokenStockRepository->create([
                 'shop_id' => $subscriberHistory->shop_id,
@@ -198,6 +160,14 @@ readonly class SubscriberHistoryServiceImpl implements SubscriberHistoryService
                 'available_start_date' => now()->format('Y-m-d H:i:s'),
                 'available_end_date' => $availableEndDate,
                 'status' => TokenStockStatus::ADDED
+            ]);
+
+            $currentUser->shop->currentSubscriotion?->delete();
+
+            $this->currentSubscriptionRepository->create([
+                'shop_id' => $subscriberHistory->shop_id,
+                'admin_id' => $currentUser->id,
+                'product_id' => $product->id,
             ]);
 
             $shop = $subscriberHistory->shop;
@@ -260,6 +230,24 @@ readonly class SubscriberHistoryServiceImpl implements SubscriberHistoryService
             Log::error($e);
 
             return false;
+        }
+    }
+
+    /**
+     * @return CurrentSubscription|null
+     */
+    public function getCurrentSubscriber(): ?CurrentSubscription
+    {
+        try {
+            $currentUser = Auth::user();
+            $currentUser->load('shop.currentSubscription.product');
+
+            return $currentUser->shop->currentSubscription;
+        } catch (\Exception $e) {
+            Log::error(__METHOD__ . " error:" . $e->getMessage());
+            Log::error($e);
+
+            return null;
         }
     }
 

@@ -2,7 +2,9 @@
 
 namespace Modules\CMS\Contracts\Services;
 
+use App\Models\CurrentSubscription;
 use App\Models\Product;
+use App\Models\SubscriberHistory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Modules\CMS\Http\Requests\Product\StoreRequest;
@@ -37,4 +39,9 @@ interface SubscriberHistoryService
      * @return bool
      */
     public function handleStripePaymentCancel(string $sessionId): bool;
+
+    /**
+     * @return CurrentSubscription|null
+     */
+    public function getCurrentSubscriber(): ?CurrentSubscription;
 }

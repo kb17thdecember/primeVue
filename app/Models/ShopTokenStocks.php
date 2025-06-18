@@ -11,8 +11,6 @@ class ShopTokenStocks extends Model
 {
     public $table = 'shop_token_stocks';
 
-    public $timestamps = false;
-
     protected $fillable = [
         'shop_id',
         'token_qty',
@@ -20,6 +18,8 @@ class ShopTokenStocks extends Model
         'available_start_date',
         'available_end_date',
         'status',
+        'created_at',
+        'updated_at'
     ];
 
     protected $casts = [
