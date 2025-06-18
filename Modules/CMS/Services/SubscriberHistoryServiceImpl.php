@@ -6,9 +6,7 @@ use App\Enums\PaymentStatus;
 use App\Enums\ProductType;
 use App\Enums\Role;
 use App\Enums\TokenStockStatus;
-use App\Models\Admin;
 use App\Models\Product;
-use App\Models\ShopTokenStocks;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,24 +18,31 @@ use Modules\CMS\Contracts\Repositories\SubscriberHistoryRepository;
 use Modules\CMS\Contracts\Services\SubscriberHistoryService;
 use Stripe\SetupIntent;
 use Stripe\Stripe;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Stripe\Checkout\Session;
+use Stripe\StripeClient;
 
 readonly class SubscriberHistoryServiceImpl implements SubscriberHistoryService
 {
     public function __construct(
         private SubscriberHistoryRepository $subscriberHistoryRepository,
-        private ProductRepository $productRepository,
-        private ShopTokenStockRepository $shopTokenStockRepository,
-    ) {}
+        private ProductRepository           $productRepository,
+        private ShopTokenStockRepository    $shopTokenStockRepository,
+    )
+    {
+    }
 
     /**
      * @return Collection
      */
     public function getAll(): Collection
     {
-        $condition = new Request(['sort' => '-id']);
+        $currentUser = Auth::user();
 
-        return $this->subscriberHistoryRepository->handle($condition)->get();
+        return $this->subscriberHistoryRepository
+            ->handle()
+            ->when(Role::SHOP->is($currentUser->role), fn($q) => $q->where('shop_id', $currentUser->shop_id))
+            ->orderByDesc('created_at')
+            ->get();
     }
 
     /**
@@ -71,20 +76,21 @@ readonly class SubscriberHistoryServiceImpl implements SubscriberHistoryService
     }
 
     /**
-     * @param string $sessionId
      * @return bool
      */
-    public function handleStripePaymentSuccess(string $sessionId): bool
+    public function stripePaymentSubscribeSuccess(): bool
     {
-        \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
-
         try {
             $currentUser = auth()->user();
+
             if (Role::ADMIN->is($currentUser->role)) {
                 Log::error("Admin can not subscribe product");
 
                 return false;
             }
+
+            $subscription = $currentUser->subscription(env('STRIPE_SUBSCRIPTION_NAME', "default"));
+            dd($subscription);
 
             $session = \Stripe\Checkout\Session::retrieve($sessionId);
 
@@ -94,11 +100,10 @@ readonly class SubscriberHistoryServiceImpl implements SubscriberHistoryService
                 return false;
             }
 
-            $request = new Request([
-                'payment_session_id' => $session->id
-            ]);
-
-            $subscriberHistory = $this->subscriberHistoryRepository->handle($request)->with(['product', 'shop'])->first();
+            $subscriberHistory = $this->subscriberHistoryRepository->handle()
+                ->where('payment_session_id', $session->id)
+                ->with(['product', 'shop'])
+                ->first();
 
             if (!$subscriberHistory) {
                 Log::error(__METHOD__ . " Not found subscribe history has session_id => $sessionId");
@@ -106,6 +111,58 @@ readonly class SubscriberHistoryServiceImpl implements SubscriberHistoryService
                 return false;
             }
 
+            if ($subscriberHistory->payment_status === PaymentStatus::PENDING) {
+                $subscriberHistory->payment_data = $session->toArray();
+                $subscriberHistory->payment_status = PaymentStatus::SUCCESS->value;
+                $subscriberHistory->save();
+
+                $this->handleTokenStockAfterSuccessPayment($subscriberHistory);
+            }
+
+            return true;
+        } catch (\Exception $e) {
+            Log::error(__METHOD__ . " error:" . $e->getMessage());
+            Log::error($e);
+
+            return false;
+        }
+    }
+
+    /**
+     * @param string $sessionId
+     * @return bool
+     */
+    public function handleStripePaymentSuccess(string $sessionId): bool
+    {
+        Stripe::setApiKey(env('STRIPE_SECRET'));
+
+        try {
+            $currentUser = auth()->user();
+
+            if (Role::ADMIN->is($currentUser->role)) {
+                Log::error("Admin can not subscribe product");
+
+                return false;
+            }
+
+            $session = Session::retrieve($sessionId);
+
+            if (!$session) {
+                Log::error(__METHOD__ . " payment session not found: session_id => $sessionId");
+
+                return false;
+            }
+
+            $subscriberHistory = $this->subscriberHistoryRepository->handle()
+                ->where('payment_session_id', $session->id)
+                ->with(['product', 'shop'])
+                ->first();
+
+            if (!$subscriberHistory) {
+                Log::error(__METHOD__ . " Not found subscribe history has session_id => $sessionId");
+
+                return false;
+            }
 
             if ($subscriberHistory->payment_status === PaymentStatus::PENDING) {
                 $subscriberHistory->payment_data = $session->toArray();
@@ -129,7 +186,6 @@ readonly class SubscriberHistoryServiceImpl implements SubscriberHistoryService
         try {
             DB::beginTransaction();
             $product = $subscriberHistory->product;
-            $currentUser = auth()->user();
 
             $availableEndDate = ProductType::ONE_TIME->is($product->type)
                 ? now()->addDays($product->day_available)->format('Y-m-d H:i:s')
@@ -170,10 +226,10 @@ readonly class SubscriberHistoryServiceImpl implements SubscriberHistoryService
      */
     public function handleStripePaymentCancel(string $sessionId): bool
     {
-        \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
+        Stripe::setApiKey(env('STRIPE_SECRET'));
 
         try {
-            $session = \Stripe\Checkout\Session::retrieve($sessionId);
+            $session = Session::retrieve($sessionId);
 
             if (!$session) {
                 Log::error(__METHOD__ . " payment session not found: session_id => $sessionId");
@@ -181,18 +237,16 @@ readonly class SubscriberHistoryServiceImpl implements SubscriberHistoryService
                 return false;
             }
 
-            $request = new Request([
-                'payment_session_id' => $session->id,
-            ]);
-
-            $subscriberHistory = $this->subscriberHistoryRepository->handle($request)->first();
+            $subscriberHistory = $this->subscriberHistoryRepository->handle()
+                ->where('payment_session_id', $session->id)
+                ->with(['product', 'shop'])
+                ->first();
 
             if (!$subscriberHistory) {
                 Log::error(__METHOD__ . " Not found subscribe history has session_id => $sessionId");
 
                 return false;
             }
-
 
             if ($subscriberHistory->payment_status === PaymentStatus::PENDING) {
                 $subscriberHistory->payment_status = PaymentStatus::CANCEL->value;
@@ -222,7 +276,11 @@ readonly class SubscriberHistoryServiceImpl implements SubscriberHistoryService
 
             $currentUser = auth()->user();
 
-            $resultPayment = $this->handlePayment($currentUser, $product);
+            if (ProductType::ONE_TIME->is($product->type)) {
+                $resultPayment = $this->handleOnetimePayment($currentUser, $product);
+            } else {
+                $resultPayment = $this->handleSubscribePayment($currentUser, $product);
+            }
 
             if (!$resultPayment['result']) {
                 DB::rollBack();
@@ -253,44 +311,45 @@ readonly class SubscriberHistoryServiceImpl implements SubscriberHistoryService
      * @param Product $product
      * @return array
      */
-    private function handlePayment($user, Product $product): array
+    private function handleOnetimePayment($user, Product $product): array
     {
         try {
             $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET'));
-            $price =  (int)($product->price * 100);
             $lineItems = [
                 [
-                    'price_data' => [
-                        'currency' => 'usd',
-                        'product_data' => [
-                            'name' => $product->name,
-                        ],
-                        'unit_amount' => $price,
-                    ],
+                    'price' => $product->stripe_price_id,
                     'quantity' => 1,
                 ]
             ];
 
-            $checkout_session = $stripe->checkout->sessions->create([
-                'line_items' =>  $lineItems,
-                'mode' => 'payment',
-                'success_url' => route('orders.stripePaymentSuccess') . '?session_id={CHECKOUT_SESSION_ID}',
-                'cancel_url' => route('orders.stripePaymentCancel') . '?session_id={CHECKOUT_SESSION_ID}',
-            ]);
-
-            $this->subscriberHistoryRepository->create([
-                'payment_session_id' => $checkout_session->id,
+            $newSubscriberHistory = $this->subscriberHistoryRepository->create([
+                'payment_session_id' => null,
+                'payment_price_id' => $product->stripe_price_id,
                 'payment_data' => '',
                 'shop_id' => $user->shop_id,
                 'product_id' => $product->id,
-                'price' => $price,
+                'price' => $product->price,
                 'type' => $product->type->value,
                 'payment_status' => PaymentStatus::PENDING->value,
             ]);
 
+            $checkoutSession = $stripe->checkout->sessions->create([
+                'line_items' => $lineItems,
+                'mode' => 'payment',
+                'metadata' => [
+                    'subscriber_history_id' => $newSubscriberHistory->id,
+                    'admin_id' => $user->id
+                ],
+                'success_url' => route('orders.stripePaymentSuccess') . '?session_id={CHECKOUT_SESSION_ID}',
+                'cancel_url' => route('orders.stripePaymentCancel') . '?session_id={CHECKOUT_SESSION_ID}',
+            ]);
+
+            $newSubscriberHistory->payment_session_id = $checkoutSession->id;
+            $newSubscriberHistory->save();
+
             return [
                 "result" => true,
-                "stripeUrl" => $checkout_session->url
+                "stripeUrl" => $checkoutSession->url
             ];
         } catch (\Exception $exception) {
             Log::error(__METHOD__ . " error:" . $exception->getMessage());
@@ -306,15 +365,45 @@ readonly class SubscriberHistoryServiceImpl implements SubscriberHistoryService
     /**
      * @param $user
      * @param Product $product
-     * @param $requestData
-     * @return bool
+     * @return array
      */
-    private function handleSubscribePayment($user, Product $product): bool
+    private function handleSubscribePayment($user, Product $product): array
     {
         try {
-            return true;
+            $priceId = $product->stripe_price_id;
+
+            $newSubscriberHistory = $this->subscriberHistoryRepository->create([
+                'payment_session_id' => null,
+                'payment_price_id' => $priceId,
+                'payment_data' => '',
+                'shop_id' => $user->shop_id,
+                'product_id' => $product->id,
+                'price' => $product->price,
+                'type' => $product->type->value,
+                'payment_status' => PaymentStatus::PENDING->value,
+            ]);
+
+            $stripeSession = $user->newSubscription(env('STRIPE_SUBSCRIPTION_NAME', "default"), $priceId)
+                ->checkout([
+                    'success_url' => route('orders.stripePaymentSuccess') . '?session_id={CHECKOUT_SESSION_ID}',
+                    'cancel_url' => route('orders.stripePaymentCancel') . '?session_id={CHECKOUT_SESSION_ID}',
+                ]);
+
+            $newSubscriberHistory->payment_session_id = $stripeSession->id;
+            $newSubscriberHistory->save();
+
+            return [
+                'result' => true,
+                'stripeUrl' => $stripeSession->url
+            ];
         } catch (\Exception $exception) {
-            return false;
+            Log::error(__METHOD__ . " error:" . $exception->getMessage());
+            Log::error($exception);
+
+            return [
+                "result" => false,
+                "message" => $exception->getMessage()
+            ];
         }
     }
 }

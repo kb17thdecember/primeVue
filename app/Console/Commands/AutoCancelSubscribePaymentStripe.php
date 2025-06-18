@@ -40,7 +40,7 @@ class AutoCancelSubscribePaymentStripe extends Command
                 $subscriberPaymentStripePending->payment_status = PaymentStatus::SYSTEM_CANCEL->value;
                 $subscriberPaymentStripePending->save();
 
-                Log::info("AUTO-CANCEL-SUBSCRIBE-PAYMENT-STRIPE: Auto cancel stripe payment because not finished after 30 minutes: payment_session_id = " . $subscriberPaymentStripePending->payment_session_id);
+                Log::info("AUTO-CANCEL-SUBSCRIBE-PAYMENT-STRIPE: Auto cancel stripe payment because not finished after 30 minutes: subscribe_history_id = " . $subscriberPaymentStripePending->id);
             }
 
             DB::commit();

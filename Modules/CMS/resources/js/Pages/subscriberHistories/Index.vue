@@ -13,7 +13,6 @@
             v-model:filters="filters"
             filterDisplay="menu"
             :loading="loading"
-            :filters="filters"
             :globalFilterFields="['name','price', 'discount', 'status', 'release_date']"
             showGridlines
         >

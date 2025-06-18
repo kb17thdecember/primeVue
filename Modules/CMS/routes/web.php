@@ -70,10 +70,10 @@ Route::group(['prefix' => 'cms', 'middleware' => ['admin.auth']], function () {
         Route::get('/index', [OrderController::class, 'index'])->name('orders.index');
         Route::post('/create', [OrderController::class, 'store'])->name('orders.store');
 
-//        Route::post('/stripe/setup-intent', [OrderController::class, 'stripeSetupIntent'])->name('orders.stripeSetupIntent');
         Route::post('/stripe/payment', [OrderController::class, 'stripePaymentIntent'])->name('orders.stripePaymentIntent');
-        Route::get('/stripe/success', [OrderController::class, 'stripePaymentSuccess'])->name('orders.stripePaymentSuccess');
-        Route::get('/stripe/cancel', [OrderController::class, 'stripePaymentCancel'])->name('orders.stripePaymentCancel');
+
+        Route::get('/stripe/one-time/success', [OrderController::class, 'stripePaymentSuccess'])->name('orders.stripePaymentSuccess');
+        Route::get('/stripe/one-time/cancel', [OrderController::class, 'stripePaymentCancel'])->name('orders.stripePaymentCancel');
 
         Route::get('/analysis', [OrderController::class, 'analysis'])->name('orders.analysis');
     });

@@ -18,6 +18,7 @@ class SubscriberHistoryResource extends JsonResource
         return [
             'id' => $this->id,
             'payment_session_id' => $this->payment_session_id,
+            'payment_price_id' => $this->payment_price_id,
             'payment_data' => $this->payment_data,
             'shop_id' => $this->shop_id,
             'shop_name' => $this->shop?->name,

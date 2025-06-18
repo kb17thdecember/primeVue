@@ -59,7 +59,7 @@ class OrderController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function stripePaymentSuccess(Request $request)
+    public function stripePaymentSuccess(Request $request): \Illuminate\Http\RedirectResponse
     {
         $sessionId = $request->get('session_id');
         try {
@@ -82,7 +82,7 @@ class OrderController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function stripePaymentCancel(Request $request)
+    public function stripePaymentCancel(Request $request): \Illuminate\Http\RedirectResponse
     {
         $sessionId = $request->get('session_id');
         try {
@@ -99,25 +99,6 @@ class OrderController extends Controller
 
             return redirect()->route('pricing.index')->with('toast_error', $e->getMessage());
         }
-    }
-
-    /**
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function stripeSetupIntent(Request $request): JsonResponse
-    {
-        $resultStripeSetupIntent = $this->subscriberHistoryService->stripeSetupIntent();
-
-        if (!$resultStripeSetupIntent['result']) {
-            return response()->json([
-                'message' => "Server internal error! Please try again later",
-            ], 500);
-        }
-
-        return response()->json([
-            'client_secret' => $resultStripeSetupIntent['client_secret'],
-        ], 200);
     }
 
     /**

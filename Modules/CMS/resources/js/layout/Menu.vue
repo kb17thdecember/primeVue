@@ -57,7 +57,7 @@ const menuItems = ref([
                         routeName: 'subscriber-histories.index'
                     },
                 ],
-                roles: [0]
+                roles: [0, 1]
             },
         ],
         roles: [0, 1]
